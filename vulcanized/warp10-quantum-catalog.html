@@ -391,13 +391,23 @@ WarpScript IDE and plot viewer
     },
     attached: function(){
       // console.debug([warp10-warpscript-widget] attached - warpscript attribute", this.warpscript)
-      var content = Polymer.dom(this.$.content).getDistributedNodes()[0].textContent.trim();
+      var content = ""
+      if (Polymer.dom(this.$.content).getDistributedNodes().length >0) {
+        content = Polymer.dom(this.$.content).getDistributedNodes()[0].textContent.trim();
+      }
       console.log("[warp10-warpscript-widget] attached - content", content)
       if (content.trim().length>0) {
         this.warpscript = content;
         console.log(this.warpscript)
       }
       this.plot = 0;
+
+
+      var event = document.createEvent('CustomEvent');
+      event.initCustomEvent('warp10-warpscript-widget', false, false,  {value: "loaded", id: "anId"});
+      window.dispatchEvent(event);
+
+
     },
     _backToWarpScript: function(){
       this.plot = 0;
@@ -406,7 +416,7 @@ WarpScript IDE and plot viewer
 </script>
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ace-widget/ace-widget.html">
-<link rel="import" href="../spinner-widget/spinner-widget.html">
+<link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 <link   rel="import" href="../warp10-quantum/warp10-backend-chooser.html">
 
 <!--
@@ -645,7 +655,7 @@ Warp ingress widget
 </script>
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ace-widget/ace-widget.html">
-<link rel="import" href="../spinner-widget/spinner-widget.html">
+<link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 <link   rel="import" href="../warp10-quantum/warp10-backend-chooser.html">
 
 <!--

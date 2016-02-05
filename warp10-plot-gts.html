@@ -1,11 +1,7 @@
 <link rel="import" href=" ../polymer/polymer.html">
-
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
+<link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 
-<script src="../d3/d3.min.js" charset="utf-8"></script>
-<script src="../nvd3/build/nv.d3.js"></script>
-
-<link href="../nvd3/build/nv.d3.min.css" rel="stylesheet" type="text/css" />
 
 <dom-module id="warp10-plot-gts">
   <template>
@@ -391,7 +387,7 @@
         };
 
         headerFormatter = function(d) {
-          return d;
+          return d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
         };
 
         keyFormatter = function(d, i) {
