@@ -74,8 +74,6 @@
         font-weight: bold;
       }
 
-
-
       :host ::content .nvtooltip .gts-classname {
         color: #0074D9;
       }
@@ -387,7 +385,7 @@
         };
 
         headerFormatter = function(d) {
-          return d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
+          return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));
         };
 
         keyFormatter = function(d, i) {

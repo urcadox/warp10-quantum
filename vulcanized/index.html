@@ -44635,8 +44635,6 @@ exports.Mode = Mode;
         font-weight: bold;
       }
 
-
-
       :host ::content .nvtooltip .gts-classname {
         color: #0074D9;
       }
@@ -44948,7 +44946,7 @@ exports.Mode = Mode;
         };
 
         headerFormatter = function(d) {
-          return d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
+          return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));
         };
 
         keyFormatter = function(d, i) {
@@ -48447,7 +48445,7 @@ Quantum widget including inside warpscript, ingress and delete widget
         {
           name: "doc",
           text: "Documentation",
-          url:  "http://warp10.io",
+          url:  "http://www.warp10.io",
           active: false
         },
         {
