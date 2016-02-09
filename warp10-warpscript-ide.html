@@ -242,7 +242,7 @@
     editorChangeAction: function(value, oldValue) {
       this.fire('editor-content', {value: value, oldValue: oldValue});
       this.content = value.detail.value;
-      // console.debug([warp10-warpscript-ide] Ide content changed", this.content);
+      console.debug("[warp10-warpscript-ide] editorChangeAction");
     },
     hotkeyExecute: function(e) {
       // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
@@ -259,7 +259,7 @@
       }
     },
     execute: function() {
-      // console.debug([warp10-warpscript-ide] Execute", this.content)
+      // console.debug("[warp10-warpscript-ide] Execute", this.content)
       if (this.showPermalink) {
         this.updatePermalink();
       }
@@ -273,6 +273,7 @@
       }
     },
     updatePermalink: function() {
+      console.debug("[warp10-warpscript-ide] updatePermalink");
       this.$$("warp10-warpscript-permalink-generator").updatePermalink();
     },
     formatElapsedTime: function() {

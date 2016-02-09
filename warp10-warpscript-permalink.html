@@ -33,8 +33,8 @@
     decodeWarpscript: function(){
       console.debug("[warp10-warpscript-permalink-decoder] decodeWarpscript - encodedWarpscript :", this.encodedWarpscript);
       try {
-        var decoded = decodeURIComponent(escape(atob(this.encodedWarpscript)));
-        // console.debug([warp10-warpscript-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedWarpscript))));
+        console.debug("[warp10-warpscript-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
         return decoded;
       } catch  (e) {
       }
@@ -42,8 +42,8 @@
     decodeBackend: function(){
       // console.debug([warp10-warpscript-permalink-decoder] decodeBackend - encodedBackend :", this.encodedBackend);
       try {
-        var decoded = decodeURIComponent(escape(atob(this.encodedBackend)));
-        // console.debug([warp10-warpscript-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend))));
+        console.debug("[warp10-warpscript-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
         return decoded;
       } catch  (e) {
       }
@@ -98,11 +98,13 @@
       // console.debug("[warp10-warpscript-permalink] created called", this._maxDisplayLength);
     },
     generatePermalink: function(){
-      // console.debug("[warp10-warpscript-permalink] generatePermalink called", window.btoa(this.warpscript));
+      console.debug("[warp10-warpscript-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
       if (this.backend === undefined || this.backend.length == 0) {
-        return btoa(unescape(encodeURIComponent(this.warpscript)));
+        // return btoa(unescape(encodeURIComponent(this.warpscript)));
+        return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
       }
-      return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
+      // return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend))));
     },
     cropPermalink: function() {
       if (this.permalink.length > this._maxDisplayLength) {
@@ -111,7 +113,7 @@
       return this.permalink;
     },
     updatePermalink: function() {
-      // console.debug([warp10-warpscript-permalink] updatePermalink called", Excess.RouteManager);
+      console.debug("[warp10-warpscript-permalink] updatePermalink called",this.permalink);
       Excess.RouteManager.transitionTo("/warpscript/"+this.permalink);
     }
   });

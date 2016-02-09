@@ -43054,8 +43054,8 @@ Examples:
     decodeWarpscript: function(){
       console.debug("[warp10-warpscript-permalink-decoder] decodeWarpscript - encodedWarpscript :", this.encodedWarpscript);
       try {
-        var decoded = decodeURIComponent(escape(atob(this.encodedWarpscript)));
-        // console.debug([warp10-warpscript-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedWarpscript))));
+        console.debug("[warp10-warpscript-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
         return decoded;
       } catch  (e) {
       }
@@ -43063,8 +43063,8 @@ Examples:
     decodeBackend: function(){
       // console.debug([warp10-warpscript-permalink-decoder] decodeBackend - encodedBackend :", this.encodedBackend);
       try {
-        var decoded = decodeURIComponent(escape(atob(this.encodedBackend)));
-        // console.debug([warp10-warpscript-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend))));
+        console.debug("[warp10-warpscript-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
         return decoded;
       } catch  (e) {
       }
@@ -43119,11 +43119,13 @@ Examples:
       // console.debug("[warp10-warpscript-permalink] created called", this._maxDisplayLength);
     },
     generatePermalink: function(){
-      // console.debug("[warp10-warpscript-permalink] generatePermalink called", window.btoa(this.warpscript));
+      console.debug("[warp10-warpscript-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
       if (this.backend === undefined || this.backend.length == 0) {
-        return btoa(unescape(encodeURIComponent(this.warpscript)));
+        // return btoa(unescape(encodeURIComponent(this.warpscript)));
+        return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
       }
-      return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
+      // return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend))));
     },
     cropPermalink: function() {
       if (this.permalink.length > this._maxDisplayLength) {
@@ -43132,7 +43134,7 @@ Examples:
       return this.permalink;
     },
     updatePermalink: function() {
-      // console.debug([warp10-warpscript-permalink] updatePermalink called", Excess.RouteManager);
+      console.debug("[warp10-warpscript-permalink] updatePermalink called",this.permalink);
       Excess.RouteManager.transitionTo("/warpscript/"+this.permalink);
     }
   });
@@ -43958,7 +43960,7 @@ exports.Mode = Mode;
     editorChangeAction: function(value, oldValue) {
       this.fire('editor-content', {value: value, oldValue: oldValue});
       this.content = value.detail.value;
-      // console.debug([warp10-warpscript-ide] Ide content changed", this.content);
+      console.debug("[warp10-warpscript-ide] editorChangeAction");
     },
     hotkeyExecute: function(e) {
       // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
@@ -43975,7 +43977,7 @@ exports.Mode = Mode;
       }
     },
     execute: function() {
-      // console.debug([warp10-warpscript-ide] Execute", this.content)
+      // console.debug("[warp10-warpscript-ide] Execute", this.content)
       if (this.showPermalink) {
         this.updatePermalink();
       }
@@ -43989,6 +43991,7 @@ exports.Mode = Mode;
       }
     },
     updatePermalink: function() {
+      console.debug("[warp10-warpscript-ide] updatePermalink");
       this.$$("warp10-warpscript-permalink-generator").updatePermalink();
     },
     formatElapsedTime: function() {
@@ -47582,6 +47585,7 @@ WarpScript IDE and plot viewer
       warpscript: {
         type: String,
         notify: true,
+        observer: "_warpscriptChanged",
         value: ""
       },
       /**
@@ -47646,10 +47650,10 @@ WarpScript IDE and plot viewer
       if (Polymer.dom(this.$.content).getDistributedNodes().length >0) {
         content = Polymer.dom(this.$.content).getDistributedNodes()[0].textContent.trim();
       }
-      console.log("[warp10-warpscript-widget] attached - content", content)
+      // console.debug("[warp10-warpscript-widget] attached - content", content)
       if (content.trim().length>0) {
         this.warpscript = content;
-        console.log(this.warpscript)
+        // console.debug(this.warpscript)
       }
       this.plot = 0;
 
@@ -47662,6 +47666,9 @@ WarpScript IDE and plot viewer
     },
     _backToWarpScript: function(){
       this.plot = 0;
+    },
+    _warpscriptChanged: function(newValue, oldValue){
+        console.debug("[warp10-warpscript-widget] _warpscriptChanged");
     }
   });
 </script>
@@ -48409,7 +48416,7 @@ Quantum widget including inside warpscript, ingress and delete widget
 
     },
     _getActiveRoute: function(){
-      // console.debug("[warp10-quantum-router] getActiveRoute", {warpscript: this.routeWarpscript, ingress: this.routeIngress, delete: this.routeDelete});
+      console.debug("[warp10-quantum-router] getActiveRoute", {warpscript: this.routeWarpscript, ingress: this.routeIngress, delete: this.routeDelete});
       if (this.routeWarpscript) return "warpscript"
       if (this.routeIngress) return "ingress"
       if (this.routeDelete) return "delete"

@@ -101,7 +101,7 @@
 
     },
     _getActiveRoute: function(){
-      // console.debug("[warp10-quantum-router] getActiveRoute", {warpscript: this.routeWarpscript, ingress: this.routeIngress, delete: this.routeDelete});
+      console.debug("[warp10-quantum-router] getActiveRoute", {warpscript: this.routeWarpscript, ingress: this.routeIngress, delete: this.routeDelete});
       if (this.routeWarpscript) return "warpscript"
       if (this.routeIngress) return "ingress"
       if (this.routeDelete) return "delete"

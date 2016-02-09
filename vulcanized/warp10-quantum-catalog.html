@@ -331,6 +331,7 @@ WarpScript IDE and plot viewer
       warpscript: {
         type: String,
         notify: true,
+        observer: "_warpscriptChanged",
         value: ""
       },
       /**
@@ -395,10 +396,10 @@ WarpScript IDE and plot viewer
       if (Polymer.dom(this.$.content).getDistributedNodes().length >0) {
         content = Polymer.dom(this.$.content).getDistributedNodes()[0].textContent.trim();
       }
-      console.log("[warp10-warpscript-widget] attached - content", content)
+      // console.debug("[warp10-warpscript-widget] attached - content", content)
       if (content.trim().length>0) {
         this.warpscript = content;
-        console.log(this.warpscript)
+        // console.debug(this.warpscript)
       }
       this.plot = 0;
 
@@ -411,6 +412,9 @@ WarpScript IDE and plot viewer
     },
     _backToWarpScript: function(){
       this.plot = 0;
+    },
+    _warpscriptChanged: function(newValue, oldValue){
+        console.debug("[warp10-warpscript-widget] _warpscriptChanged");
     }
   });
 </script>
