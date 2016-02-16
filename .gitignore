@@ -2,3 +2,6 @@ bower_components
 dist
 *.sh
 test-api0
+tools-priv
+vulcanized-priv
+artifacts
