@@ -80,13 +80,16 @@
           return document.body;
         }
       },
-      host: {
+      backend: {
         type: String,
         value: "http://127.0.0.1:8080/api/v0"
       },
-      baseUrl: {
+      /**
+       * The  exec endpoint
+       */
+      execEndpoint: {
         type: String,
-        computed: "getBaseUrl(host)"
+        value: "/exec"
       },
       response: {
         type: Array,
@@ -106,8 +109,11 @@
       call: {
         type: Number,
         value: 0
+      },
+      _baseUrl: {
+        type: String,
+        computed: "_getBaseUrl(backend,execEndpoint)"
       }
-
     },
     listeners: {
       'plotted-changed': 'plottedChanged'
@@ -123,8 +129,8 @@
       }.bind(this));
       */
     },
-    getBaseUrl: function() {
-      return this.host + "/api/v0/exec/einstein";
+    _getBaseUrl: function() {
+      return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
       if (this.data !== null) {

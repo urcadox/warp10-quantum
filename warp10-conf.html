@@ -42,26 +42,32 @@
         confFound = true;
         this.backend = "https://warp.cityzendata.net/dist/api/v0";
         this.execEndpoint = "/exec/einstein"
-        this.embedded = "true";
+        this.embedded = true;
         this.headerName = "CityzenData";
       }
       if (this.conf == "czd") {
+        confFound = true;
         this.configuredBackends = [
           {
             "id": "dist",
             "label": "Distributed Warp",
-            "url": "https://warp.cityzendata.net/dist",
+            "url": "https://warp.cityzendata.net/dist/api/v0",
             "execEndpoint": "/einstein",
             "headerName": "CityzenData"
-          }
+          },
         ];
+        this.backend = "https://warp.cityzendata.net/dist/api/v0"
+        this.execEndpoint = "/exec/einstein"
+        this.embedded = false;
+        this.headerName = "CityzenData";
       }
       if (confFound) {
         window.quantumConf = {
           backend: this.backend,
           execEndpoint: this.execEndpoint,
           embedded: this.embedded,
-          headerName: this.headerName
+          headerName: this.headerName,
+          configuredBackends: this.configuredBackends
         }
       }
     }

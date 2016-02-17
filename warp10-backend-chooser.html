@@ -146,6 +146,16 @@ Component to choose the Warp backend to use
       },
     },
     attached: function() {
+
+      if (this.configuredBackends.length == 0) {
+        // Look for a global conf, and apply if it exists
+        if ((window.quantumConf !== undefined) && (window.quantumConf.configuredBackends !== undefined) ) {
+          this.configuredBackends = window.quantumConf.configuredBackends;
+        }
+        console.debug("[warp10-backend-chooser] configuredBackends", this.configuredBackends);
+
+      }
+
       if (this.currentBackend === undefined || this.currentBackend.length==0) {
         if (this._isNoConfiguredBackend()) {
           this.currentBackend = "http://127.0.0.1:8080/api/v0"
