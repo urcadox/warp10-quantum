@@ -296,6 +296,9 @@
       }
     },
     _toArray: function(obj) {
+      if (obj === undefined) {
+        return [];
+      }
       return Object.keys(obj).map(function(key) {
         return {
           name: key,

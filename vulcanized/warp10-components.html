@@ -10654,7 +10654,8 @@ element.
     align-items: center;
     padding-right: 10px;
 }
-.navbar-nav > li > a {
+.navbar-nav > li > a,
+.navbar-nav > li > div {
     padding-top: 0px;
     padding-bottom: 0px;
     line-height: 75px;
@@ -10875,26 +10876,32 @@ element.
         confFound = true;
         this.backend = "https://warp.cityzendata.net/dist/api/v0";
         this.execEndpoint = "/exec/einstein"
-        this.embedded = "true";
+        this.embedded = true;
         this.headerName = "CityzenData";
       }
       if (this.conf == "czd") {
+        confFound = true;
         this.configuredBackends = [
           {
             "id": "dist",
             "label": "Distributed Warp",
-            "url": "https://warp.cityzendata.net/dist",
+            "url": "https://warp.cityzendata.net/dist/api/v0",
             "execEndpoint": "/einstein",
             "headerName": "CityzenData"
-          }
+          },
         ];
+        this.backend = "https://warp.cityzendata.net/dist/api/v0"
+        this.execEndpoint = "/exec/einstein"
+        this.embedded = false;
+        this.headerName = "CityzenData";
       }
       if (confFound) {
         window.quantumConf = {
           backend: this.backend,
           execEndpoint: this.execEndpoint,
           embedded: this.embedded,
-          headerName: this.headerName
+          headerName: this.headerName,
+          configuredBackends: this.configuredBackends
         }
       }
     }
@@ -27591,6 +27598,9 @@ exports.Mode = Mode;
       }
     },
     _toArray: function(obj) {
+      if (obj === undefined) {
+        return [];
+      }
       return Object.keys(obj).map(function(key) {
         return {
           name: key,
@@ -27992,9 +28002,12 @@ exports.Mode = Mode;
         keyFormatter = function(d, i) {
           var classname, html, labels, splitted;
           splitted = d.split(/[{}]/);
+          if (splitted.length == 0) {
+            return "";
+          }
           classname = splitted[0];
           html = "<span class='gts-classname'>" + classname + "</span>";
-          if (splitted.length > 1) {
+          if ((splitted.length > 1) && (splitted[1] != "")) {
             html += "<span class='gts-separator'>{</span>";
             labels = [];
             splitted[1].split(',').forEach(function(it) {
@@ -29243,7 +29256,7 @@ context. You should place this element as a child of `<body>` whenever possible.
       </div>
     </warp10-simple-overlay>
 
-    <warp10-warpscript-caller id="warpscript-caller" base-url="{{baseUrl}}" warpscript="{{warpscript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}">
+    <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}">
     </warp10-warpscript-caller>
 
   </template>
@@ -29266,13 +29279,16 @@ context. You should place this element as a child of `<body>` whenever possible.
           return document.body;
         }
       },
-      host: {
+      backend: {
         type: String,
         value: "http://127.0.0.1:8080/api/v0"
       },
-      baseUrl: {
+      /**
+       * The  exec endpoint
+       */
+      execEndpoint: {
         type: String,
-        computed: "getBaseUrl(host)"
+        value: "/exec"
       },
       response: {
         type: Array,
@@ -29292,8 +29308,11 @@ context. You should place this element as a child of `<body>` whenever possible.
       call: {
         type: Number,
         value: 0
+      },
+      _baseUrl: {
+        type: String,
+        computed: "_getBaseUrl(backend,execEndpoint)"
       }
-
     },
     listeners: {
       'plotted-changed': 'plottedChanged'
@@ -29309,8 +29328,8 @@ context. You should place this element as a child of `<body>` whenever possible.
       }.bind(this));
       */
     },
-    getBaseUrl: function() {
-      return this.host + "/api/v0/exec/einstein";
+    _getBaseUrl: function() {
+      return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
       if (this.data !== null) {
@@ -30463,6 +30482,16 @@ Component to choose the Warp backend to use
       },
     },
     attached: function() {
+
+      if (this.configuredBackends.length == 0) {
+        // Look for a global conf, and apply if it exists
+        if ((window.quantumConf !== undefined) && (window.quantumConf.configuredBackends !== undefined) ) {
+          this.configuredBackends = window.quantumConf.configuredBackends;
+        }
+        console.debug("[warp10-backend-chooser] configuredBackends", this.configuredBackends);
+
+      }
+
       if (this.currentBackend === undefined || this.currentBackend.length==0) {
         if (this._isNoConfiguredBackend()) {
           this.currentBackend = "http://127.0.0.1:8080/api/v0"
@@ -30604,7 +30633,7 @@ WarpScript IDE and plot viewer
           </button>
         </div>
         <h4>Plot</h4>
-        <warp10-warpscript-plot id="plot-widget" data="{{data}}" backend="{{backend}}" warpscript="{{warpscript}}"></warp10-warpscript-plot>
+        <warp10-warpscript-plot id="plot-widget" data="{{data}}" backend="{{backend}}" exec-endpoint="{{execEndpoint}}" warpscript="{{warpscript}}"></warp10-warpscript-plot>
         </div>
       
     </template>

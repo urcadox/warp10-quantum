@@ -391,9 +391,12 @@
         keyFormatter = function(d, i) {
           var classname, html, labels, splitted;
           splitted = d.split(/[{}]/);
+          if (splitted.length == 0) {
+            return "";
+          }
           classname = splitted[0];
           html = "<span class='gts-classname'>" + classname + "</span>";
-          if (splitted.length > 1) {
+          if ((splitted.length > 1) && (splitted[1] != "")) {
             html += "<span class='gts-separator'>{</span>";
             labels = [];
             splitted[1].split(',').forEach(function(it) {
