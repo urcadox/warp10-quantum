@@ -1,8 +1,8 @@
-bower_components
-dist
+/bower_components
+/dist
 *.sh
-test-api0
-dist-priv
-tools-priv
-vulcanized-priv
-artifacts
+/test-api0
+/dist-priv
+/tools-priv
+/vulcanized-priv
+/artifacts
