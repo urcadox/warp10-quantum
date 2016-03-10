@@ -24,7 +24,7 @@
   "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#~1.2.0",
-    "warp10-iron": "cityzendata/warp10-iron#1.0.0-rc1",
+    "warp10-iron": "cityzendata/warp10-iron#1.0.1.2",
     "warp10-navbar": "cityzendata/warp10-navbar#1.0.0-rc3",
     "ace-widget": "LostInBrittany/ace-widget#~1.0.9",
     "spinner-widget": "LostInBrittany/spinner-widget#~0.0.4",
