@@ -6,6 +6,7 @@
 <link rel="import" href="../warp10-quantum/warp10-warpscript-permalink.html">
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
+<link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
 
 <script src="../warp10-quantum/ace/mode-warpscript.js"></script>
 <script src="../ace-builds/src-min-noconflict/theme-eclipse.js"></script>
@@ -33,11 +34,48 @@
     warp10-warpscript-permalink-generator[hidden]{
       display: none;
     }
+    .overlayBox {
+      display:flex;
+      flex-flow: row;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+    .overlayContent  {
+    }
+    .hotkey-key {
+      background-color: #333;
+      border: 1px solid #333;
+      border-radius: 5px;
+      box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
+      color: #fff;
+      display: inline-block;
+      font-size: 1em;
+      margin-right: 5px;
+      padding: 5px 9px;
+      text-align: center;
+    }
   </style>
   <template>
 
     <iron-a11y-keys target="[[target]]" keys="e" on-keys-pressed="hotkeyExecute"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="p" on-keys-pressed="hotkeyPlot"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="h ?:keypress" on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    <warp10-simple-overlay id="warpscript-ide-keyboard-shortcuts-overlay">
+      <div class="overlay-box">
+        <h4>Keyboard Shortcuts:</h4>
+        <p><span class="hotkey-key">?</span> Show / hide this help menu</p>
+        <p><span class="hotkey-key">e</span> Execute WarpScript</p>
+        <p><span class="hotkey-key">p</span> Plot result</p>
+      </div>
+    </warp10-simple-overlay>
+
+    <warp10-warpscript-caller
+      id="warpscript-caller"
+      base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
+      data="{{response}}"    loading="{{loading}}" call="{{call}}"
+      error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
+    </warp10-warpscript-caller>
+
 
     <ace-widget
       id="editor" theme="ace/theme/eclipse" mode="ace/mode/warpscript"
@@ -90,14 +128,6 @@
         {{errorMsg}}
       </div>
     </div>
-
-
-    <warp10-warpscript-caller
-      id="warpscript-caller"
-      base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
-      data="{{response}}"    loading="{{loading}}" call="{{call}}"
-      error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
-    </warp10-warpscript-caller>
 
 
   </template>
@@ -245,17 +275,24 @@
       console.debug("[warp10-warpscript-ide] editorChangeAction");
     },
     hotkeyExecute: function(e) {
-      // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+      // console.debug("[warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
       var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
         this.execute();
       }
     },
     hotkeyPlot: function(e) {
-      // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+      // console.debug("[warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
       var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
         this.doPlot();
+      }
+    },
+    hotkeyHelp: function(e) {
+      var nodeName =  e.detail.keyboardEvent.target.nodeName;
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+        console.debug("[warp10-warpscript-ide] hotkeyHelp")
+        this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
       }
     },
     execute: function() {
@@ -270,6 +307,7 @@
       // console.debug([warp10-warpscript-ide] Plot", this.response)
       if (this.response.length) {
           this.plot += 1;
+          this.target = undefined;
       }
     },
     updatePermalink: function() {
