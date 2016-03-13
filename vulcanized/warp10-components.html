@@ -26817,1443 +26817,6 @@ nv.version = "1.8.2";
     window.gtsTools = gtsTools;
   }).call(this);
 </script>
-<script>ace.define ("ace/mode/warpscript_keywords", function(require, exports, module) {
-"use strict";
-
-  var warpscriptFunctions = "\-\>B64|\-\>B64URL|\-\>HEX|\-\>JSON|\-\>LIST|\-\>MAP|\-\>Q|\-\>SET|ABS|ACOS|ADDVALUE|AND|APPEND|APPLY|ASIN|ATAN|ATBUCKET|ATINDEX|ATTICK|ATTRIBUTES|AUTHENTICATE|B64\-\>|B64URL\-\>|BUCKETCOUNT|BUCKETIZE|BUCKETSPAN|CBRT|CEIL|CHUNK|CLEAR|CLEARTOMARK|CLONE|CLONEEMPTY|CLONEREVERSE|COMMONTICKS|COMPACT|CONTAINS|CONTAINSKEY|CONTAINSVALUE|CONTINUE|COPYGEO|COPYSIGN|CORRELATE|COS|COSH|COUNTTOMARK|CROP|CSTORE|CUDF|DEBUGOFF|DEBUGON|DEDUP|DEF|DEFINED|DEPTH|DIFFERENCE|DISCORDS|DOC|DOCMODE|DOUBLEEXPONENTIALSMOOTHING|DROP|DROPN|DTW|DUP|DUPN|DURATION|DWTSPLIT|ELAPSED|ELEVATIONS|ESDTEST|EVAL|EVALSECURE|EVERY|EXP|EXPM1|FDWT|FETCH|FFT|FFTAP|FILLNEXT|FILLPREVIOUS|FILLTICKS|FILLVALUE|FILTER|FIND|FINDSETS|FINDSTATS|FIRSTTICK|FLATTEN|FLOOR|FORGET|FROMBITS|FROMHEX|FUSE|GEO\.INTERSECTS|GEO\.WITHIN|GEO_INTERSECTION|GEO_SUBTRACTION|GEO_UNION|GEO_WKT|GET|GROOVY|GRUBBSTEST|HASH|HAVERSINE|HEX\-\>|HUMANDURATION|HYBRIDTEST|HYBRIDTEST2|HYPOT|IDENT|IDWT|IEEEREMAINDER|IFFT|INTEGRATE|INTERPOLATE|INTERSECTION|ISNULL|ISNaN|ISO8601|ISODURATION|ISONORMALIZE|JOIN|JS|JSON\-\>|JSONLOOSE|JSONSTRICT|KEYLIST|LABELS|LASTBUCKET|LASTSORT|LASTTICK|LBOUNDS|LFLATMAP|LIMIT|LIST\-\>|LMAP|LOAD|LOCATIONOFFSET|LOCATIONS|LOCSTRINGS|LOG|LOG10|LOG1P|LOWESS|LSORT|LUA|MACROBUCKETIZER|MACROFILTER|MACROMAPPER|MACROREDUCER|MAKEGTS|MAP|MAP\-\>|MAPID|MARK|MATCH|MAX|MAXBUCKETS|MAXDEPTH|MAXGTS|MAXOPS|MAXSYMBOLS|MERGE|META|METASORT|MIN|MONOTONIC|MSGFAIL|MSORT|MSTU|MUSIGMA|NAME|NBOUNDS|NDEBUGON|NEWGTS|NEXTAFTER|NEXTUP|NONEMPTY|NOOP|NORMALIZE|NOT|NOTAFTER|NOTBEFORE|NOTIMINGS|NOW|NPDF|NRETURN|NSUMSUMSQ|ONLYBUCKETS|OPS|OR|PAPPLY|PARSESELECTOR|PARTITION|PATTERNDETECTION|PATTERNS|PFILTER|PICK|PROBABILITY|PUT|PYTHON|Q\-\>|QCONJUGATE|QDIVIDE|QMULTIPLY|QROTATE|QROTATION|QUANTIZE|R|R\-\>|RAND|RANGE|RANGECOMPACT|REDUCE|RELABEL|REMOVE|RENAME|RESET|RESETS|REV|REVERSE|RINT|RLOWESS|ROLL|ROLLD|ROT|ROTATIONQ|ROUND|RSORT|RUBY|RUN|RVALUESORT|SECUREKEY|SET|SET\-\>|SETATTRIBUTES|SHRINK|SIGNUM|SIN|SINGLEEXPONENTIALSMOOTHING|SINH|SIZE|SORT|SPLIT|SQRT|STACKATTRIBUTE|STANDARDIZE|STL|STLESDTEST|STOP|STORE|STRICTMAPPER|STRICTPARTITION|STU|SUBLIST|SUBMAP|SUBSTRING|SWAP|SWITCH|TAN|TANH|TEMPLATE|THRESHOLDTEST|TICKINDEX|TICKLIST|TIMECLIP|TIMEMODULO|TIMESCALE|TIMESHIFT|TIMESPLIT|TIMINGS|TOBITS|TODEGREES|TODOUBLE|TOHEX|TOKENINFO|TOLONG|TOLOWER|TORADIANS|TOSELECTOR|TOSTRING|TOTIMESTAMP|TOUPPER|TRIM|TSELEMENTS|TYPEOF|UDF|ULP|UNBUCKETIZE|UNION|UNIQUE|UNSECURE|UNWRAP|UPDATE|URLDECODE|URLENCODE|UUID|VALUEDEDUP|VALUEHISTOGRAM|VALUELIST|VALUES|VALUESORT|VALUESPLIT|WEBCALL|WRAP|ZIP|ZSCORE|ZSCORETEST";
-
-  var warpscriptControl = "ASSERT|BREAK|FAIL|FOR|FOREACH|FORSTEP|IFT|IFTE|RETURN|UNTIL|WHILE";
-
-
-  var warpscriptConstants = "NULL|NaN|E|e|PI|pi|NOW|MAXLONG|MINLONG|TRUE|true|FALSE|false";
-  var warpscriptFrameworkFunctions = "bucketizer\.count|bucketizer\.count\.exclude-nulls|bucketizer\.count\.include-nulls|bucketizer\.count\.nonnull|bucketizer\.first|bucketizer\.join|bucketizer\.join\.forbid-nulls|bucketizer\.last|bucketizer\.max|bucketizer\.max\.forbid-nulls|bucketizer\.mean|bucketizer\.mean\.exclude-nulls|bucketizer\.median|bucketizer\.min|bucketizer\.min\.forbid-nulls|bucketizer\.percentile|bucketizer\.sum|bucketizer\.sum\.forbid-nulls|filter\.byclass|filter|\.bylabels|filter\.last\.eq|filter\.last\.ge|filter\.last\.gt|filter\.last\.le|filter\.last\.lt|filter\.last\.ne|mapper\.abs|mapper\.add|mapper\.ceil|mapper\.count|mapper\.count\.exclude-nulls|mapper\.count\.include-nulls|mapper\.count\.nonnull|mapper\.day|mapper\.delta|mapper\.dotproduct|mapper\.dotproduct\.positive|mapper\.dotproduct\.sigmoid|mapper\.dotproduct\.tanh|mapper\.eq|mapper\.exp|mapper\.first|mapper\.floor|mapper\.ge|mapper\.geo\.approximate|mapper\.geo\.clear|mapper\.geo\.outside|mapper\.geo\.within|mapper\.gt|mapper\.hdist|mapper\.highest|mapper\.hour|mapper\.hspeed|mapper\.join|mapper\.join\.forbid-nulls|mapper\.kernel\.cosine|mapper\.kernel\.epanechnikov|mapper\.kernel\.gaussian|mapper\.kernel\.logistic|mapper\.kernel\.quartic|mapper\.kernel\.silverman|mapper\.kernel\.triangular|mapper\.kernel\.tricube|mapper\.kernel\.triweight|mapper\.kernel\.uniform|mapper\.last|mapper\.le|mapper\.log|mapper\.lowest|mapper\.lt|mapper\.max|mapper\.max\.forbid-nulls|mapper\.max\.x|mapper\.mean|mapper\.mean\.exclude-nulls|mapper\.median|mapper\.min|mapper\.min\.forbid-nulls|mapper\.min\.x|mapper\.minute|mapper\.month|mapper\.mul|mapper\.ne|mapper\.npdf|mapper\.percentile|mapper\.pow|mapper\.product|mapper\.rate|mapper\.replace|mapper\.round|mapper\.sd|mapper\.sd\.forbid-nulls|mapper\.second|mapper\.sigmoid|mapper\.sum|mapper\.sum\.forbid-nulls|mapper\.tanh|mapper\.tick|mapper\.toboolean|mapper\.todouble|mapper\.tolong|mapper\.tostring|mapper\.truecourse|mapper\.var|mapper\.var\.forbid-nulls|mapper\.vdist|mapper\.vspeed|mapper\.weekday|mapper\.year|max\.tick\.sliding\.window|max\.time\.sliding\.window|op\.add|op\.and|op\.div|op\.eq|op\.ge|op\.gt|op\.le|op\.lt|op\.mask|op\.mul|op\.ne|op\.or|op\.sub|reducer\.argmax|reducer\.argmin|reducer\.count|reducer\.count\.exclude-nulls|reducer\.count\.include-nulls|reducer\.count\.nonnull|reducer\.join|reducer\.join\.forbid-nulls|reducer\.join\.nonnull|reducer\.max|reducer\.max\.forbid-nulls|reducer\.max\.nonnull|reducer\.mean|reducer\.mean\.exclude-nulls|reducer\.median|reducer\.min|reducer\.min\.forbid-nulls|reducer\.min\.nonnull|reducer\.percentile|reducer\.product|reducer\.sd|reducer\.sd\.forbid-nulls|reducer\.shannonentropy\.0|reducer\.shannonentropy\.1|reducer\.sum|reducer\.sum\.forbid-nulls|reducer\.sum\.nonnull|reducer\.var|reducer\.var\.forbid-nulls";
-
-var keywordMap = {
-    "constant.language": warpscriptConstants,
-    "keyword.control": warpscriptControl,
-    "keyword.other": warpscriptFrameworkFunctions,
-    "support.function": warpscriptFunctions
-}
-
-console.debug("[mode-warpscript] keywordMap", keywordMap);
-exports.KeywordMap = keywordMap;
-});
-
-ace.define("ace/mode/warpscript_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules","ace/mode/warpscript_keywords"], function(require, exports, module) {
-"use strict";
-
-var oop = require("../lib/oop");
-var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
-
-var keywordMap =  require("./warpscript_keywords").KeywordMap;
-
-var WarpScriptHighlightRules = function() {
-    this.keywordMapper = this.createKeywordMapper(keywordMap, "identifier", false);
-
-
-    this.$rules = {
-      "start" : [
-        {
-          token: "comment",
-          regex: /\/\//,        // Token '//'
-          next:  "line_comment"
-        }, {
-          token : "string.quoted.single",           // '' string
-          regex : /'[^']*'/
-        }, {
-          token : "constant.numeric", // float
-          regex : /[+-]?\d+(\.\d+)?([eE][+-]?\d+)?\b/
-        }, {
-          token: "support.variable",
-          regex: /\@[a-zA-Z0-9_$]*\b/
-        }, {
-          token : this.keywordMapper,
-          regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b",
-          caseInsensitive: false
-        }, {
-          token : "keyword.operator",
-          regex : /!|!=|%|&|&&|\*|\*\*|\+|\-|\/|<|<=|==|>|>=|\[|\]|\[\]|\^|\{\}|\{|\}|\||\|\||~=/
-        }, {
-          token : "paren.lparen",
-          regex : /[\[\{]/
-        }, {
-          token : "paren.rparen",
-          regex : /[\]\}]/
-        }, {
-          token : "text",
-          regex : /\s+/
-        }
-      ],
-      "line_comment" : [           // If end of line, back to start state, else it's a comment
-        {
-          token : "comment",
-          regex : "$|^",
-          next : "start"
-        },
-        {
-          defaultToken : "comment",
-          caseInsensitive: true
-        }
-      ],
-    };
-};
-
-oop.inherits(WarpScriptHighlightRules, TextHighlightRules);
-
-exports.WarpScriptHighlightRules = WarpScriptHighlightRules;
-});
-
-
-
-ace.define("ace/mode/warpscript_completions",["require","exports","module","ace/token_iterator","ace/mode/warpscript_keywords"], function(require, exports, module) {
-"use strict";
-
-
-
-  var keywordMap =  require("./warpscript_keywords").KeywordMap;
-
-
-  var keywordList = [];
-
-  for (var key in keywordMap) {
-    keywordList = keywordList.concat(keywordMap[key].split(/\|/));
-  }
-  keywordList = keywordList.sort();
-  console.debug("[mode-warpscript] keyword list", keywordList);
-
-  var WarpScriptCompletions = function() {
-  };
-  (function() {
-    this.getCompletions = function(state, session, pos, prefix) {
-      console.debug("[mode-warpscript] getCompletions - keywordList", keywordList);
-      var matchingWords = [];
-      for (var word in keywordList) {
-
-        if (keywordList[word].search(prefix) > -1) {
-          matchingWords.push(keywordList[word])
-        }
-      }
-      var matchingWordsObjects = matchingWords.map(function(value){
-        return {
-            caption: value,
-            snippet: value,
-            meta: "WARPSCRIPT",
-            score: Number.MAX_VALUE
-        };
-      });
-      console.debug("[mode-warpscript] getCompletions - matching words", matchingWordsObjects );
-      return matchingWordsObjects;
-    }
-  }).call(WarpScriptCompletions.prototype);
-
-  exports.WarpScriptCompletions = WarpScriptCompletions;
-});
-
-
-ace.define("ace/mode/warpscript",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/warpscript_highlight_rules","ace/range","ace/mode/warpscript_completions"], function(require, exports, module) {
-"use strict";
-
-var oop = require("../lib/oop");
-var TextMode = require("./text").Mode;
-var WarpScriptHighlightRules = require("./warpscript_highlight_rules").WarpScriptHighlightRules;
-var WarpScriptCompletions = require("./warpscript_completions").WarpScriptCompletions;
-var Range = require("../range").Range;
-
-var Mode = function() {
-  console.debug("[mode-warpscript] Mode initializing" )
-    this.HighlightRules = WarpScriptHighlightRules;
-    this.$completer = new WarpScriptCompletions();
-};
-oop.inherits(Mode, TextMode);
-
-
-(function() {
-
-  this.lineCommentStart = "*";
-
-  this.$id = "ace/mode/warpscript";
-
-  this.getCompletions = function(state, session, pos, prefix) {
-    var completerResponse = this.$completer.getCompletions(state, session, pos, prefix);
-    console.debug("[mode-warpscript] completer response", completerResponse);
-    return completerResponse;
-  };
-
-}).call(Mode.prototype);
-
-exports.Mode = Mode;
-
-});
-</script><script>ace.define("ace/theme/eclipse",["require","exports","module","ace/lib/dom"],function(e,t,n){"use strict";t.isDark=!1,t.cssText='.ace-eclipse .ace_gutter {background: #ebebeb;border-right: 1px solid rgb(159, 159, 159);color: rgb(136, 136, 136);}.ace-eclipse .ace_print-margin {width: 1px;background: #ebebeb;}.ace-eclipse {background-color: #FFFFFF;color: black;}.ace-eclipse .ace_fold {background-color: rgb(60, 76, 114);}.ace-eclipse .ace_cursor {color: black;}.ace-eclipse .ace_storage,.ace-eclipse .ace_keyword,.ace-eclipse .ace_variable {color: rgb(127, 0, 85);}.ace-eclipse .ace_constant.ace_buildin {color: rgb(88, 72, 246);}.ace-eclipse .ace_constant.ace_library {color: rgb(6, 150, 14);}.ace-eclipse .ace_function {color: rgb(60, 76, 114);}.ace-eclipse .ace_string {color: rgb(42, 0, 255);}.ace-eclipse .ace_comment {color: rgb(113, 150, 130);}.ace-eclipse .ace_comment.ace_doc {color: rgb(63, 95, 191);}.ace-eclipse .ace_comment.ace_doc.ace_tag {color: rgb(127, 159, 191);}.ace-eclipse .ace_constant.ace_numeric {color: darkblue;}.ace-eclipse .ace_tag {color: rgb(25, 118, 116);}.ace-eclipse .ace_type {color: rgb(127, 0, 127);}.ace-eclipse .ace_xml-pe {color: rgb(104, 104, 91);}.ace-eclipse .ace_marker-layer .ace_selection {background: rgb(181, 213, 255);}.ace-eclipse .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid rgb(192, 192, 192);}.ace-eclipse .ace_meta.ace_tag {color:rgb(25, 118, 116);}.ace-eclipse .ace_invisible {color: #ddd;}.ace-eclipse .ace_entity.ace_other.ace_attribute-name {color:rgb(127, 0, 127);}.ace-eclipse .ace_marker-layer .ace_step {background: rgb(255, 255, 0);}.ace-eclipse .ace_active-line {background: rgb(232, 242, 254);}.ace-eclipse .ace_gutter-active-line {background-color : #DADADA;}.ace-eclipse .ace_marker-layer .ace_selected-word {border: 1px solid rgb(181, 213, 255);}.ace-eclipse .ace_indent-guide {background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;}',t.cssClass="ace-eclipse";var r=e("../lib/dom");r.importCssString(t.cssText,t.cssClass)})</script><script>ace.define("ace/snippets/text",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=undefined,t.scope="text"})</script>
-
-
-
-<dom-module id="warp10-warpscript-ide" assetpath="../dist/warp10-quantum/">
-  <style>
-    :host {
-      display: block;
-    }
-    .ace-editor {
-      font-size: 14px;
-    }
-    .top-10 { margin-top:10px; }
-
-    .left {
-      float: left;
-    }
-    .right {
-      float: right;
-    }
-    .btn[hidden] {
-      display: none;
-    }
-    warp10-warpscript-permalink-generator[hidden]{
-      display: none;
-    }
-  </style>
-  <template>
-
-    <iron-a11y-keys target="[[target]]" keys="e" on-keys-pressed="hotkeyExecute"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="p" on-keys-pressed="hotkeyPlot"></iron-a11y-keys>
-
-    <ace-widget id="editor" theme="ace/theme/eclipse" mode="ace/mode/warpscript" softtabs="true" wrap="true" value="{{content}}">Type your code here... </ace-widget>
-
-
-    <spinner-widget shown="{{loading}}" spinner-width="100%" spinner-height="200px"></spinner-widget>
-
-
-    <warp10-warpscript-permalink-generator warpscript="{{content}}" backend="{{backend}}" hidden$="{{hidePermalink}}"></warp10-warpscript-permalink-generator>
-
-    <div class="top-10">
-      <template is="dom-if" if="{{!hidePlot}}">
-        <div class="left">
-          <button class="btn btn-primary btn-lg" on-click="doPlot" disabled$="{{loading}}" hidden$="{{!response.length}}">
-            Plot
-          </button>
-        </div>
-      </template>
-      <div class="right">
-        <button id="btn_execute" class="btn btn-primary btn-lg" on-click="execute" disabled$="{{loading}}">
-          Execute!
-        </button>
-      </div>
-    </div>
-    <template is="dom-if" if="{{showedElapsedTime}}">
-      <div class="clearfix"> </div>
-      <div class="top-10">
-        <div class="right">Your script executiooon took {{formattedElapsedTime}} serverside</div>
-      </div>
-    </template>
-    <div class="clearfix"> </div>
-
-
-    <div class="top-10">
-      <warp10-response-container id="response-container" response="{{response}}" received="{{received}}"></warp10-response-container>
-      <div class="alert alert-danger" hidden$="{{hideError}}">
-        {{errorMsg}}
-      </div>
-    </div>
-
-
-    <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
-    </warp10-warpscript-caller>
-
-
-  </template>
-</dom-module>
-
-<script>
-  Polymer({
-    is:"warp10-warpscript-ide",
-    properties: {
-      content: {
-        type: String,
-        notify: true
-      },
-      backend: {
-        type: String,
-        value: "http://127.0.0.1:8080/api/v0"
-      },
-      /**
-       * The  exec endpoint
-       */
-      execEndpoint: {
-        type: String,
-        value: "/exec"
-      },
-      response: {
-        type: Array,
-        observer: "responseChanged",
-        value: function() {
-          return null;
-        }
-      },
-      plot: {
-        type: Number,
-        value: 0,
-        notify: true
-      },
-      data: {
-        type: Array,
-        notify: true
-      },
-      error: {
-        type: Number,
-        observer: "errorChanged"
-      },
-      hideError:{
-        type: Boolean,
-        computed: "withoutError(error)"
-      },
-      target: {
-        type: Object,
-        value: function() {
-          return document.body;
-        }
-      },
-      call: {
-        type: Number,
-        value: 0
-      },
-      /**
-       * Elapsed time for the call
-       */
-      elapsed: {
-        type: Number,
-        value: -1
-      },
-      /**
-       * Elapsed time for the call, formated for view
-       */
-      formattedElapsedTime: {
-        type: String,
-        computed: "formatElapsedTime(elapsed)"
-      },
-      showedElapsedTime: {
-        type: Boolean,
-        computed: "showElapsedTime(elapsed)"
-      },
-      showPermalink: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * If true, the `warp10-warpscript-ide` component inside this one won't show
-       * the plot Button, useful for embedded mode
-       */
-      hidePlot: {
-        type: Boolean,
-        value: false
-      },
-      hidePermalink: {
-        type: Boolean,
-        computed: "isPermalinkHidden(showPermalink)"
-      },
-      _baseUrl: {
-        type: String,
-        computed: "_getBaseUrl(backend,execEndpoint)"
-      },
-
-    },
-    ready: function() {
-      this.received = 0;
-    },
-    attached: function() {
-      editor = this.$.editor;
-      editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
-
-      console.debug("[warp10-warpscript-ide] backend before conf", this.backend);
-      // Look for a global conf, and apply if it exists
-      if (window.quantumConf !== undefined) {
-        this.hidePlot = window.quantumConf.embedded;
-        this.backend = window.quantumConf.backend;
-        this.execEndpoint = window.quantumConf.execEndpoint;
-        this.headerName = window.quantumConf.headerName;
-      }
-      console.debug("[warp10-warpscript-ide] backend after conf", this.backend);
-
-    },
-    _getBaseUrl: function() {
-      return this.backend + this.execEndpoint;
-    },
-    withoutError: function() {
-      if (this.error > 0) {
-        return false
-      }
-      return true
-    },
-    errorChanged: function() {
-      // console.debug("[warp10-warpscript-ide] errorChanged", { response: this.errorMsg });
-    },
-    responseChanged: function() {
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response });
-      if (this.response !== null) {
-          this.data = gtsTools.gtsFromJSONList(this.response);
-      } else {
-        this.data = null;
-      }
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response, data: this.data });
-      this.received += 1;
-    },
-    isPermalinkHidden: function() {
-      return !this.showPermalink;
-    },
-    editorChangeAction: function(value, oldValue) {
-      this.fire('editor-content', {value: value, oldValue: oldValue});
-      this.content = value.detail.value;
-      console.debug("[warp10-warpscript-ide] editorChangeAction");
-    },
-    hotkeyExecute: function(e) {
-      // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
-      var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
-        this.execute();
-      }
-    },
-    hotkeyPlot: function(e) {
-      // console.debug([warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
-      var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
-        this.doPlot();
-      }
-    },
-    execute: function() {
-      // console.debug("[warp10-warpscript-ide] Execute", this.content)
-      if (this.showPermalink) {
-        this.updatePermalink();
-      }
-      this.warpscriptScript = this.content;
-      this.call +=1 ;
-    },
-    doPlot: function() {
-      // console.debug([warp10-warpscript-ide] Plot", this.response)
-      if (this.response.length) {
-          this.plot += 1;
-      }
-    },
-    updatePermalink: function() {
-      console.debug("[warp10-warpscript-ide] updatePermalink");
-      this.$$("warp10-warpscript-permalink-generator").updatePermalink();
-    },
-    formatElapsedTime: function() {
-      if (this.elapsed < 1000) {
-        return ""+this.elapsed+" ns";
-      }
-      if (this.elapsed < 1000000) {
-        return ""+(this.elapsed/1000).toFixed(3)+" μs";
-      }
-      if (this.elapsed < 1000000000) {
-        return ""+(this.elapsed/1000000).toFixed(3)+" ms";
-      }
-      return ""+(this.elapsed/1000000000).toFixed(3)+" s";
-    },
-    showElapsedTime: function() {
-      if (this.elapsed >0) {
-        return true;
-      }
-      return false;
-    }
-  })
-</script>
-<script>
-  (function() {
-    var plottingTools = {
-      id: [],
-      data: [],
-      names: [],
-      color: []
-    };
-    plottingTools.isPlotted = function(gts) {
-      if (plottingTools.id.indexOf(gts.id) >= 0) {
-        return true;
-      }
-      return false;
-    };
-    plottingTools.palette = [
-      '#001f3f', // NAVY
-      '#0074D9', // BLUE
-      '#7FDBFF', // AQUA
-      '#39CCCC', // TEAL
-      '#3D9970', // OLIVE
-      '#2ECC40', // GREEN
-      '#01FF70', // LIME
-      '#FFDC00', // YELLOW
-      '#FF851B', // ORANGE
-      '#FF4136', // RED
-      '#85144b', // MAROON
-      '#F012BE', // FUSCHIA
-      '#B10DC9', // PURPLE
-      '#111111', // BLACK
-      '#AAAAAA', // GRAY
-      '#DDDDDD' // SILVER
-    ];
-    plottingTools.maxColors = 16;
-    plottingTools.currentColorIndex = -1;
-    plottingTools.gtsColor = function(gts) {
-      if (!plottingTools.isPlotted(gts)) {
-        return "";
-      }
-      console.debug("[czd-plotted-gts] GTS plotted", gts.id);
-      var  index = plottingTools.id.indexOf(gts.id);
-      return "background-color:"+plottingTools.color[index]+";"
-    };
-    plottingTools.getColor = function(index) {
-      return plottingTools.palette[index % plottingTools.maxColors];
-    };
-    plottingTools.nextColor = function() {
-      plottingTools.currentColorIndex += 1;
-      return plottingTools.getColor(plottingTools.currentColorIndex);
-    };
-
-    plottingTools.currentColor = function() {
-      return plottingTools.getColor(plottingTools.currentColorIndex);
-    };
-    plottingTools.removeColorIfLast = function(color) {
-      if (color === plottingTools.currentColor()) {
-        return plottingTools.currentColorIndex -= 1;
-      }
-    };
-    plottingTools.add = function(gts) {
-      if (!plottingTools.isPlotted(gts)) {
-        // console.debug("[czd-plotted-gts] plottingTools.add() - The GTS " + gts.id + " isn't currently plotted");
-        console.debug("[czd-plotted-gts] plottingTools.add()", gts)
-        plottingTools.data.push(plottingTools.gtsToNvd3(gts));
-        plottingTools.names.push({
-          c: gts.c,
-          l: gts.l,
-          id: gts.id
-        });
-        plottingTools.color.push(plottingTools.nextColor());
-        plottingTools.id.push(gts.id);
-      }
-    };
-    plottingTools.remove = function(gts) {
-      var index;
-      if (plottingTools.isPlotted(gts)) {
-        index = plottingTools.id.indexOf(gts.id);
-        if (index > -1) {
-          plottingTools.id.splice(index, 1);
-          plottingTools.data.splice(index, 1);
-          plottingTools.names.splice(index, 1);
-          plottingTools.removeColorIfLast(plottingTools.color[index]);
-          plottingTools.color.splice(index, 1);
-        }
-      }
-    };
-    plottingTools.refresh = function(gtsList) {
-      console.debug("[czd-plotted-gts] plottingTools.refresh()");
-
-      // Variable to see if the GTS shown on graph still exists in new data
-      var gtsInPlottedStillExists = []
-      for (var index in plottingTools.id){
-        gtsInPlottedStillExists.push(false);
-      }
-      // console.debug("[czd-plotted-gts] plottingTools.refresh() - gtsInPlottedStillExists", gtsInPlottedStillExists);
-
-      for (var index in gtsList) {
-        var gts = gtsList[index];
-        if (plottingTools.isPlotted(gts)) {
-          var i = plottingTools.id.indexOf(gts.id);
-          if (
-            plottingTools.names[i].c == gts.c
-            && plottingTools.names[i].l == gts.l
-            && plottingTools.names[i].id == gts.id
-          ) {
-            plottingTools.data[i] = plottingTools.gtsToNvd3(gtsList[index]);
-            gtsInPlottedStillExists[i] = true
-            // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts refreshed", i);
-          }
-        }
-      }
-      for (var index=gtsInPlottedStillExists.length-1; index>=0; index--){
-        // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts verifying", index);
-        if (!gtsInPlottedStillExists[index]) {
-          // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts deleted", index);
-          plottingTools.id.splice(index, 1);
-          plottingTools.data.splice(index, 1);
-          plottingTools.names.splice(index, 1);
-          plottingTools.removeColorIfLast(plottingTools.color[index]);
-          plottingTools.color.splice(index, 1);
-        }
-        // console.debug("[czd-plotted-gts] plottingTools.refresh() - plottingTools", plottingTools);
-      }
-    }
-
-
-    plottingTools.gtsToNvd3 = function(gts) {
-      var nvd3Series = {
-        key: "",
-        values: [],
-        c: "",
-        l: "",
-        id: ""
-      };
-      nvd3Series.c = gts.c;
-      nvd3Series.l = gts.l;
-      nvd3Series.id = gts.id;
-      nvd3Series.key = " " + gts.id + " - " + gts.c;
-      if (gts.l != null) {
-        nvd3Series.key += " - " + (JSON.stringify(gts.l));
-      }
-
-      if (gts.v !== undefined) {
-
-        // Sort values
-        var values = gts.v.sort(function(a, b) { return a.ts - b.ts;});
-
-        //console.debug(gts)
-        for (var i = 0; i < values.length; i++) {
-          var metric = values[i];
-          nvd3Series.values.push({x: Math.round(metric.ts / 1000), y: metric.value});
-         // nvd3Series.values.push({x: new Date(metric[0]/1000), y: metric[metric.length-1]});
-        }
-      }
-      console.debug("[czd-plotted-gts] gtsToNvd3 ",nvd3Series)
-      return nvd3Series;
-    };
-
-    plottingTools.toNvd3Graph = function() {
-      var chartData = {}
-
-      var sparklines = [];
-      console.debug("[czd-plotted-gts] toNvd3Graph", plottingTools.data)
-      for (var i=0; i< plottingTools.data.length; i++) {
-        // Let's verify if it's a GTS to plot
-        console.debug("[czd-plotted-gts] toNvd3Graph - isGtsToPlot", plottingTools.data[i])
-        if (plottingTools.isGtsToPlot(plottingTools.data[i])) {
-          var sl = plottingTools.data[i];
-          sl.color = plottingTools.color[i];
-          sl.key = plottingTools.data[i].key;
-          sl.area = false;
-          sl.interpolate = "step-before";
-          console.debug("[czd-plotted-gts] toNvd3Graph - sl", sl);
-          sparklines.push(sl);
-        }
-      }
-
-      var tickFormat = function(d) {
-          var dx = sparklines[0].values[d] && sparklines[0].values[d].x || 0;
-          return dx ? d3.time.format('%x')(new Date(dx)) : '';
-      }
-
-
-      chartData.sparklines = sparklines;
-      chartData.tickFormat = tickFormat;
-
-      //console.debug("nvd3 data", chartData);
-      //console.debug(JSON.stringify(chartData))
-
-      return chartData;
-    };
-
-
-    plottingTools.isArray = function(value) {
-      return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
-      && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
-    };
-
-    plottingTools.isGts = function(gts) {
-      if ((gts.c == null) || (gts.l == null)
-      || (gts.values == null) || !plottingTools.isArray(gts.values) ) {
-        return false;
-      }
-      return true;
-    }
-
-    plottingTools.isGtsToPlot = function(gts) {
-      if ( !plottingTools.isGts(gts) ) {
-        return false;
-      }
-
-      console.debug("[plottingTools] isGtsToPlot", gts.values[0])
-      // We look at the first value, if it's a String or Boolean it's an annotation GTS,
-      // if it's a number it's a GTS to plot
-      if  (typeof(gts.values[0].y) === 'number' )  {
-        return true;
-      }
-      return false;
-    }
-
-
-
-    plottingTools.MIN_TS = 0;
-    plottingTools.MAX_TS = Math.pow(2, 53) - 1;
-    plottingTools.getTimeBounds = function(nvd3SeriesList) {
-
-      console.debug("[czd-plotted-gts] getTimeBounds ",nvd3SeriesList)
-
-      var bounds = {}
-
-      if (!plottingTools.isArray(nvd3SeriesList)) {
-        console.error("[plottingTools.getTimeBounds] nvd3SeriesList isn't array",nvd3SeriesList);
-        return bounds;
-      }
-
-      bounds.min = plottingTools.MAX_TS;
-      bounds.max = plottingTools.MIN_TS;
-
-
-      for (var i=0; i<nvd3SeriesList.length; i++ ) {
-        var nvd3Series = nvd3SeriesList[i];
-
-      //nvd3SeriesList.forEach(function(nvd3Series) {
-
-        // console.debug("[plottingTools.getTimeBounds] Max: ", nvd3Series.values[nvd3Series.values.length - 1].x);
-        if (bounds.min > nvd3Series.values[0].x) {
-          bounds.min = nvd3Series.values[0].x;
-        }
-        if (bounds.max < nvd3Series.values[nvd3Series.values.length - 1].x) {
-          bounds.max = nvd3Series.values[nvd3Series.values.length - 1].x;
-        }
-      //});
-      }
-
-      // console.debug("[plottingTools.getTimeBounds] bounds...", bounds);
-      return bounds;
-    }
-
-    window.plottingTools = plottingTools;
-  }).call(this);
-</script>
-<dom-module id="warp10-gts-tree" assetpath="../dist/warp10-quantum/">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-      .popover {
-        max-width: none;
-        max-height: none;
-      }
-      div[hidden], i[hidden] {
-        display:none;
-      }
-
-      ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        border: none;
-        overflow: hidden;
-      }
-
-      li {
-        position: relative;
-        padding: 0 0 0 20px;
-        line-height: 20px;
-      }
-
-      li .stack-level {
-        font-size: 1.25em;
-        font-weight: bold;
-        padding-top: 25px;
-        padding-bottom: 10px;
-      }
-
-      li .stack-level + div {
-        padding-left: 25px;
-      }
-
-      li .expanded {
-        padding: 1px 10px;
-        background-image: url("data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAKElEQVQ4jWNgGFbgFQMDw38i8UuYJiYkA5hJsIwUtXQEo2EwGgZkAwBP/yN0kY5JiwAAAABJRU5ErkJggg==");
-        background-repeat: no-repeat;
-      }
-
-      li .collapsed {
-        padding: 1px 10px;
-        background-image: url("data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAXUlEQVQ4jWNgGCzgJwMDw38S8U8GBgYGJqgBjGRYSo4e3GAfAwMDP5oYIW/9RFb8n4GB4RQDA4MgktgvAgb8QjfgPwMDwyxyvYDNBSR54SADZhiQ5AWKwTBISAMHAKXXR27jzC2pAAAAAElFTkSuQmCC");
-        background-repeat: no-repeat;
-      }
-
-      li .gtsInfo {
-        white-space: normal;
-        word-wrap:break-word;
-      }
-      li .gtsInfo[disabled] {
-        color: #aaaaaa;
-        cursor: not-allowed;
-      }
-
-      li .normal {
-      }
-
-
-      li .normal {
-        border-radius: 50%;
-        background-color: #bbbbbb;
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-      }
-
-      li i, li span {
-        cursor: pointer;
-      }
-
-      li .selected {
-        background-color: #aaddff;
-        font-weight: bold;
-        padding: 1px 5px;
-      }
-
-       .gts-classname {
-        color: #0074D9;
-      }
-
-       .gts-labelname {
-        color: #3d9970;
-      }
-
-       .gts-separator {
-        color: #bbbbbb;
-      }
-
-       .gts-labelvalue {
-        color: #AAAAAA;
-        font-style: italic;
-      }
-
-    </style>
-
-    <ul>
-      <template is="dom-repeat" items="{{data.content}}" as="node">
-
-        <li>
-          <div hidden$="{{branch}}" class="stack-level" on-click="selectNodeHead" data-node="{{node}}">
-            Stack level {{index}}
-          </div>
-          <div>
-            <i class="collapsed" hidden$="{{isNotCollapsed(node)}}" on-click="selectNodeHead"></i>
-            <i class="expanded" hidden$="{{isCollapsed(node)}}" on-click="selectNodeHead"></i>
-
-            <template is="dom-if" if="{{isGts(node)}}">
-              <i class="normal" style$="{{gtsColor(node.gts, plottedChanged)}}"></i>
-              <span class="gtsInfo" on-click="switchPlotState">
-                <span class="gts-classname">{{node.gts.c}}</span>
-                <span class="gts-separator">{</span>
-                <template is="dom-repeat" items="{{_toArray(node.gts.l)}}" as="label">
-                  <spam>
-                    <span class="gts-labelname">{{label.name}}</span>
-                    <span class="gts-separator">=</span>
-                    <span class="gts-labelvalue">{{label.value}}</span>
-                    <span hidden$="{{_lastIndex(index, node.gts.l)}}">,</span>
-                  
-                </spam></template>
-                <span class="gts-separator">}</span>
-              </span>
-            </template>
-
-            <template is="dom-if" if="{{isImage(node)}}">
-              <i class="normal" style="background-color:#000000;"></i>
-              <span class="gtsInfo" on-mouseover="showImageOverlay" on-mouseout="hideImageOverlay" on-click="showImageOverlay">
-                  <span class="gts-classname">{{node.caption}}</span>
-              </span>
-            </template>
-
-            <template is="dom-if" if="{{node.content}}">
-              <span class="listInfo" ng-if="node.content">
-                List of {{node.content.length}} item<span ng-if="node.content.length > 1">s</span>
-              </span>
-              <warp10-gts-tree id="gts-tree" data="{{node}}" branch="" plotted-changed="{{plottedChanged}}"></warp10-gts-tree>
-            </template>
-
-
-          </div>
-        </li>
-
-      </template>
-    </ul>
-
-  </template>
-</dom-module>
-
-<script>
-  Polymer({
-    is: "warp10-gts-tree",
-    properties: {
-      data: {
-        type: Array,
-        observer: "dataChanged"
-      },
-      stringifiedData: {
-        type: String,
-        computed: "stringifyData(data)"
-      },
-      treeId: {
-        type: String
-      },
-      nodeId: {
-        type: String,
-        value: "id"
-      },
-      nodeLabel: {
-        type: String,
-        value: "label"
-      },
-      nodeChildren: {
-        type: String,
-        value: "children"
-      },
-      branch: {
-        type: Boolean,
-        value: false
-      },
-      // Used internally to detect changes
-      plottedChanged:{
-        type: Number,
-        value: 0,
-        notify: true
-      }
-    },
-    ready: function(){
-      this.maxColors = 20;
-    },
-    attached: function(){
-    },
-    stringifyData: function() {
-      return JSON.stringify(this.data);
-    },
-    dataChanged: function() {
-      //console.debug("[warp10-gts-tree] dataChanged", this.data);
-    },
-    selectNodeHead: function(e, detail) {
-      // console.debug("[warp10-gts-tree] selectNodeHead", e.model.node);
-      return e.model.node.collapsed = !e.model.node.collapsed;
-    },
-    switchPlotState: function(e, detail) {
-      // console.debug("[warp10-gts-tree] switchPlotState", e.model.node.gts);
-      var gts = e.model.node.gts;
-      if (!plottingTools.isPlotted(gts)) {
-        plottingTools.add(gts);
-        console.log("[warp10-gts-tree] addToPlot", plottingTools);
-      } else {
-        plottingTools.remove(gts);
-        console.log("[warp10-gts-tree] removeFromPlot", plottingTools);
-      }
-      this.fire('plotted-changed', plottingTools);
-      this.plottedChanged++;
-    },
-    isCollapsed: function(node) {
-      if ( node.content === undefined || node.collapsed) {
-        return true;
-      }
-      return false;
-    },
-    isNotCollapsed: function(node) {
-      if (node.content === undefined || !node.collapsed) {
-        return true;
-      }
-      return false;
-    },
-    hasContent: function(node) {
-      if (node.content !== undefined) {
-        return true;
-      }
-      return false;
-    },
-    isImage: function(node) {
-      return node.image !== undefined
-    },
-    isGts: function(node) {
-      return node.gts !== undefined
-    },
-    gtsColor: function(gts, plottedChanged) {
-      if (gts === undefined){
-        return ""
-      }
-      // console.debug("[warp10-gts-tree] gtsColor", plottingTools.gtsColor(gts))
-      return plottingTools.gtsColor(gts);
-    },
-    showImageOverlay: function(e) {
-      console.debug("[warp10-gts-tree] showImageOverlay", e);
-      var image = e.model.node.image;
-      var caption = e.model.node.caption;
-      var id = 'image-overlay'
-      var dialog = document.getElementById(id);
-      if (dialog) {
-        if (e.type == 'click') {
-          dialog.setAttribute('imageClicked', true);
-        } else {
-          dialog.noCancelOnOutsideClick = true;
-        }
-        dialog.setAttribute('src', image )
-        dialog.setAttribute('caption', caption )
-        console.debug("[warp10-gts-tree] let's open", dialog.opened);
-        if (!dialog.opened) {
-          dialog.open();
-        }
-
-        console.debug("[warp10-gts-tree] dialog.noCancelOnOutsideClick",dialog.noCancelOnOutsideClick);
-        console.debug("[warp10-gts-tree] and now it should be open", dialog.opened);
-      }
-    },
-    hideImageOverlay: function(e) {
-
-      var id = 'image-overlay'
-      var dialog = document.getElementById(id);
-      dialog.noCancelOnOutsideClick = false;
-      if (dialog && !dialog.getAttribute('imageClicked')) {
-        dialog.cancel();
-      }
-    },
-    _toArray: function(obj) {
-      if (obj === undefined) {
-        return [];
-      }
-      return Object.keys(obj).map(function(key) {
-        return {
-          name: key,
-          value: obj[key]
-        };
-      });
-    },
-    _lastIndex: function(index, obj) {
-      var array = this._toArray(obj)
-      return (index == array.length -1)
-    }
-  })
-</script>
-<dom-module id="warp10-plot-gts" assetpath="../dist/warp10-quantum/">
-  <template>
-    <style>
-      :host {
-      }
-      .widget {
-        position: relative;
-      }
-      #content {
-        display: none;
-      }
-      #chart {
-        display: inline-block;
-        text-align: center;
-      }
-      svg {
-        position: relative;
-        padding-left: 50px;
-        width: calc(100% - 50px) !important;
-        height: calc(100% - 100px) !important;
-        overflow:visible !important;
-      }
-      #container {
-            margin-top: 20px; margin-right: 0; margin-bottom: 50px; margin-left: 100px; width: auto;
-      }
-      :host ::content .nvd3 .nv-groups path.nv-line {
-        stroke-width: var(--line-width, 2);
-      }
-      :host ::content .nvtooltip {
-        margin-left:30px;
-        max-width: 70%;
-      }
-
-      :host ::content .nvtooltip .quantum-tooltip-content {
-      }
-
-      .nvtooltip .quantum-tooltip-content header,
-      .nvtooltip .quantum-tooltip-content section {
-
-      }
-      :host ::content .nvtooltip .quantum-tooltip-content header {
-        font-weight: bold;
-        color: #777;
-      }
-
-      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line {
-        display: flex;
-      }
-
-      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .legend-color-guide {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .legend-color-guide div {
-        width: 10px;
-        height: 10px;
-        border-radius: 5px;
-        margin-right: 5px;
-      }
-
-      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .key {
-        width: 80%;
-        white-space: normal;
-        word-wrap:break-word;
-      }
-      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .value {
-        text-align: right;
-        font-weight: bold;
-      }
-
-      :host ::content .nvtooltip .gts-classname {
-        color: #0074D9;
-      }
-
-      :host ::content .nvtooltip .gts-labelname {
-        color: #3d9970;
-      }
-
-      :host ::content .nvtooltip .gts-separator {
-        color: #bbbbbb;
-      }
-
-      :host ::content .nvtooltip .gts-labelvalue {
-        color: #AAAAAA;
-        font-style: italic;
-      }
-      #vertGuide {
-        width:0px;
-        height: 100%;
-        border: solid 1px #aaaaaa;
-        z-index: 500;
-        position: absolute;
-        left: 250px;
-        display: none;
-      }
-    </style>
-    <div class="widget">
-      <div id="vertGuide"></div>
-      <div id="chart">
-        <svg id="svg" class="nvd3 svg" overflow="visible"></svg>
-      </div>
-    </div>
-  </template>
-</dom-module>
-
-
-<script>
-  Polymer({
-    is: "warp10-plot-gts",
-    properties: {
-      width: {
-        type: Number,
-        value: -1
-      },
-      height: {
-        type: Number,
-        value: -1
-      },
-      showAxis: {
-        type: String,
-        value: "true"
-      },
-      tooltip: {
-        type: String,
-        value: "true"
-      },
-      legend: {
-        type: String,
-        value: "false"
-      },
-      lineWidth: {
-        type: Number,
-        value: 2
-      },
-      reload: {
-        type: Number,
-        value: -1
-      },
-      currentValues: {
-        type: Object,
-        notify: true
-      },
-
-      timeBounds: {
-        type: Object,
-        notify: true
-      },
-      vertGuide: {
-        type: Number,
-        observer: 'vertGuideChanged'
-      },
-      data: {
-        type: Object
-      },
-      newData: {
-        type: Number,
-        observer: "dataReceived"
-      }
-    },
-    ready: function() {
-    },
-    attached: function() {
-       // console.debug("[warp10-plot-gts] attached - calling configure()");
-      this.configure();
-    },
-
-    configure: function() {
-      // console.debug("[warp10-plot-gts] configure - begin");
-
-      // To make only one resize, it will be checked after receiving a response
-      this.resized = false;
-
-
-      // line width
-      var lineWidth = Math.floor(this.lineWidth);
-      if (lineWidth < 1 || lineWidth > 20) {
-          lineWidth = 2;
-      }
-      this.customStyle['--line-width'] = lineWidth.toString();
-      this.updateStyles();
-
-      // Dimensions
-      if (this.width <0) {
-        this.$.chart.style.width = "100%";
-        //this.$$('svg').style.width = calc(100% - 50px);
-      } else {
-        this.$.chart.style.width = (parseInt(this.width))+"px";
-        //this.$$('svg').style.width = (parseInt(this.width)-50)+"px";
-      }
-      if (this.height <0) {
-        this.$.chart.style.height = "100%";
-        //this.$$('svg').style.height = calc(100% - 100px);
-      } else {
-        this.$.chart.style.height = (parseInt(this.height))+"px";
-        //this.$$('svg').style.height = (parseInt(this.height)-100)+"px";
-      }
-      //console.log("Dimensions",this.$$('svg').getBoundingClientRect().width)      // Configure chart
-      this.configureChart();
-
-      // console.debug("[warp10-plot-gts] configure - end");
-    },
-    configureChart: function() {
-      // Wrapping in nv.addGraph allows for '0 timeout render', stores rendered charts in nv.graphs, and may do more in the future... it's NOT required
-      // console.debug("[warp10-plot-gts] configureChart - begin");
-      this.chart = nv.models.lineChart()
-        .options({
-            transitionDuration: 300
-        });
-
-
-      //console.log("Chart", Object.getOwnPropertyNames(this.chart));
-      //  Axis
-      if (this.showAxis.toLowerCase()!="true") {
-        this.chart.showXAxis(false);
-        this.chart.showYAxis(false);
-      } else {
-        this.chart.xAxis
-          .axisLabel('')
-          //.tickFormat(chartData.tickFormat);
-          .tickFormat(function(d) {return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));})
-          .showMaxMin(false)
-          .rotateLabels(-30);
-        this.chart.yAxis
-          .axisLabel('')
-          .tickFormat(d3.format(',.2f')).showMaxMin(false);;
-      }
-
-
-      // Tooltips
-      if (this.tooltip.toLowerCase()!="true") {
-        console.log("tooltip='false' detected");
-        this.chart.interactive(false);
-        this.chart.useInteractiveGuideline(false);
-
-      } else {
-        this.chart.useInteractiveGuideline(true);
-        this.chart.tooltip.position({"left":50});
-        // When useInteractiveGuideline is true, you need to use the tooltip on the interactiveLayer object, not in the chart one
-        // http://stackoverflow.com/questions/12416508/nvd3-piechart-js-how-to-edit-the-tooltip/32499377#32499377
-        this.chart.interactiveLayer.tooltip.contentGenerator(this.tooltipContent(this));
-      }
-
-      // Legend
-      if (this.legend.toLowerCase()!="true") {
-        this.chart.showLegend(false);
-      } else {
-        this.chart.showLegend(true);
-      }
-
-      // console.debug("[warp10-plot-gts] configureChart - end");
-    },
-    addGraph: function() {
-      var chartData = plottingTools.toNvd3Graph(this.data);
-      // console.debug([warp10-plot-gts] addGraph", chartData)
-
-      if (!chartData) {
-        this.removeGraph();
-        return false;
-      }
-
-      this.chart.interpolate("step-before");
-      d3.select(this.$.svg)
-        .datum(chartData.sparklines)
-        .call(this.chart);
-
-      nv.utils.windowResize(this.chart.update);
-
-      this.timeBounds = plottingTools.getTimeBounds(chartData.sparklines);
-
-      //console.debug("timeBounds", this.timeBounds);
-
-      if (this.tooltip.toLowerCase() == "true") {
-        d3.select(this).selectAll("g.nv-lineChart")
-          .on("mousemove", this.getCurrentPoint.bind(this) );
-      }
-      return this.chart;
-    },
-    removeGraph: function() {
-      d3.select(this.$.svg)
-        .datum([])
-        .call(this.chart);
-      nv.utils.windowResize(this.chart.update);
-    },
-    dataReceived: function() {
-      // console.debug([warp10-plot-gts] dataReceived", this.data);
-      if (this.newData > 0) {
-        this.dataChanged();
-      }
-
-    },
-    dataChanged: function() {
-      // console.debug([warp10-plot-gts] dataChanged", this.data);
-      if (this.data != null) {
-        nv.addGraph(this.addGraph());
-      } else {
-        this.removeGraph();
-      }
-    },
-    vertGuideChanged: function(event) {
-      if (this.vertGuide >0) {
-        this.$.vertGuide.style.display = "inline-block";
-        this.$.vertGuide.style.left = this.vertGuide+"px";
-      } else {
-        this.$.vertGuide.style.display = "none";
-      }
-    },
-    getCurrentPoint: function(dataset){
-      //console.log("Data: ", dataset);
-      //console.log("Selection", Polymer.dom(this.$.svg).querySelector('.nv-lineChart'));
-      //console.log("Mouse", d3.mouse(Polymer.dom(this.$.svg).querySelector('.nv-lineChart'))[0]);
-
-      var singlePoint, pointIndex, pointXLocation, allData = [];
-      var lines = this.chart.lines;
-
-      var xScale = this.chart.xAxis.scale();
-      var yScale = this.chart.yAxis.scale();
-      var mouseCoords = d3.mouse(Polymer.dom(this.$.svg).querySelector('.nv-lineChart'));
-      var pointXValue = xScale.invert(mouseCoords[0]);
-
-      //// console.debug("[warp10-plot-gts] Point X value", pointXValue);
-
-      dataset
-        .filter(function(series, i) {
-          series.seriesIndex = i;
-          return !series.disabled;
-        })
-        .forEach(function(series,i) {
-          pointIndex = nv.interactiveBisect(series.values, pointXValue, lines.x());
-          lines.highlightPoint(i, pointIndex, true);
-
-          var point = series.values[pointIndex];
-
-          if (typeof point === 'undefined') return;
-          if (typeof singlePoint === 'undefined') singlePoint = point;
-          if (typeof pointXLocation === 'undefined')
-            pointXLocation = xScale(lines.x()(point,pointIndex));
-
-          allData.push({
-              key: series.key,
-              value: lines.y()(point, pointIndex),
-              color: lines.color()(series,series.seriesIndex)
-          });
-        });
-
-      var xValue = this.chart.xAxis.tickFormat()( lines.x()(singlePoint,pointIndex) );
-
-      this.currentValues = {
-        xValue: xValue,
-        yValues: allData
-      };
-      //console.log("Current value", this.currentValues);
-    },
-    showTooltip: function(){
-      // [TO-DO]
-      /*
-      if (scope.plottingTools.data.length < scope.maxGtsInTooltip) {
-        return true;
-      }
-      return false;
-      */
-      return true;
-    },
-    tooltipContent: function(context) {
-      return function(d){
-
-        // console.debug([warp10-plot-gts] _tooltipContent called");
-
-        var contentBody, contentHeader, contentLine, div, headerEnabled,
-          headerFormatter, html, keyFormatter, valueFormatter;
-
-        if (d == null) {
-          return '';
-        }
-
-        headerEnabled = true;
-
-        valueFormatter = function(d, i) {
-          return d;
-        };
-
-        headerFormatter = function(d) {
-          return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));
-        };
-
-        keyFormatter = function(d, i) {
-          var classname, html, labels, splitted;
-          splitted = d.split(/[{}]/);
-          if (splitted.length == 0) {
-            return "";
-          }
-          classname = splitted[0];
-          html = "<span class='gts-classname'>" + classname + "</span>";
-          if ((splitted.length > 1) && (splitted[1] != "")) {
-            html += "<span class='gts-separator'>{</span>";
-            labels = [];
-            splitted[1].split(',').forEach(function(it) {
-              var item;
-              item = it.split(':');
-              return labels.push("<span class='gts-labelname'>" + (item[0].replace(/"(.*)"/, '$1')) + "</span><span class='gts-separator'>=</span><span class='gts-labelvalue'>" + (item[1].replace(/"(.*)"/, '$1')) + "</span>");
-            });
-            html += labels.join("<span class='gts-separator'>,</span>");
-            html += "<span class='gts-separator'>}</span>";
-          }
-          return html;
-        };
-
-        div = d3.select(document.createElement("div"));
-        div.classed("quantum-tooltip-content", true);
-        if (headerEnabled) {
-          contentHeader = div.selectAll("header").data([d]).enter().append("header");
-          contentHeader.html(headerFormatter(d.value));
-        }
-        if (context.showTooltip()) {
-          contentBody = div.selectAll("section").data([d]).enter().append("section");
-          contentLine = contentBody.selectAll("div").data(function(p) {
-            return p.series;
-          }).enter().append("div").classed("gts-line", true);
-          contentLine.append("div").classed("legend-color-guide", true).append("div").style("background-color", function(p) {
-            return p.color;
-          });
-          contentLine.append("div").classed("key", true).classed("total", function(p) {
-            return !!p.total;
-          }).html(function(p, i) {
-            return keyFormatter(p.key, i);
-          });
-          contentLine.append("div").classed("value", true).html(function(p, i) {
-            return valueFormatter(p.value, i);
-          });
-        }
-        html = div.node().outerHTML;
-        if (d.footer != null) {
-          html += "<div class='footer'>" + d.footer + "</div>";
-        }
-        return html;
-
-      }
-    }
-  });
-</script>
 <!--
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
@@ -29376,6 +27939,1512 @@ context. You should place this element as a child of `<body>` whenever possible.
 
 
 </script>
+<dom-module id="warp10-simple-overlay" assetpath="../dist/warp10-iron/">
+
+  <style>
+    :host {
+      background: white;
+      color: black;
+      padding: 24px;
+      box-shadow: rgba(0, 0, 0, 0.24) -2.3408942051048403px 5.524510324047423px 12.090680100755666px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
+    }
+  </style>
+
+  <template>
+    <content></content>
+  </template>
+
+</dom-module>
+
+<script>
+(function() {
+  Polymer({
+    is: 'warp10-simple-overlay',
+    properties: {
+    },
+    behaviors: [
+      Polymer.IronOverlayBehavior
+    ],
+    attached: function() {
+      console.debug('[warp10-simple-overlay] attached');
+    }
+  });
+})();
+</script>
+<script>ace.define ("ace/mode/warpscript_keywords", function(require, exports, module) {
+"use strict";
+
+  var warpscriptFunctions = "\-\>B64|\-\>B64URL|\-\>HEX|\-\>JSON|\-\>LIST|\-\>MAP|\-\>Q|\-\>SET|ABS|ACOS|ADDVALUE|AND|APPEND|APPLY|ASIN|ATAN|ATBUCKET|ATINDEX|ATTICK|ATTRIBUTES|AUTHENTICATE|B64\-\>|B64URL\-\>|BUCKETCOUNT|BUCKETIZE|BUCKETSPAN|CBRT|CEIL|CHUNK|CLEAR|CLEARTOMARK|CLONE|CLONEEMPTY|CLONEREVERSE|COMMONTICKS|COMPACT|CONTAINS|CONTAINSKEY|CONTAINSVALUE|CONTINUE|COPYGEO|COPYSIGN|CORRELATE|COS|COSH|COUNTTOMARK|CROP|CSTORE|CUDF|DEBUGOFF|DEBUGON|DEDUP|DEF|DEFINED|DEPTH|DIFFERENCE|DISCORDS|DOC|DOCMODE|DOUBLEEXPONENTIALSMOOTHING|DROP|DROPN|DTW|DUP|DUPN|DURATION|DWTSPLIT|ELAPSED|ELEVATIONS|ESDTEST|EVAL|EVALSECURE|EVERY|EXP|EXPM1|FDWT|FETCH|FFT|FFTAP|FILLNEXT|FILLPREVIOUS|FILLTICKS|FILLVALUE|FILTER|FIND|FINDSETS|FINDSTATS|FIRSTTICK|FLATTEN|FLOOR|FORGET|FROMBITS|FROMHEX|FUSE|GEO\.INTERSECTS|GEO\.WITHIN|GEO_INTERSECTION|GEO_SUBTRACTION|GEO_UNION|GEO_WKT|GET|GROOVY|GRUBBSTEST|HASH|HAVERSINE|HEX\-\>|HUMANDURATION|HYBRIDTEST|HYBRIDTEST2|HYPOT|IDENT|IDWT|IEEEREMAINDER|IFFT|INTEGRATE|INTERPOLATE|INTERSECTION|ISNULL|ISNaN|ISO8601|ISODURATION|ISONORMALIZE|JOIN|JS|JSON\-\>|JSONLOOSE|JSONSTRICT|KEYLIST|LABELS|LASTBUCKET|LASTSORT|LASTTICK|LBOUNDS|LFLATMAP|LIMIT|LIST\-\>|LMAP|LOAD|LOCATIONOFFSET|LOCATIONS|LOCSTRINGS|LOG|LOG10|LOG1P|LOWESS|LSORT|LUA|MACROBUCKETIZER|MACROFILTER|MACROMAPPER|MACROREDUCER|MAKEGTS|MAP|MAP\-\>|MAPID|MARK|MATCH|MAX|MAXBUCKETS|MAXDEPTH|MAXGTS|MAXOPS|MAXSYMBOLS|MERGE|META|METASORT|MIN|MONOTONIC|MSGFAIL|MSORT|MSTU|MUSIGMA|NAME|NBOUNDS|NDEBUGON|NEWGTS|NEXTAFTER|NEXTUP|NONEMPTY|NOOP|NORMALIZE|NOT|NOTAFTER|NOTBEFORE|NOTIMINGS|NOW|NPDF|NRETURN|NSUMSUMSQ|ONLYBUCKETS|OPS|OR|PAPPLY|PARSESELECTOR|PARTITION|PATTERNDETECTION|PATTERNS|PFILTER|PICK|PROBABILITY|PUT|PYTHON|Q\-\>|QCONJUGATE|QDIVIDE|QMULTIPLY|QROTATE|QROTATION|QUANTIZE|R|R\-\>|RAND|RANGE|RANGECOMPACT|REDUCE|RELABEL|REMOVE|RENAME|RESET|RESETS|REV|REVERSE|RINT|RLOWESS|ROLL|ROLLD|ROT|ROTATIONQ|ROUND|RSORT|RUBY|RUN|RVALUESORT|SECUREKEY|SET|SET\-\>|SETATTRIBUTES|SHRINK|SIGNUM|SIN|SINGLEEXPONENTIALSMOOTHING|SINH|SIZE|SORT|SPLIT|SQRT|STACKATTRIBUTE|STANDARDIZE|STL|STLESDTEST|STOP|STORE|STRICTMAPPER|STRICTPARTITION|STU|SUBLIST|SUBMAP|SUBSTRING|SWAP|SWITCH|TAN|TANH|TEMPLATE|THRESHOLDTEST|TICKINDEX|TICKLIST|TIMECLIP|TIMEMODULO|TIMESCALE|TIMESHIFT|TIMESPLIT|TIMINGS|TOBITS|TODEGREES|TODOUBLE|TOHEX|TOKENINFO|TOLONG|TOLOWER|TORADIANS|TOSELECTOR|TOSTRING|TOTIMESTAMP|TOUPPER|TRIM|TSELEMENTS|TYPEOF|UDF|ULP|UNBUCKETIZE|UNION|UNIQUE|UNSECURE|UNWRAP|UPDATE|URLDECODE|URLENCODE|UUID|VALUEDEDUP|VALUEHISTOGRAM|VALUELIST|VALUES|VALUESORT|VALUESPLIT|WEBCALL|WRAP|ZIP|ZSCORE|ZSCORETEST";
+
+  var warpscriptControl = "ASSERT|BREAK|FAIL|FOR|FOREACH|FORSTEP|IFT|IFTE|RETURN|UNTIL|WHILE";
+
+
+  var warpscriptConstants = "NULL|NaN|E|e|PI|pi|NOW|MAXLONG|MINLONG|TRUE|true|FALSE|false";
+  var warpscriptFrameworkFunctions = "bucketizer\.count|bucketizer\.count\.exclude-nulls|bucketizer\.count\.include-nulls|bucketizer\.count\.nonnull|bucketizer\.first|bucketizer\.join|bucketizer\.join\.forbid-nulls|bucketizer\.last|bucketizer\.max|bucketizer\.max\.forbid-nulls|bucketizer\.mean|bucketizer\.mean\.exclude-nulls|bucketizer\.median|bucketizer\.min|bucketizer\.min\.forbid-nulls|bucketizer\.percentile|bucketizer\.sum|bucketizer\.sum\.forbid-nulls|filter\.byclass|filter|\.bylabels|filter\.last\.eq|filter\.last\.ge|filter\.last\.gt|filter\.last\.le|filter\.last\.lt|filter\.last\.ne|mapper\.abs|mapper\.add|mapper\.ceil|mapper\.count|mapper\.count\.exclude-nulls|mapper\.count\.include-nulls|mapper\.count\.nonnull|mapper\.day|mapper\.delta|mapper\.dotproduct|mapper\.dotproduct\.positive|mapper\.dotproduct\.sigmoid|mapper\.dotproduct\.tanh|mapper\.eq|mapper\.exp|mapper\.first|mapper\.floor|mapper\.ge|mapper\.geo\.approximate|mapper\.geo\.clear|mapper\.geo\.outside|mapper\.geo\.within|mapper\.gt|mapper\.hdist|mapper\.highest|mapper\.hour|mapper\.hspeed|mapper\.join|mapper\.join\.forbid-nulls|mapper\.kernel\.cosine|mapper\.kernel\.epanechnikov|mapper\.kernel\.gaussian|mapper\.kernel\.logistic|mapper\.kernel\.quartic|mapper\.kernel\.silverman|mapper\.kernel\.triangular|mapper\.kernel\.tricube|mapper\.kernel\.triweight|mapper\.kernel\.uniform|mapper\.last|mapper\.le|mapper\.log|mapper\.lowest|mapper\.lt|mapper\.max|mapper\.max\.forbid-nulls|mapper\.max\.x|mapper\.mean|mapper\.mean\.exclude-nulls|mapper\.median|mapper\.min|mapper\.min\.forbid-nulls|mapper\.min\.x|mapper\.minute|mapper\.month|mapper\.mul|mapper\.ne|mapper\.npdf|mapper\.percentile|mapper\.pow|mapper\.product|mapper\.rate|mapper\.replace|mapper\.round|mapper\.sd|mapper\.sd\.forbid-nulls|mapper\.second|mapper\.sigmoid|mapper\.sum|mapper\.sum\.forbid-nulls|mapper\.tanh|mapper\.tick|mapper\.toboolean|mapper\.todouble|mapper\.tolong|mapper\.tostring|mapper\.truecourse|mapper\.var|mapper\.var\.forbid-nulls|mapper\.vdist|mapper\.vspeed|mapper\.weekday|mapper\.year|max\.tick\.sliding\.window|max\.time\.sliding\.window|op\.add|op\.and|op\.div|op\.eq|op\.ge|op\.gt|op\.le|op\.lt|op\.mask|op\.mul|op\.ne|op\.or|op\.sub|reducer\.argmax|reducer\.argmin|reducer\.count|reducer\.count\.exclude-nulls|reducer\.count\.include-nulls|reducer\.count\.nonnull|reducer\.join|reducer\.join\.forbid-nulls|reducer\.join\.nonnull|reducer\.max|reducer\.max\.forbid-nulls|reducer\.max\.nonnull|reducer\.mean|reducer\.mean\.exclude-nulls|reducer\.median|reducer\.min|reducer\.min\.forbid-nulls|reducer\.min\.nonnull|reducer\.percentile|reducer\.product|reducer\.sd|reducer\.sd\.forbid-nulls|reducer\.shannonentropy\.0|reducer\.shannonentropy\.1|reducer\.sum|reducer\.sum\.forbid-nulls|reducer\.sum\.nonnull|reducer\.var|reducer\.var\.forbid-nulls";
+
+var keywordMap = {
+    "constant.language": warpscriptConstants,
+    "keyword.control": warpscriptControl,
+    "keyword.other": warpscriptFrameworkFunctions,
+    "support.function": warpscriptFunctions
+}
+
+console.debug("[mode-warpscript] keywordMap", keywordMap);
+exports.KeywordMap = keywordMap;
+});
+
+ace.define("ace/mode/warpscript_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules","ace/mode/warpscript_keywords"], function(require, exports, module) {
+"use strict";
+
+var oop = require("../lib/oop");
+var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+
+var keywordMap =  require("./warpscript_keywords").KeywordMap;
+
+var WarpScriptHighlightRules = function() {
+    this.keywordMapper = this.createKeywordMapper(keywordMap, "identifier", false);
+
+
+    this.$rules = {
+      "start" : [
+        {
+          token: "comment",
+          regex: /\/\//,        // Token '//'
+          next:  "line_comment"
+        }, {
+          token : "string.quoted.single",           // '' string
+          regex : /'[^']*'/
+        }, {
+          token : "constant.numeric", // float
+          regex : /[+-]?\d+(\.\d+)?([eE][+-]?\d+)?\b/
+        }, {
+          token: "support.variable",
+          regex: /\@[a-zA-Z0-9_$]*\b/
+        }, {
+          token : this.keywordMapper,
+          regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b",
+          caseInsensitive: false
+        }, {
+          token : "keyword.operator",
+          regex : /!|!=|%|&|&&|\*|\*\*|\+|\-|\/|<|<=|==|>|>=|\[|\]|\[\]|\^|\{\}|\{|\}|\||\|\||~=/
+        }, {
+          token : "paren.lparen",
+          regex : /[\[\{]/
+        }, {
+          token : "paren.rparen",
+          regex : /[\]\}]/
+        }, {
+          token : "text",
+          regex : /\s+/
+        }
+      ],
+      "line_comment" : [           // If end of line, back to start state, else it's a comment
+        {
+          token : "comment",
+          regex : "$|^",
+          next : "start"
+        },
+        {
+          defaultToken : "comment",
+          caseInsensitive: true
+        }
+      ],
+    };
+};
+
+oop.inherits(WarpScriptHighlightRules, TextHighlightRules);
+
+exports.WarpScriptHighlightRules = WarpScriptHighlightRules;
+});
+
+
+
+ace.define("ace/mode/warpscript_completions",["require","exports","module","ace/token_iterator","ace/mode/warpscript_keywords"], function(require, exports, module) {
+"use strict";
+
+
+
+  var keywordMap =  require("./warpscript_keywords").KeywordMap;
+
+
+  var keywordList = [];
+
+  for (var key in keywordMap) {
+    keywordList = keywordList.concat(keywordMap[key].split(/\|/));
+  }
+  keywordList = keywordList.sort();
+  console.debug("[mode-warpscript] keyword list", keywordList);
+
+  var WarpScriptCompletions = function() {
+  };
+  (function() {
+    this.getCompletions = function(state, session, pos, prefix) {
+      console.debug("[mode-warpscript] getCompletions - keywordList", keywordList);
+      var matchingWords = [];
+      for (var word in keywordList) {
+
+        if (keywordList[word].search(prefix) > -1) {
+          matchingWords.push(keywordList[word])
+        }
+      }
+      var matchingWordsObjects = matchingWords.map(function(value){
+        return {
+            caption: value,
+            snippet: value,
+            meta: "WARPSCRIPT",
+            score: Number.MAX_VALUE
+        };
+      });
+      console.debug("[mode-warpscript] getCompletions - matching words", matchingWordsObjects );
+      return matchingWordsObjects;
+    }
+  }).call(WarpScriptCompletions.prototype);
+
+  exports.WarpScriptCompletions = WarpScriptCompletions;
+});
+
+
+ace.define("ace/mode/warpscript",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/warpscript_highlight_rules","ace/range","ace/mode/warpscript_completions"], function(require, exports, module) {
+"use strict";
+
+var oop = require("../lib/oop");
+var TextMode = require("./text").Mode;
+var WarpScriptHighlightRules = require("./warpscript_highlight_rules").WarpScriptHighlightRules;
+var WarpScriptCompletions = require("./warpscript_completions").WarpScriptCompletions;
+var Range = require("../range").Range;
+
+var Mode = function() {
+  console.debug("[mode-warpscript] Mode initializing" )
+    this.HighlightRules = WarpScriptHighlightRules;
+    this.$completer = new WarpScriptCompletions();
+};
+oop.inherits(Mode, TextMode);
+
+
+(function() {
+
+  this.lineCommentStart = "*";
+
+  this.$id = "ace/mode/warpscript";
+
+  this.getCompletions = function(state, session, pos, prefix) {
+    var completerResponse = this.$completer.getCompletions(state, session, pos, prefix);
+    console.debug("[mode-warpscript] completer response", completerResponse);
+    return completerResponse;
+  };
+
+}).call(Mode.prototype);
+
+exports.Mode = Mode;
+
+});
+</script><script>ace.define("ace/theme/eclipse",["require","exports","module","ace/lib/dom"],function(e,t,n){"use strict";t.isDark=!1,t.cssText='.ace-eclipse .ace_gutter {background: #ebebeb;border-right: 1px solid rgb(159, 159, 159);color: rgb(136, 136, 136);}.ace-eclipse .ace_print-margin {width: 1px;background: #ebebeb;}.ace-eclipse {background-color: #FFFFFF;color: black;}.ace-eclipse .ace_fold {background-color: rgb(60, 76, 114);}.ace-eclipse .ace_cursor {color: black;}.ace-eclipse .ace_storage,.ace-eclipse .ace_keyword,.ace-eclipse .ace_variable {color: rgb(127, 0, 85);}.ace-eclipse .ace_constant.ace_buildin {color: rgb(88, 72, 246);}.ace-eclipse .ace_constant.ace_library {color: rgb(6, 150, 14);}.ace-eclipse .ace_function {color: rgb(60, 76, 114);}.ace-eclipse .ace_string {color: rgb(42, 0, 255);}.ace-eclipse .ace_comment {color: rgb(113, 150, 130);}.ace-eclipse .ace_comment.ace_doc {color: rgb(63, 95, 191);}.ace-eclipse .ace_comment.ace_doc.ace_tag {color: rgb(127, 159, 191);}.ace-eclipse .ace_constant.ace_numeric {color: darkblue;}.ace-eclipse .ace_tag {color: rgb(25, 118, 116);}.ace-eclipse .ace_type {color: rgb(127, 0, 127);}.ace-eclipse .ace_xml-pe {color: rgb(104, 104, 91);}.ace-eclipse .ace_marker-layer .ace_selection {background: rgb(181, 213, 255);}.ace-eclipse .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid rgb(192, 192, 192);}.ace-eclipse .ace_meta.ace_tag {color:rgb(25, 118, 116);}.ace-eclipse .ace_invisible {color: #ddd;}.ace-eclipse .ace_entity.ace_other.ace_attribute-name {color:rgb(127, 0, 127);}.ace-eclipse .ace_marker-layer .ace_step {background: rgb(255, 255, 0);}.ace-eclipse .ace_active-line {background: rgb(232, 242, 254);}.ace-eclipse .ace_gutter-active-line {background-color : #DADADA;}.ace-eclipse .ace_marker-layer .ace_selected-word {border: 1px solid rgb(181, 213, 255);}.ace-eclipse .ace_indent-guide {background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;}',t.cssClass="ace-eclipse";var r=e("../lib/dom");r.importCssString(t.cssText,t.cssClass)})</script><script>ace.define("ace/snippets/text",["require","exports","module"],function(e,t,n){"use strict";t.snippetText=undefined,t.scope="text"})</script>
+
+
+
+<dom-module id="warp10-warpscript-ide" assetpath="../dist/warp10-quantum/">
+  <style>
+    :host {
+      display: block;
+    }
+    .ace-editor {
+      font-size: 14px;
+    }
+    .top-10 { margin-top:10px; }
+
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
+    .btn[hidden] {
+      display: none;
+    }
+    warp10-warpscript-permalink-generator[hidden]{
+      display: none;
+    }
+    .overlayBox {
+      display:flex;
+      flex-flow: row;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+    .overlayContent  {
+    }
+    .hotkey-key {
+      background-color: #333;
+      border: 1px solid #333;
+      border-radius: 5px;
+      box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
+      color: #fff;
+      display: inline-block;
+      font-size: 1em;
+      margin-right: 5px;
+      padding: 5px 9px;
+      text-align: center;
+    }
+  </style>
+  <template>
+
+    <iron-a11y-keys target="[[target]]" keys="e" on-keys-pressed="hotkeyExecute"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="p" on-keys-pressed="hotkeyPlot"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="h ?:keypress" on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    <warp10-simple-overlay id="warpscript-ide-keyboard-shortcuts-overlay">
+      <div class="overlay-box">
+        <h4>Keyboard Shortcuts:</h4>
+        <p><span class="hotkey-key">?</span> Show / hide this help menu</p>
+        <p><span class="hotkey-key">e</span> Execute WarpScript</p>
+        <p><span class="hotkey-key">p</span> Plot result</p>
+      </div>
+    </warp10-simple-overlay>
+
+    <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
+    </warp10-warpscript-caller>
+
+
+    <ace-widget id="editor" theme="ace/theme/eclipse" mode="ace/mode/warpscript" softtabs="true" wrap="true" value="{{content}}">Type your code here... </ace-widget>
+
+
+    <spinner-widget shown="{{loading}}" spinner-width="100%" spinner-height="200px"></spinner-widget>
+
+
+    <warp10-warpscript-permalink-generator warpscript="{{content}}" backend="{{backend}}" hidden$="{{hidePermalink}}"></warp10-warpscript-permalink-generator>
+
+    <div class="top-10">
+      <template is="dom-if" if="{{!hidePlot}}">
+        <div class="left">
+          <button class="btn btn-primary btn-lg" on-click="doPlot" disabled$="{{loading}}" hidden$="{{!response.length}}">
+            Plot
+          </button>
+        </div>
+      </template>
+      <div class="right">
+        <button id="btn_execute" class="btn btn-primary btn-lg" on-click="execute" disabled$="{{loading}}">
+          Execute!
+        </button>
+      </div>
+    </div>
+    <template is="dom-if" if="{{showedElapsedTime}}">
+      <div class="clearfix"> </div>
+      <div class="top-10">
+        <div class="right">Your script executiooon took {{formattedElapsedTime}} serverside</div>
+      </div>
+    </template>
+    <div class="clearfix"> </div>
+
+
+    <div class="top-10">
+      <warp10-response-container id="response-container" response="{{response}}" received="{{received}}"></warp10-response-container>
+      <div class="alert alert-danger" hidden$="{{hideError}}">
+        {{errorMsg}}
+      </div>
+    </div>
+
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is:"warp10-warpscript-ide",
+    properties: {
+      content: {
+        type: String,
+        notify: true
+      },
+      backend: {
+        type: String,
+        value: "http://127.0.0.1:8080/api/v0"
+      },
+      /**
+       * The  exec endpoint
+       */
+      execEndpoint: {
+        type: String,
+        value: "/exec"
+      },
+      response: {
+        type: Array,
+        observer: "responseChanged",
+        value: function() {
+          return null;
+        }
+      },
+      plot: {
+        type: Number,
+        value: 0,
+        notify: true
+      },
+      data: {
+        type: Array,
+        notify: true
+      },
+      error: {
+        type: Number,
+        observer: "errorChanged"
+      },
+      hideError:{
+        type: Boolean,
+        computed: "withoutError(error)"
+      },
+      target: {
+        type: Object,
+        value: function() {
+          return document.body;
+        }
+      },
+      call: {
+        type: Number,
+        value: 0
+      },
+      /**
+       * Elapsed time for the call
+       */
+      elapsed: {
+        type: Number,
+        value: -1
+      },
+      /**
+       * Elapsed time for the call, formated for view
+       */
+      formattedElapsedTime: {
+        type: String,
+        computed: "formatElapsedTime(elapsed)"
+      },
+      showedElapsedTime: {
+        type: Boolean,
+        computed: "showElapsedTime(elapsed)"
+      },
+      showPermalink: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * If true, the `warp10-warpscript-ide` component inside this one won't show
+       * the plot Button, useful for embedded mode
+       */
+      hidePlot: {
+        type: Boolean,
+        value: false
+      },
+      hidePermalink: {
+        type: Boolean,
+        computed: "isPermalinkHidden(showPermalink)"
+      },
+      _baseUrl: {
+        type: String,
+        computed: "_getBaseUrl(backend,execEndpoint)"
+      },
+
+    },
+    ready: function() {
+      this.received = 0;
+    },
+    attached: function() {
+      editor = this.$.editor;
+      editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
+
+      console.debug("[warp10-warpscript-ide] backend before conf", this.backend);
+      // Look for a global conf, and apply if it exists
+      if (window.quantumConf !== undefined) {
+        this.hidePlot = window.quantumConf.embedded;
+        this.backend = window.quantumConf.backend;
+        this.execEndpoint = window.quantumConf.execEndpoint;
+        this.headerName = window.quantumConf.headerName;
+      }
+      console.debug("[warp10-warpscript-ide] backend after conf", this.backend);
+
+    },
+    _getBaseUrl: function() {
+      return this.backend + this.execEndpoint;
+    },
+    withoutError: function() {
+      if (this.error > 0) {
+        return false
+      }
+      return true
+    },
+    errorChanged: function() {
+      // console.debug("[warp10-warpscript-ide] errorChanged", { response: this.errorMsg });
+    },
+    responseChanged: function() {
+      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response });
+      if (this.response !== null) {
+          this.data = gtsTools.gtsFromJSONList(this.response);
+      } else {
+        this.data = null;
+      }
+      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response, data: this.data });
+      this.received += 1;
+    },
+    isPermalinkHidden: function() {
+      return !this.showPermalink;
+    },
+    editorChangeAction: function(value, oldValue) {
+      this.fire('editor-content', {value: value, oldValue: oldValue});
+      this.content = value.detail.value;
+      console.debug("[warp10-warpscript-ide] editorChangeAction");
+    },
+    hotkeyExecute: function(e) {
+      // console.debug("[warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+      var nodeName =  e.detail.keyboardEvent.target.nodeName;
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+        this.execute();
+      }
+    },
+    hotkeyPlot: function(e) {
+      // console.debug("[warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+      var nodeName =  e.detail.keyboardEvent.target.nodeName;
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+        this.doPlot();
+      }
+    },
+    hotkeyHelp: function(e) {
+      var nodeName =  e.detail.keyboardEvent.target.nodeName;
+      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+        console.debug("[warp10-warpscript-ide] hotkeyHelp")
+        this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
+      }
+    },
+    execute: function() {
+      // console.debug("[warp10-warpscript-ide] Execute", this.content)
+      if (this.showPermalink) {
+        this.updatePermalink();
+      }
+      this.warpscriptScript = this.content;
+      this.call +=1 ;
+    },
+    doPlot: function() {
+      // console.debug([warp10-warpscript-ide] Plot", this.response)
+      if (this.response.length) {
+          this.plot += 1;
+          this.target = undefined;
+      }
+    },
+    updatePermalink: function() {
+      console.debug("[warp10-warpscript-ide] updatePermalink");
+      this.$$("warp10-warpscript-permalink-generator").updatePermalink();
+    },
+    formatElapsedTime: function() {
+      if (this.elapsed < 1000) {
+        return ""+this.elapsed+" ns";
+      }
+      if (this.elapsed < 1000000) {
+        return ""+(this.elapsed/1000).toFixed(3)+" μs";
+      }
+      if (this.elapsed < 1000000000) {
+        return ""+(this.elapsed/1000000).toFixed(3)+" ms";
+      }
+      return ""+(this.elapsed/1000000000).toFixed(3)+" s";
+    },
+    showElapsedTime: function() {
+      if (this.elapsed >0) {
+        return true;
+      }
+      return false;
+    }
+  })
+</script>
+<script>
+  (function() {
+    var plottingTools = {
+      id: [],
+      data: [],
+      names: [],
+      color: []
+    };
+    plottingTools.isPlotted = function(gts) {
+      if (plottingTools.id.indexOf(gts.id) >= 0) {
+        return true;
+      }
+      return false;
+    };
+    plottingTools.palette = [
+      '#001f3f', // NAVY
+      '#0074D9', // BLUE
+      '#7FDBFF', // AQUA
+      '#39CCCC', // TEAL
+      '#3D9970', // OLIVE
+      '#2ECC40', // GREEN
+      '#01FF70', // LIME
+      '#FFDC00', // YELLOW
+      '#FF851B', // ORANGE
+      '#FF4136', // RED
+      '#85144b', // MAROON
+      '#F012BE', // FUSCHIA
+      '#B10DC9', // PURPLE
+      '#111111', // BLACK
+      '#AAAAAA', // GRAY
+      '#DDDDDD' // SILVER
+    ];
+    plottingTools.maxColors = 16;
+    plottingTools.currentColorIndex = -1;
+    plottingTools.gtsColor = function(gts) {
+      if (!plottingTools.isPlotted(gts)) {
+        return "";
+      }
+      console.debug("[czd-plotted-gts] GTS plotted", gts.id);
+      var  index = plottingTools.id.indexOf(gts.id);
+      return "background-color:"+plottingTools.color[index]+";"
+    };
+    plottingTools.getColor = function(index) {
+      return plottingTools.palette[index % plottingTools.maxColors];
+    };
+    plottingTools.nextColor = function() {
+      plottingTools.currentColorIndex += 1;
+      return plottingTools.getColor(plottingTools.currentColorIndex);
+    };
+
+    plottingTools.currentColor = function() {
+      return plottingTools.getColor(plottingTools.currentColorIndex);
+    };
+    plottingTools.removeColorIfLast = function(color) {
+      if (color === plottingTools.currentColor()) {
+        return plottingTools.currentColorIndex -= 1;
+      }
+    };
+    plottingTools.add = function(gts) {
+      if (!plottingTools.isPlotted(gts)) {
+        // console.debug("[czd-plotted-gts] plottingTools.add() - The GTS " + gts.id + " isn't currently plotted");
+        console.debug("[czd-plotted-gts] plottingTools.add()", gts)
+        plottingTools.data.push(plottingTools.gtsToNvd3(gts));
+        plottingTools.names.push({
+          c: gts.c,
+          l: gts.l,
+          id: gts.id
+        });
+        plottingTools.color.push(plottingTools.nextColor());
+        plottingTools.id.push(gts.id);
+      }
+    };
+    plottingTools.remove = function(gts) {
+      var index;
+      if (plottingTools.isPlotted(gts)) {
+        index = plottingTools.id.indexOf(gts.id);
+        if (index > -1) {
+          plottingTools.id.splice(index, 1);
+          plottingTools.data.splice(index, 1);
+          plottingTools.names.splice(index, 1);
+          plottingTools.removeColorIfLast(plottingTools.color[index]);
+          plottingTools.color.splice(index, 1);
+        }
+      }
+    };
+    plottingTools.refresh = function(gtsList) {
+      console.debug("[czd-plotted-gts] plottingTools.refresh()");
+
+      // Variable to see if the GTS shown on graph still exists in new data
+      var gtsInPlottedStillExists = []
+      for (var index in plottingTools.id){
+        gtsInPlottedStillExists.push(false);
+      }
+      // console.debug("[czd-plotted-gts] plottingTools.refresh() - gtsInPlottedStillExists", gtsInPlottedStillExists);
+
+      for (var index in gtsList) {
+        var gts = gtsList[index];
+        if (plottingTools.isPlotted(gts)) {
+          var i = plottingTools.id.indexOf(gts.id);
+          if (
+            plottingTools.names[i].c == gts.c
+            && plottingTools.names[i].l == gts.l
+            && plottingTools.names[i].id == gts.id
+          ) {
+            plottingTools.data[i] = plottingTools.gtsToNvd3(gtsList[index]);
+            gtsInPlottedStillExists[i] = true
+            // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts refreshed", i);
+          }
+        }
+      }
+      for (var index=gtsInPlottedStillExists.length-1; index>=0; index--){
+        // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts verifying", index);
+        if (!gtsInPlottedStillExists[index]) {
+          // console.debug("[czd-plotted-gts] plottingTools.refresh() - gts deleted", index);
+          plottingTools.id.splice(index, 1);
+          plottingTools.data.splice(index, 1);
+          plottingTools.names.splice(index, 1);
+          plottingTools.removeColorIfLast(plottingTools.color[index]);
+          plottingTools.color.splice(index, 1);
+        }
+        // console.debug("[czd-plotted-gts] plottingTools.refresh() - plottingTools", plottingTools);
+      }
+    }
+
+
+    plottingTools.gtsToNvd3 = function(gts) {
+      var nvd3Series = {
+        key: "",
+        values: [],
+        c: "",
+        l: "",
+        id: ""
+      };
+      nvd3Series.c = gts.c;
+      nvd3Series.l = gts.l;
+      nvd3Series.id = gts.id;
+      nvd3Series.key = " " + gts.id + " - " + gts.c;
+      if (gts.l != null) {
+        nvd3Series.key += " - " + (JSON.stringify(gts.l));
+      }
+
+      if (gts.v !== undefined) {
+
+        // Sort values
+        var values = gts.v.sort(function(a, b) { return a.ts - b.ts;});
+
+        //console.debug(gts)
+        for (var i = 0; i < values.length; i++) {
+          var metric = values[i];
+          nvd3Series.values.push({x: Math.round(metric.ts / 1000), y: metric.value});
+         // nvd3Series.values.push({x: new Date(metric[0]/1000), y: metric[metric.length-1]});
+        }
+      }
+      console.debug("[czd-plotted-gts] gtsToNvd3 ",nvd3Series)
+      return nvd3Series;
+    };
+
+    plottingTools.toNvd3Graph = function() {
+      var chartData = {}
+
+      var sparklines = [];
+      console.debug("[czd-plotted-gts] toNvd3Graph", plottingTools.data)
+      for (var i=0; i< plottingTools.data.length; i++) {
+        // Let's verify if it's a GTS to plot
+        console.debug("[czd-plotted-gts] toNvd3Graph - isGtsToPlot", plottingTools.data[i])
+        if (plottingTools.isGtsToPlot(plottingTools.data[i])) {
+          var sl = plottingTools.data[i];
+          sl.color = plottingTools.color[i];
+          sl.key = plottingTools.data[i].key;
+          sl.area = false;
+          sl.interpolate = "step-before";
+          console.debug("[czd-plotted-gts] toNvd3Graph - sl", sl);
+          sparklines.push(sl);
+        }
+      }
+
+      var tickFormat = function(d) {
+          var dx = sparklines[0].values[d] && sparklines[0].values[d].x || 0;
+          return dx ? d3.time.format('%x')(new Date(dx)) : '';
+      }
+
+
+      chartData.sparklines = sparklines;
+      chartData.tickFormat = tickFormat;
+
+      //console.debug("nvd3 data", chartData);
+      //console.debug(JSON.stringify(chartData))
+
+      return chartData;
+    };
+
+
+    plottingTools.isArray = function(value) {
+      return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
+      && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
+    };
+
+    plottingTools.isGts = function(gts) {
+      if ((gts.c == null) || (gts.l == null)
+      || (gts.values == null) || !plottingTools.isArray(gts.values) ) {
+        return false;
+      }
+      return true;
+    }
+
+    plottingTools.isGtsToPlot = function(gts) {
+      if ( !plottingTools.isGts(gts) ) {
+        return false;
+      }
+
+      console.debug("[plottingTools] isGtsToPlot", gts.values[0])
+      // We look at the first value, if it's a String or Boolean it's an annotation GTS,
+      // if it's a number it's a GTS to plot
+      if  (typeof(gts.values[0].y) === 'number' )  {
+        return true;
+      }
+      return false;
+    }
+
+
+
+    plottingTools.MIN_TS = 0;
+    plottingTools.MAX_TS = Math.pow(2, 53) - 1;
+    plottingTools.getTimeBounds = function(nvd3SeriesList) {
+
+      console.debug("[czd-plotted-gts] getTimeBounds ",nvd3SeriesList)
+
+      var bounds = {}
+
+      if (!plottingTools.isArray(nvd3SeriesList)) {
+        console.error("[plottingTools.getTimeBounds] nvd3SeriesList isn't array",nvd3SeriesList);
+        return bounds;
+      }
+
+      bounds.min = plottingTools.MAX_TS;
+      bounds.max = plottingTools.MIN_TS;
+
+
+      for (var i=0; i<nvd3SeriesList.length; i++ ) {
+        var nvd3Series = nvd3SeriesList[i];
+
+      //nvd3SeriesList.forEach(function(nvd3Series) {
+
+        // console.debug("[plottingTools.getTimeBounds] Max: ", nvd3Series.values[nvd3Series.values.length - 1].x);
+        if (bounds.min > nvd3Series.values[0].x) {
+          bounds.min = nvd3Series.values[0].x;
+        }
+        if (bounds.max < nvd3Series.values[nvd3Series.values.length - 1].x) {
+          bounds.max = nvd3Series.values[nvd3Series.values.length - 1].x;
+        }
+      //});
+      }
+
+      // console.debug("[plottingTools.getTimeBounds] bounds...", bounds);
+      return bounds;
+    }
+
+    window.plottingTools = plottingTools;
+  }).call(this);
+</script>
+<dom-module id="warp10-gts-tree" assetpath="../dist/warp10-quantum/">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .popover {
+        max-width: none;
+        max-height: none;
+      }
+      div[hidden], i[hidden] {
+        display:none;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border: none;
+        overflow: hidden;
+      }
+
+      li {
+        position: relative;
+        padding: 0 0 0 20px;
+        line-height: 20px;
+      }
+
+      li .stack-level {
+        font-size: 1.25em;
+        font-weight: bold;
+        padding-top: 25px;
+        padding-bottom: 10px;
+      }
+
+      li .stack-level + div {
+        padding-left: 25px;
+      }
+
+      li .expanded {
+        padding: 1px 10px;
+        background-image: url("data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAKElEQVQ4jWNgGFbgFQMDw38i8UuYJiYkA5hJsIwUtXQEo2EwGgZkAwBP/yN0kY5JiwAAAABJRU5ErkJggg==");
+        background-repeat: no-repeat;
+      }
+
+      li .collapsed {
+        padding: 1px 10px;
+        background-image: url("data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAXUlEQVQ4jWNgGCzgJwMDw38S8U8GBgYGJqgBjGRYSo4e3GAfAwMDP5oYIW/9RFb8n4GB4RQDA4MgktgvAgb8QjfgPwMDwyxyvYDNBSR54SADZhiQ5AWKwTBISAMHAKXXR27jzC2pAAAAAElFTkSuQmCC");
+        background-repeat: no-repeat;
+      }
+
+      li .gtsInfo {
+        white-space: normal;
+        word-wrap:break-word;
+      }
+      li .gtsInfo[disabled] {
+        color: #aaaaaa;
+        cursor: not-allowed;
+      }
+
+      li .normal {
+      }
+
+
+      li .normal {
+        border-radius: 50%;
+        background-color: #bbbbbb;
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+      }
+
+      li i, li span {
+        cursor: pointer;
+      }
+
+      li .selected {
+        background-color: #aaddff;
+        font-weight: bold;
+        padding: 1px 5px;
+      }
+
+       .gts-classname {
+        color: #0074D9;
+      }
+
+       .gts-labelname {
+        color: #3d9970;
+      }
+
+       .gts-separator {
+        color: #bbbbbb;
+      }
+
+       .gts-labelvalue {
+        color: #AAAAAA;
+        font-style: italic;
+      }
+
+    </style>
+
+    <ul>
+      <template is="dom-repeat" items="{{data.content}}" as="node">
+
+        <li>
+          <div hidden$="{{branch}}" class="stack-level" on-click="selectNodeHead" data-node="{{node}}">
+            Stack level {{index}}
+          </div>
+          <div>
+            <i class="collapsed" hidden$="{{isNotCollapsed(node)}}" on-click="selectNodeHead"></i>
+            <i class="expanded" hidden$="{{isCollapsed(node)}}" on-click="selectNodeHead"></i>
+
+            <template is="dom-if" if="{{isGts(node)}}">
+              <i class="normal" style$="{{gtsColor(node.gts, plottedChanged)}}"></i>
+              <span class="gtsInfo" on-click="switchPlotState">
+                <span class="gts-classname">{{node.gts.c}}</span>
+                <span class="gts-separator">{</span>
+                <template is="dom-repeat" items="{{_toArray(node.gts.l)}}" as="label">
+                  <spam>
+                    <span class="gts-labelname">{{label.name}}</span>
+                    <span class="gts-separator">=</span>
+                    <span class="gts-labelvalue">{{label.value}}</span>
+                    <span hidden$="{{_lastIndex(index, node.gts.l)}}">,</span>
+                  
+                </spam></template>
+                <span class="gts-separator">}</span>
+              </span>
+            </template>
+
+            <template is="dom-if" if="{{isImage(node)}}">
+              <i class="normal" style="background-color:#000000;"></i>
+              <span class="gtsInfo" on-mouseover="showImageOverlay" on-mouseout="hideImageOverlay" on-click="showImageOverlay">
+                  <span class="gts-classname">{{node.caption}}</span>
+              </span>
+            </template>
+
+            <template is="dom-if" if="{{node.content}}">
+              <span class="listInfo" ng-if="node.content">
+                List of {{node.content.length}} item<span ng-if="node.content.length > 1">s</span>
+              </span>
+              <warp10-gts-tree id="gts-tree" data="{{node}}" branch="" plotted-changed="{{plottedChanged}}"></warp10-gts-tree>
+            </template>
+
+
+          </div>
+        </li>
+
+      </template>
+    </ul>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "warp10-gts-tree",
+    properties: {
+      data: {
+        type: Array,
+        observer: "dataChanged"
+      },
+      stringifiedData: {
+        type: String,
+        computed: "stringifyData(data)"
+      },
+      treeId: {
+        type: String
+      },
+      nodeId: {
+        type: String,
+        value: "id"
+      },
+      nodeLabel: {
+        type: String,
+        value: "label"
+      },
+      nodeChildren: {
+        type: String,
+        value: "children"
+      },
+      branch: {
+        type: Boolean,
+        value: false
+      },
+      // Used internally to detect changes
+      plottedChanged:{
+        type: Number,
+        value: 0,
+        notify: true
+      }
+    },
+    ready: function(){
+      this.maxColors = 20;
+    },
+    attached: function(){
+    },
+    stringifyData: function() {
+      return JSON.stringify(this.data);
+    },
+    dataChanged: function() {
+      //console.debug("[warp10-gts-tree] dataChanged", this.data);
+    },
+    selectNodeHead: function(e, detail) {
+      // console.debug("[warp10-gts-tree] selectNodeHead", e.model.node);
+      return e.model.node.collapsed = !e.model.node.collapsed;
+    },
+    switchPlotState: function(e, detail) {
+      // console.debug("[warp10-gts-tree] switchPlotState", e.model.node.gts);
+      var gts = e.model.node.gts;
+      if (!plottingTools.isPlotted(gts)) {
+        plottingTools.add(gts);
+        console.log("[warp10-gts-tree] addToPlot", plottingTools);
+      } else {
+        plottingTools.remove(gts);
+        console.log("[warp10-gts-tree] removeFromPlot", plottingTools);
+      }
+      this.fire('plotted-changed', plottingTools);
+      this.plottedChanged++;
+    },
+    isCollapsed: function(node) {
+      if ( node.content === undefined || node.collapsed) {
+        return true;
+      }
+      return false;
+    },
+    isNotCollapsed: function(node) {
+      if (node.content === undefined || !node.collapsed) {
+        return true;
+      }
+      return false;
+    },
+    hasContent: function(node) {
+      if (node.content !== undefined) {
+        return true;
+      }
+      return false;
+    },
+    isImage: function(node) {
+      return node.image !== undefined
+    },
+    isGts: function(node) {
+      return node.gts !== undefined
+    },
+    gtsColor: function(gts, plottedChanged) {
+      if (gts === undefined){
+        return ""
+      }
+      // console.debug("[warp10-gts-tree] gtsColor", plottingTools.gtsColor(gts))
+      return plottingTools.gtsColor(gts);
+    },
+    showImageOverlay: function(e) {
+      console.debug("[warp10-gts-tree] showImageOverlay", e);
+      var image = e.model.node.image;
+      var caption = e.model.node.caption;
+      var id = 'image-overlay'
+      var dialog = document.getElementById(id);
+      if (dialog) {
+        if (e.type == 'click') {
+          dialog.setAttribute('imageClicked', true);
+        } else {
+          dialog.noCancelOnOutsideClick = true;
+        }
+        dialog.setAttribute('src', image )
+        dialog.setAttribute('caption', caption )
+        console.debug("[warp10-gts-tree] let's open", dialog.opened);
+        if (!dialog.opened) {
+          dialog.open();
+        }
+
+        console.debug("[warp10-gts-tree] dialog.noCancelOnOutsideClick",dialog.noCancelOnOutsideClick);
+        console.debug("[warp10-gts-tree] and now it should be open", dialog.opened);
+      }
+    },
+    hideImageOverlay: function(e) {
+
+      var id = 'image-overlay'
+      var dialog = document.getElementById(id);
+      dialog.noCancelOnOutsideClick = false;
+      if (dialog && !dialog.getAttribute('imageClicked')) {
+        dialog.cancel();
+      }
+    },
+    _toArray: function(obj) {
+      if (obj === undefined) {
+        return [];
+      }
+      return Object.keys(obj).map(function(key) {
+        return {
+          name: key,
+          value: obj[key]
+        };
+      });
+    },
+    _lastIndex: function(index, obj) {
+      var array = this._toArray(obj)
+      return (index == array.length -1)
+    }
+  })
+</script>
+<dom-module id="warp10-plot-gts" assetpath="../dist/warp10-quantum/">
+  <template>
+    <style>
+      :host {
+      }
+      .widget {
+        position: relative;
+      }
+      #content {
+        display: none;
+      }
+      #chart {
+        display: inline-block;
+        text-align: center;
+      }
+      svg {
+        position: relative;
+        padding-left: 50px;
+        width: calc(100% - 50px) !important;
+        height: calc(100% - 100px) !important;
+        overflow:visible !important;
+      }
+      #container {
+            margin-top: 20px; margin-right: 0; margin-bottom: 50px; margin-left: 100px; width: auto;
+      }
+      :host ::content .nvd3 .nv-groups path.nv-line {
+        stroke-width: var(--line-width, 2);
+      }
+      :host ::content .nvtooltip {
+        margin-left:30px;
+        max-width: 70%;
+      }
+
+      :host ::content .nvtooltip .quantum-tooltip-content {
+      }
+
+      .nvtooltip .quantum-tooltip-content header,
+      .nvtooltip .quantum-tooltip-content section {
+
+      }
+      :host ::content .nvtooltip .quantum-tooltip-content header {
+        font-weight: bold;
+        color: #777;
+      }
+
+      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line {
+        display: flex;
+      }
+
+      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .legend-color-guide {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .legend-color-guide div {
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+
+      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .key {
+        width: 80%;
+        white-space: normal;
+        word-wrap:break-word;
+      }
+      :host ::content .nvtooltip .quantum-tooltip-content section .gts-line .value {
+        text-align: right;
+        font-weight: bold;
+      }
+
+      :host ::content .nvtooltip .gts-classname {
+        color: #0074D9;
+      }
+
+      :host ::content .nvtooltip .gts-labelname {
+        color: #3d9970;
+      }
+
+      :host ::content .nvtooltip .gts-separator {
+        color: #bbbbbb;
+      }
+
+      :host ::content .nvtooltip .gts-labelvalue {
+        color: #AAAAAA;
+        font-style: italic;
+      }
+      #vertGuide {
+        width:0px;
+        height: 100%;
+        border: solid 1px #aaaaaa;
+        z-index: 500;
+        position: absolute;
+        left: 250px;
+        display: none;
+      }
+    </style>
+    <div class="widget">
+      <div id="vertGuide"></div>
+      <div id="chart">
+        <svg id="svg" class="nvd3 svg" overflow="visible"></svg>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+
+<script>
+  Polymer({
+    is: "warp10-plot-gts",
+    properties: {
+      width: {
+        type: Number,
+        value: -1
+      },
+      height: {
+        type: Number,
+        value: -1
+      },
+      showAxis: {
+        type: String,
+        value: "true"
+      },
+      tooltip: {
+        type: String,
+        value: "true"
+      },
+      legend: {
+        type: String,
+        value: "false"
+      },
+      lineWidth: {
+        type: Number,
+        value: 2
+      },
+      reload: {
+        type: Number,
+        value: -1
+      },
+      currentValues: {
+        type: Object,
+        notify: true
+      },
+
+      timeBounds: {
+        type: Object,
+        notify: true
+      },
+      vertGuide: {
+        type: Number,
+        observer: 'vertGuideChanged'
+      },
+      data: {
+        type: Object
+      },
+      newData: {
+        type: Number,
+        observer: "dataReceived"
+      }
+    },
+    ready: function() {
+    },
+    attached: function() {
+       // console.debug("[warp10-plot-gts] attached - calling configure()");
+      this.configure();
+    },
+
+    configure: function() {
+      // console.debug("[warp10-plot-gts] configure - begin");
+
+      // To make only one resize, it will be checked after receiving a response
+      this.resized = false;
+
+
+      // line width
+      var lineWidth = Math.floor(this.lineWidth);
+      if (lineWidth < 1 || lineWidth > 20) {
+          lineWidth = 2;
+      }
+      this.customStyle['--line-width'] = lineWidth.toString();
+      this.updateStyles();
+
+      // Dimensions
+      if (this.width <0) {
+        this.$.chart.style.width = "100%";
+        //this.$$('svg').style.width = calc(100% - 50px);
+      } else {
+        this.$.chart.style.width = (parseInt(this.width))+"px";
+        //this.$$('svg').style.width = (parseInt(this.width)-50)+"px";
+      }
+      if (this.height <0) {
+        this.$.chart.style.height = "100%";
+        //this.$$('svg').style.height = calc(100% - 100px);
+      } else {
+        this.$.chart.style.height = (parseInt(this.height))+"px";
+        //this.$$('svg').style.height = (parseInt(this.height)-100)+"px";
+      }
+      //console.log("Dimensions",this.$$('svg').getBoundingClientRect().width)      // Configure chart
+      this.configureChart();
+
+      // console.debug("[warp10-plot-gts] configure - end");
+    },
+    configureChart: function() {
+      // Wrapping in nv.addGraph allows for '0 timeout render', stores rendered charts in nv.graphs, and may do more in the future... it's NOT required
+      // console.debug("[warp10-plot-gts] configureChart - begin");
+      this.chart = nv.models.lineChart()
+        .options({
+            transitionDuration: 300
+        });
+
+
+      //console.log("Chart", Object.getOwnPropertyNames(this.chart));
+      //  Axis
+      if (this.showAxis.toLowerCase()!="true") {
+        this.chart.showXAxis(false);
+        this.chart.showYAxis(false);
+      } else {
+        this.chart.xAxis
+          .axisLabel('')
+          //.tickFormat(chartData.tickFormat);
+          .tickFormat(function(d) {return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));})
+          .showMaxMin(false)
+          .rotateLabels(-30);
+        this.chart.yAxis
+          .axisLabel('')
+          .tickFormat(d3.format(',.2f')).showMaxMin(false);;
+      }
+
+
+      // Tooltips
+      if (this.tooltip.toLowerCase()!="true") {
+        console.log("tooltip='false' detected");
+        this.chart.interactive(false);
+        this.chart.useInteractiveGuideline(false);
+
+      } else {
+        this.chart.useInteractiveGuideline(true);
+        this.chart.tooltip.position({"left":50});
+        // When useInteractiveGuideline is true, you need to use the tooltip on the interactiveLayer object, not in the chart one
+        // http://stackoverflow.com/questions/12416508/nvd3-piechart-js-how-to-edit-the-tooltip/32499377#32499377
+        this.chart.interactiveLayer.tooltip.contentGenerator(this.tooltipContent(this));
+      }
+
+      // Legend
+      if (this.legend.toLowerCase()!="true") {
+        this.chart.showLegend(false);
+      } else {
+        this.chart.showLegend(true);
+      }
+
+      // console.debug("[warp10-plot-gts] configureChart - end");
+    },
+    addGraph: function() {
+      var chartData = plottingTools.toNvd3Graph(this.data);
+      // console.debug([warp10-plot-gts] addGraph", chartData)
+
+      if (!chartData) {
+        this.removeGraph();
+        return false;
+      }
+
+      this.chart.interpolate("step-before");
+      d3.select(this.$.svg)
+        .datum(chartData.sparklines)
+        .call(this.chart);
+
+      nv.utils.windowResize(this.chart.update);
+
+      this.timeBounds = plottingTools.getTimeBounds(chartData.sparklines);
+
+      //console.debug("timeBounds", this.timeBounds);
+
+      if (this.tooltip.toLowerCase() == "true") {
+        d3.select(this).selectAll("g.nv-lineChart")
+          .on("mousemove", this.getCurrentPoint.bind(this) );
+      }
+      return this.chart;
+    },
+    removeGraph: function() {
+      d3.select(this.$.svg)
+        .datum([])
+        .call(this.chart);
+      nv.utils.windowResize(this.chart.update);
+    },
+    dataReceived: function() {
+      // console.debug([warp10-plot-gts] dataReceived", this.data);
+      if (this.newData > 0) {
+        this.dataChanged();
+      }
+
+    },
+    dataChanged: function() {
+      // console.debug([warp10-plot-gts] dataChanged", this.data);
+      if (this.data != null) {
+        nv.addGraph(this.addGraph());
+      } else {
+        this.removeGraph();
+      }
+    },
+    vertGuideChanged: function(event) {
+      if (this.vertGuide >0) {
+        this.$.vertGuide.style.display = "inline-block";
+        this.$.vertGuide.style.left = this.vertGuide+"px";
+      } else {
+        this.$.vertGuide.style.display = "none";
+      }
+    },
+    getCurrentPoint: function(dataset){
+      //console.log("Data: ", dataset);
+      //console.log("Selection", Polymer.dom(this.$.svg).querySelector('.nv-lineChart'));
+      //console.log("Mouse", d3.mouse(Polymer.dom(this.$.svg).querySelector('.nv-lineChart'))[0]);
+
+      var singlePoint, pointIndex, pointXLocation, allData = [];
+      var lines = this.chart.lines;
+
+      var xScale = this.chart.xAxis.scale();
+      var yScale = this.chart.yAxis.scale();
+      var mouseCoords = d3.mouse(Polymer.dom(this.$.svg).querySelector('.nv-lineChart'));
+      var pointXValue = xScale.invert(mouseCoords[0]);
+
+      //// console.debug("[warp10-plot-gts] Point X value", pointXValue);
+
+      dataset
+        .filter(function(series, i) {
+          series.seriesIndex = i;
+          return !series.disabled;
+        })
+        .forEach(function(series,i) {
+          pointIndex = nv.interactiveBisect(series.values, pointXValue, lines.x());
+          lines.highlightPoint(i, pointIndex, true);
+
+          var point = series.values[pointIndex];
+
+          if (typeof point === 'undefined') return;
+          if (typeof singlePoint === 'undefined') singlePoint = point;
+          if (typeof pointXLocation === 'undefined')
+            pointXLocation = xScale(lines.x()(point,pointIndex));
+
+          allData.push({
+              key: series.key,
+              value: lines.y()(point, pointIndex),
+              color: lines.color()(series,series.seriesIndex)
+          });
+        });
+
+      var xValue = this.chart.xAxis.tickFormat()( lines.x()(singlePoint,pointIndex) );
+
+      this.currentValues = {
+        xValue: xValue,
+        yValues: allData
+      };
+      //console.log("Current value", this.currentValues);
+    },
+    showTooltip: function(){
+      // [TO-DO]
+      /*
+      if (scope.plottingTools.data.length < scope.maxGtsInTooltip) {
+        return true;
+      }
+      return false;
+      */
+      return true;
+    },
+    tooltipContent: function(context) {
+      return function(d){
+
+        // console.debug([warp10-plot-gts] _tooltipContent called");
+
+        var contentBody, contentHeader, contentLine, div, headerEnabled,
+          headerFormatter, html, keyFormatter, valueFormatter;
+
+        if (d == null) {
+          return '';
+        }
+
+        headerEnabled = true;
+
+        valueFormatter = function(d, i) {
+          return d;
+        };
+
+        headerFormatter = function(d) {
+          return d3.time.format.utc('%Y-%m-%dT%H:%M:%SZ')(new Date(d));
+        };
+
+        keyFormatter = function(d, i) {
+          var classname, html, labels, splitted;
+          splitted = d.split(/[{}]/);
+          if (splitted.length == 0) {
+            return "";
+          }
+          classname = splitted[0];
+          html = "<span class='gts-classname'>" + classname + "</span>";
+          if ((splitted.length > 1) && (splitted[1] != "")) {
+            html += "<span class='gts-separator'>{</span>";
+            labels = [];
+            splitted[1].split(',').forEach(function(it) {
+              var item;
+              item = it.split(':');
+              return labels.push("<span class='gts-labelname'>" + (item[0].replace(/"(.*)"/, '$1')) + "</span><span class='gts-separator'>=</span><span class='gts-labelvalue'>" + (item[1].replace(/"(.*)"/, '$1')) + "</span>");
+            });
+            html += labels.join("<span class='gts-separator'>,</span>");
+            html += "<span class='gts-separator'>}</span>";
+          }
+          return html;
+        };
+
+        div = d3.select(document.createElement("div"));
+        div.classed("quantum-tooltip-content", true);
+        if (headerEnabled) {
+          contentHeader = div.selectAll("header").data([d]).enter().append("header");
+          contentHeader.html(headerFormatter(d.value));
+        }
+        if (context.showTooltip()) {
+          contentBody = div.selectAll("section").data([d]).enter().append("section");
+          contentLine = contentBody.selectAll("div").data(function(p) {
+            return p.series;
+          }).enter().append("div").classed("gts-line", true);
+          contentLine.append("div").classed("legend-color-guide", true).append("div").style("background-color", function(p) {
+            return p.color;
+          });
+          contentLine.append("div").classed("key", true).classed("total", function(p) {
+            return !!p.total;
+          }).html(function(p, i) {
+            return keyFormatter(p.key, i);
+          });
+          contentLine.append("div").classed("value", true).html(function(p, i) {
+            return valueFormatter(p.value, i);
+          });
+        }
+        html = div.node().outerHTML;
+        if (d.footer != null) {
+          html += "<div class='footer'>" + d.footer + "</div>";
+        }
+        return html;
+
+      }
+    }
+  });
+</script>
 <dom-module id="warp10-image-overlay" assetpath="../dist/warp10-quantum/">
 
   <style>
@@ -29426,50 +29495,38 @@ context. You should place this element as a child of `<body>` whenever possible.
   });
 })();
 </script>
-<dom-module id="warp10-simple-overlay" assetpath="../dist/warp10-iron/">
-
-  <style>
-    :host {
-      background: white;
-      color: black;
-      padding: 24px;
-      box-shadow: rgba(0, 0, 0, 0.24) -2.3408942051048403px 5.524510324047423px 12.090680100755666px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
-    }
-  </style>
-
-  <template>
-    <content></content>
-  </template>
-
-</dom-module>
-
-<script>
-(function() {
-  Polymer({
-    is: 'warp10-simple-overlay',
-    properties: {
-    },
-    behaviors: [
-      Polymer.IronOverlayBehavior
-    ],
-    attached: function() {
-      console.debug('[warp10-simple-overlay] attached');
-    }
-  });
-})();
-</script>
 <dom-module id="warp10-warpscript-plot" assetpath="../dist/warp10-quantum/">
   <template>
     <style>
       :host {
         display: block;
       }
-      .overlayGtsSelectorBox {
+      .overlayGtsSelectorBox, .overlayGtsRegexBox {
         display:flex;
         flex-flow: row;
         justify-content: center;
       }
-      .overlayGtsSelector  {
+      .overlayGtsSelector, .overlayGtsRegex  {
+      }
+      .overlayBox {
+        display:flex;
+        flex-flow: row;
+        justify-content: center;
+        font-size: 1.2em;
+      }
+      .overlayContent  {
+      }
+      .hotkey-key {
+        background-color: #333;
+        border: 1px solid #333;
+        border-radius: 5px;
+        box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
+        color: #fff;
+        display: inline-block;
+        font-size: 1em;
+        margin-right: 5px;
+        padding: 5px 9px;
+        text-align: center;
       }
     </style>
 
@@ -29477,7 +29534,24 @@ context. You should place this element as a child of `<body>` whenever possible.
     <iron-a11y-keys target="[[target]]" keys="k up" on-keys-pressed="hotkeyUp"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="j down" on-keys-pressed="hotkeyDown"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="space" on-keys-pressed="hotkeySpace"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="r" on-keys-pressed="hotkeyR"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="a" on-keys-pressed="hotkeyAll"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="n" on-keys-pressed="hotkeyNone"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="r" on-keys-pressed="hotkeyReload"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="/ help:keypress" on-keys-pressed="hotkeyRegex"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="enter" on-keys-pressed="hotkeyRegexEnter"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="h ?:keypress" on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    <warp10-simple-overlay id="warpscript-plot-keyboard-shortcuts-overlay">
+      <div class="overlay-box">
+        <h4>Keyboard Shortcuts:</h4>
+        <p><span class="hotkey-key">?</span> Show / hide this help menu</p>
+        <p><span class="hotkey-key">r</span> Reload data</p>
+        <p><span class="hotkey-key">k</span>, <span class="hotkey-key">up</span> Selection up</p>
+        <p><span class="hotkey-key">j</span>, <span class="hotkey-key">down</span> Selection down</p>
+        <p><span class="hotkey-key">space</span> Select/unselect</p>
+        <p><span class="hotkey-key">a</span> Select all</p>
+        <p><span class="hotkey-key">n</span> Select none</p>
+      </div>
+    </warp10-simple-overlay>
 
     <warp10-image-overlay id="image-overlay"></warp10-image-overlay>
     <spinner-widget shown="{{loading}}" spinner-width="100%" spinner-height="200px"></spinner-widget>
@@ -29495,6 +29569,17 @@ context. You should place this element as a child of `<body>` whenever possible.
         </div>
       </div>
     </warp10-simple-overlay>
+
+    <warp10-simple-overlay id="gts-regex-overlay">
+      <div class="overlayGtsRegexBox">
+        <div class="overlayGtsRegex">
+          <div>Regex selector</div>
+          <input autofocus="" id="regexInput" value="{{_currentRegex::input}}">
+          <div class="btn btn-primary" on-click="selectRegex">Select</div>
+        </div>
+      </div>
+    </warp10-simple-overlay>
+
 
     <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}">
     </warp10-warpscript-caller>
@@ -29552,6 +29637,10 @@ context. You should place this element as a child of `<body>` whenever possible.
       _baseUrl: {
         type: String,
         computed: "_getBaseUrl(backend,execEndpoint)"
+      },
+      _currentRegex: {
+        type: String,
+        observer: "_currentRegexChanged"
       }
     },
     listeners: {
@@ -29564,9 +29653,22 @@ context. You should place this element as a child of `<body>` whenever possible.
       document.addEventListener('plotted-changed', function (e) {
         this.dataToPlot = e.detail;
         this.newData++;
-        console.log(e.detail);
+        console.debug(e.detail);
       }.bind(this));
       */
+      this.$$('#gts-regex-overlay').addEventListener('iron-overlay-closed', this.hideRegexOverlay.bind(this));
+      this.$$('#gts-regex-overlay').addEventListener('iron-overlay-opened', this._regexModeOpened.bind(this));
+    },
+    _regexModeOpened: function(e) {
+      this._regexModeJustOpened = true;
+    },
+    _currentRegexChanged: function() {
+      if (!this._regexModeJustOpened) {
+        return;
+      }
+      this._regexModeJustOpened = false;
+      console.debug("[warp10-warpscript-plot] _currentRegexChanged");
+      this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
     },
     _getBaseUrl: function() {
       return this.backend + this.execEndpoint;
@@ -29589,19 +29691,15 @@ context. You should place this element as a child of `<body>` whenever possible.
     plottedChanged: function(e) {
       this.dataToPlot = e.detail;
       this.newData++;
-      // console.debug([warp10-warpscript-plot] plotedChanged", e.detail);
+      // console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
     },
     init: function() {
-      // console.debug([warp10-warpscript-plot attached() - this.data", this.data);
-
-      // Regex mode   TO-DO
-      this.currentRegex = "";
-      this.regexMode = false;
+      // console.debug("[warp10-warpscript-plot attached() - this.data", this.data);
 
       this.stackedGtsListHalfLimit = 3;
 
       this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
-      console.log("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
+      console.debug("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
 
       // Overlay conf for selection TO-DO
       this.overlay = {};
@@ -29612,7 +29710,7 @@ context. You should place this element as a child of `<body>` whenever possible.
           window.clearTimeout(this.overlay.timer);
         }
         this.overlay.timer = window.setTimeout(function() {
-          //this.hideSelectionOverlay();
+          this.hideSelectionOverlay();
         }.bind(this), this.overlay.lifetime);
       }.bind(this);
     },
@@ -29637,84 +29735,135 @@ context. You should place this element as a child of `<body>` whenever possible.
     },
     selectRegex: function() {
       var gts, i, len, ref;
-      // console.debug([warp10-warpscript-plot] selectRegex called with regex", "/" + this.currentRegex + "/");
+      console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
       ref = this.stackedGtsList;
       for (i = 0, len = ref.length; i < len; i++) {
         gts = ref[i];
-        if (gtsTools.serializeGtsMetadata(gts).match("" + this.currentRegex)) {
+        if (gtsTools.serializeGtsMetadata(gts).match("" + this._currentRegex)) {
+          // console.debug("[warp10-warpscript-plot] gts selected by regex", gtsTools.serializeGtsMetadata(gts))
           // TO-DO this.addToPlot(gts);
+          plottingTools.add(gts);
         }
-      }
-      this.regexMode = false;
-      return this.currentRegex = "";
-    },
-
-
-
-    showSelectionOverlay: function(e) {
-      var id = 'gts-select-overlay'
-      var dialog = document.getElementById(id);
-      if (dialog) {
-        dialog.open();
-      }
-    },
-    hideSelectionOverlay: function(e) {
-      var id = 'gts-select-overlay'
-      var dialog = document.getElementById(id);
-      if (dialog) {
-        dialog.close();
-      }
-    },
-
-    hotkeyUp: function(e) {
-      // console.debug([warp10-warpscript-plot] hotkey up");
-      this.regexMode = false;
-      this.showSelectionOverlay();
-      this.overlay.timerActivate();
-      if ((this.selectedGts == null) || this.selectedGts < 0) {
-        this.selectedGts = 0;
-      }
-      if (this.selectedGts > 0) {
-        this.selectedGts -= 1;
-      }
-    },
-    hotkeyDown: function(e) {
-      // console.debug([warp10-warpscript-plot] hotkey down");
-      this.regexMode = false;
-      this.showSelectionOverlay();
-      this.overlay.timerActivate();
-      if ((this.selectedGts == null) || this.selectedGts < 0) {
-        this.selectedGts = 0;
-      } else {
-        if (this.stackedGtsList.length > this.selectedGts + 1) {
-          this.selectedGts += 1;
-          console.log("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
-        }
-      }
-    },
-    hotkeySpace: function(e) {
-      // console.debug([warp10-warpscript-plot] hotkey space");
-      this.regexMode = false;
-      this.selectedMode = true;
-      this.overlay.timerActivate();
-      if (this.selectedGts < 0) {
-        this.selectedGts = 0;
-      }
-      var gts = this.stackedGtsList[this.selectedGts];
-      if (!plottingTools.isPlotted(gts)) {
-        plottingTools.add(gts);
-        console.log("[warp10-warpscript-plot] addToPlot", plottingTools);
-      } else {
-        plottingTools.remove(gts);
-        console.log("[warp10-warpscript-plot] removeFromPlot", plottingTools);
       }
       this.changed++;
       this.fire('plotted-changed', plottingTools);
-      //return this.switchPlotState(this.getStackedGtsList[this.selectedGts]);
+      this.hideRegexOverlay();
     },
-    hotkeyR: function(e) {
-      // console.debug([warp10-warpscript-plot] hotkey r");
-      this.call++;
+    showSelectionOverlay: function(e) {
+      this.selectedMode = true;
+      this.$$('#gts-select-overlay').open();
+      this.overlay.timerActivate();
+    },
+    showRegexOverlay: function(e) {
+      this._regexMode = true;
+      this._regexJustShown = true;
+      this.$$('#gts-regex-overlay').open();
+    },
+    hideSelectionOverlay: function(e) {
+      this.selectedMode = false;
+      this.$$('#gts-select-overlay').close()
+    },
+    hideRegexOverlay: function(e) {
+      this._regexMode = false;
+      this.$$('#gts-regex-overlay').close();
+    },
+
+    hotkeyUp: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        // console.debug([warp10-warpscript-plot] hotkey up");
+        this.showSelectionOverlay();
+        if ((this.selectedGts == null) || this.selectedGts < 0) {
+          this.selectedGts = 0;
+        }
+        if (this.selectedGts > 0) {
+          this.selectedGts -= 1;
+        }
+      }
+    },
+    hotkeyDown: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        // console.debug([warp10-warpscript-plot] hotkey down");
+        this.showSelectionOverlay();
+        if ((this.selectedGts == null) || this.selectedGts < 0) {
+          this.selectedGts = 0;
+        } else {
+          if (this.stackedGtsList.length > this.selectedGts + 1) {
+            this.selectedGts += 1;
+            console.debug("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
+          }
+        }
+      }
+    },
+    hotkeyRegex: function(e) {
+      if (this.plot > 0) {
+        console.debug("[warp10-warpscript-plot] hotkeyRegex");
+        this.showRegexOverlay();
+      }
+    },
+    hotkeyRegexEnter: function(e) {
+      if (this.plot > 0 && this._regexMode) {
+        console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
+        this.selectRegex();
+      }
+    },
+    hotkeySpace: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        this.showSelectionOverlay();
+        if (this.selectedGts < 0) {
+          this.selectedGts = 0;
+        }
+        var gts = this.stackedGtsList[this.selectedGts];
+        if (!plottingTools.isPlotted(gts)) {
+          plottingTools.add(gts);
+          console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+        } else {
+          plottingTools.remove(gts);
+          console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+        }
+        this.changed++;
+        this.fire('plotted-changed', plottingTools);
+        //return this.switchPlotState(this.getStackedGtsList[this.selectedGts]);
+      }
+    },
+    hotkeyAll: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        console.debug("[warp10-warpscript-plot] hotkeyAll")
+        for (var i in this.stackedGtsList) {
+            var gts = this.stackedGtsList[i];
+            if (!plottingTools.isPlotted(gts)) {
+              plottingTools.add(gts);
+              console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+            }
+        }
+        this.changed++;
+        this.fire('plotted-changed', plottingTools);
+      }
+    },
+    hotkeyNone: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        console.debug("[warp10-warpscript-plot] hotkeyNone")
+        for (var i in this.stackedGtsList) {
+            var gts = this.stackedGtsList[i];
+            if (plottingTools.isPlotted(gts)) {
+              plottingTools.remove(gts);
+              console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+            }
+        }
+        this.changed++;
+        this.fire('plotted-changed', plottingTools);
+      }
+    },
+    hotkeyReload: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        // console.debug([warp10-warpscript-plot] hotkey r");
+        this.call++;
+      }
+    },
+    hotkeyHelp: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        console.debug("[warp10-warpscript-plot] hotkeyHelp")
+        this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
+      }
     },
   });
 </script>
@@ -29812,7 +29961,7 @@ context. You should place this element as a child of `<body>` whenever possible.
         return "";
       }
       if (this.stackedGtsList[this.selectedGts].id === this.gts.id) {
-        console.log("[warp10-warpscript-plot] Selected gts", this.gts.id);
+        console.debug("[warp10-warpscript-plot] Selected gts", this.gts.id);
         return "background-color:rgba(200,200,200,0.5);";
       }
       return "";
@@ -30905,7 +31054,7 @@ WarpScript IDE and plot viewer
           </button>
         </div>
         <h4>Plot</h4>
-        <warp10-warpscript-plot id="plot-widget" data="{{data}}" backend="{{backend}}" exec-endpoint="{{execEndpoint}}" warpscript="{{warpscript}}"></warp10-warpscript-plot>
+        <warp10-warpscript-plot id="plot-widget" data="{{data}}" plot="{{plot}}" backend="{{backend}}" exec-endpoint="{{execEndpoint}}" warpscript="{{warpscript}}"></warp10-warpscript-plot>
         </div>
       
     </template>

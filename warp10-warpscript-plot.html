@@ -14,12 +14,12 @@
       :host {
         display: block;
       }
-      .overlayGtsSelectorBox {
+      .overlayGtsSelectorBox, .overlayGtsRegexBox {
         display:flex;
         flex-flow: row;
         justify-content: center;
       }
-      .overlayGtsSelector  {
+      .overlayGtsSelector, .overlayGtsRegex  {
       }
       .overlayBox {
         display:flex;
@@ -44,13 +44,15 @@
     </style>
 
 
-    <iron-a11y-keys target="[[target]]" keys="k up"         on-keys-pressed="hotkeyUp"  ></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="j down"       on-keys-pressed="hotkeyDown"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="space"        on-keys-pressed="hotkeySpace"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="a"            on-keys-pressed="hotkeyAll"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="n"            on-keys-pressed="hotkeyNone"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="r"            on-keys-pressed="hotkeyReload"></iron-a11y-keys>
-    <iron-a11y-keys target="[[target]]" keys="h ?:keypress" on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="k up"     on-keys-pressed="hotkeyUp"  ></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="j down"   on-keys-pressed="hotkeyDown"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="space"    on-keys-pressed="hotkeySpace"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="a"        on-keys-pressed="hotkeyAll"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="n"        on-keys-pressed="hotkeyNone"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="r"        on-keys-pressed="hotkeyReload"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="/ help:keypress"  on-keys-pressed="hotkeyRegex" ></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="enter"  on-keys-pressed="hotkeyRegexEnter"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="h ?:keypress"     on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
     <warp10-simple-overlay id="warpscript-plot-keyboard-shortcuts-overlay">
       <div class="overlay-box">
         <h4>Keyboard Shortcuts:</h4>
@@ -87,6 +89,17 @@
         </div>
       </div>
     </warp10-simple-overlay>
+
+    <warp10-simple-overlay id="gts-regex-overlay">
+      <div class="overlayGtsRegexBox">
+        <div class="overlayGtsRegex">
+          <div>Regex selector</div>
+          <input autofocus id="regexInput" value="{{_currentRegex::input}}">
+          <div class="btn btn-primary" on-click="selectRegex">Select</div>
+        </div>
+      </div>
+    </warp10-simple-overlay>
+
 
     <warp10-warpscript-caller
       id="warpscript-caller"
@@ -148,6 +161,10 @@
       _baseUrl: {
         type: String,
         computed: "_getBaseUrl(backend,execEndpoint)"
+      },
+      _currentRegex: {
+        type: String,
+        observer: "_currentRegexChanged"
       }
     },
     listeners: {
@@ -163,6 +180,19 @@
         console.debug(e.detail);
       }.bind(this));
       */
+      this.$$('#gts-regex-overlay').addEventListener('iron-overlay-closed', this.hideRegexOverlay.bind(this));
+      this.$$('#gts-regex-overlay').addEventListener('iron-overlay-opened', this._regexModeOpened.bind(this));
+    },
+    _regexModeOpened: function(e) {
+      this._regexModeJustOpened = true;
+    },
+    _currentRegexChanged: function() {
+      if (!this._regexModeJustOpened) {
+        return;
+      }
+      this._regexModeJustOpened = false;
+      console.debug("[warp10-warpscript-plot] _currentRegexChanged");
+      this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
     },
     _getBaseUrl: function() {
       return this.backend + this.execEndpoint;
@@ -185,14 +215,10 @@
     plottedChanged: function(e) {
       this.dataToPlot = e.detail;
       this.newData++;
-      // console.debug([warp10-warpscript-plot] plotedChanged", e.detail);
+      // console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
     },
     init: function() {
-      // console.debug([warp10-warpscript-plot attached() - this.data", this.data);
-
-      // Regex mode   TO-DO
-      this.currentRegex = "";
-      this.regexMode = false;
+      // console.debug("[warp10-warpscript-plot attached() - this.data", this.data);
 
       this.stackedGtsListHalfLimit = 3;
 
@@ -208,7 +234,7 @@
           window.clearTimeout(this.overlay.timer);
         }
         this.overlay.timer = window.setTimeout(function() {
-          //this.hideSelectionOverlay();
+          this.hideSelectionOverlay();
         }.bind(this), this.overlay.lifetime);
       }.bind(this);
     },
@@ -233,41 +259,43 @@
     },
     selectRegex: function() {
       var gts, i, len, ref;
-      // console.debug([warp10-warpscript-plot] selectRegex called with regex", "/" + this.currentRegex + "/");
+      console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
       ref = this.stackedGtsList;
       for (i = 0, len = ref.length; i < len; i++) {
         gts = ref[i];
-        if (gtsTools.serializeGtsMetadata(gts).match("" + this.currentRegex)) {
+        if (gtsTools.serializeGtsMetadata(gts).match("" + this._currentRegex)) {
+          // console.debug("[warp10-warpscript-plot] gts selected by regex", gtsTools.serializeGtsMetadata(gts))
           // TO-DO this.addToPlot(gts);
+          plottingTools.add(gts);
         }
       }
-      this.regexMode = false;
-      return this.currentRegex = "";
+      this.changed++;
+      this.fire('plotted-changed', plottingTools);
+      this.hideRegexOverlay();
     },
-
-
-
     showSelectionOverlay: function(e) {
-      var id = 'gts-select-overlay'
-      var dialog = document.getElementById(id);
-      if (dialog) {
-        dialog.open();
-      }
+      this.selectedMode = true;
+      this.$$('#gts-select-overlay').open();
+      this.overlay.timerActivate();
+    },
+    showRegexOverlay: function(e) {
+      this._regexMode = true;
+      this._regexJustShown = true;
+      this.$$('#gts-regex-overlay').open();
     },
     hideSelectionOverlay: function(e) {
-      var id = 'gts-select-overlay'
-      var dialog = document.getElementById(id);
-      if (dialog) {
-        dialog.close();
-      }
+      this.selectedMode = false;
+      this.$$('#gts-select-overlay').close()
+    },
+    hideRegexOverlay: function(e) {
+      this._regexMode = false;
+      this.$$('#gts-regex-overlay').close();
     },
 
     hotkeyUp: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         // console.debug([warp10-warpscript-plot] hotkey up");
-        this.regexMode = false;
         this.showSelectionOverlay();
-        this.overlay.timerActivate();
         if ((this.selectedGts == null) || this.selectedGts < 0) {
           this.selectedGts = 0;
         }
@@ -277,11 +305,9 @@
       }
     },
     hotkeyDown: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         // console.debug([warp10-warpscript-plot] hotkey down");
-        this.regexMode = false;
         this.showSelectionOverlay();
-        this.overlay.timerActivate();
         if ((this.selectedGts == null) || this.selectedGts < 0) {
           this.selectedGts = 0;
         } else {
@@ -292,13 +318,21 @@
         }
       }
     },
-    hotkeySpace: function(e) {
+    hotkeyRegex: function(e) {
       if (this.plot > 0) {
-
-        // console.debug([warp10-warpscript-plot] hotkey space");
-        this.regexMode = false;
-        this.selectedMode = true;
-        this.overlay.timerActivate();
+        console.debug("[warp10-warpscript-plot] hotkeyRegex");
+        this.showRegexOverlay();
+      }
+    },
+    hotkeyRegexEnter: function(e) {
+      if (this.plot > 0 && this._regexMode) {
+        console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
+        this.selectRegex();
+      }
+    },
+    hotkeySpace: function(e) {
+      if (this.plot > 0 && !this._regexMode) {
+        this.showSelectionOverlay();
         if (this.selectedGts < 0) {
           this.selectedGts = 0;
         }
@@ -316,7 +350,7 @@
       }
     },
     hotkeyAll: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         console.debug("[warp10-warpscript-plot] hotkeyAll")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
@@ -330,7 +364,7 @@
       }
     },
     hotkeyNone: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         console.debug("[warp10-warpscript-plot] hotkeyNone")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
@@ -344,17 +378,15 @@
       }
     },
     hotkeyReload: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         // console.debug([warp10-warpscript-plot] hotkey r");
         this.call++;
       }
     },
     hotkeyHelp: function(e) {
-      if (this.plot > 0) {
+      if (this.plot > 0 && !this._regexMode) {
         console.debug("[warp10-warpscript-plot] hotkeyHelp")
-        if (this.$$("#warpscript-plot-keyboard-shortcuts-overlay")) {
-          this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
-        }
+        this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
       }
     },
   });
