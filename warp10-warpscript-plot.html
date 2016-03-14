@@ -6,7 +6,7 @@
 <link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
-<link rel="import" href="../spinner-widget/spinner-widget.html">
+<link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 
 <dom-module id="warp10-warpscript-plot">
   <template>
@@ -68,7 +68,8 @@
     </warp10-simple-overlay>
 
     <warp10-image-overlay id="image-overlay"></warp10-image-overlay>
-    <spinner-widget shown="{{loading}}" spinner-width="100%" spinner-height="200px"></spinner-widget>
+
+    <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed={{changed}}></warp10-gts-tree>
     <warp10-plot-gts
       height = "500"
