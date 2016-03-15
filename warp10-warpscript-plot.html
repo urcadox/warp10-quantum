@@ -195,6 +195,7 @@
       this._regexModeJustOpened = false;
       console.debug("[warp10-warpscript-plot] _currentRegexChanged");
       this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
+      this.$$("#regexInput").select();
     },
     _getBaseUrl: function() {
       return this.backend + this.execEndpoint;
