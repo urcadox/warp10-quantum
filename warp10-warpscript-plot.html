@@ -200,9 +200,11 @@
       return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
+      console.debug("[warp10-warpscript-plot] dataChanged", this.data);
       if (this.data !== null) {
-        // console.debug([warp10-warpscript-plot] dataChanged");
+        console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
         plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
+        this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
         this.newData ++;
       }
     },
