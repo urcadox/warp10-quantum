@@ -26384,7 +26384,7 @@ nv.version = "1.8.2";
 
         return value;
       })
-      .replace(/"__BigInt__([0-9.-]*)__"/g, '$1')
+      .replace(/"__BigInt__([0-9.-eE]*)__"/g, '$1')
       .replace(/"__NaN__"/g, 'NaN')
       .replace(/"__Infinity__"/g, 'Infinity')
       .replace(/"__-Infinity__"/g, '-Infinity');
@@ -27004,6 +27004,10 @@ nv.version = "1.8.2";
       switch (json.length) {
         case 2:
           metric.value = json[1];
+          break;
+        case 3:
+          metric.alt = json[1];
+          metric.value = json[2];
           break;
         case 4:
           metric.lat = json[1];
