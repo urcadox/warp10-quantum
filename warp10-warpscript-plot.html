@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../warp10-quantum/warp10-gts-tree.html">
 <link rel="import" href="../warp10-quantumviz/warp10-display-alt-chart.html">
+<link rel="import" href="../warp10-quantumviz/quantumviz-annotations.html">
 <link rel="import" href="../warp10-quantum/warp10-image-overlay.html">
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
@@ -13,6 +14,16 @@
     <style>
       :host {
         display: block;
+        position: relative;
+      }
+      #vertGuide {
+        width:0px;
+        height: 100%;
+        border: solid 1px #aaaaaa;
+        z-index: 500;
+        position: absolute;
+        left: 250px;
+        display: none;
       }
       .overlayGtsSelectorBox, .overlayGtsRegexBox {
         display:flex;
@@ -71,14 +82,29 @@
 
     <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed={{changed}}></warp10-gts-tree>
+
     
+    <div id="vertGuide"></div>
+
+    <quantumviz-annotations
+      id="warp10-quantumviz-annotations"
+      time-bounds="{{timeBounds}}"
+      chart-area="{{chartArea}}"
+      data="{{dataToPlot}}"
+      vert-guide="{{vertGuide}}"
+      width="{{_displayWidth}}"
+      selected-timestamp="{{annotationsSelectedTimestamp}}"
+      >
+    </quantumviz-annotations>
     
     <warp10-display-chart
       id="warp10-display-chart"
-      width={{_displayWidth}}
+      width="{{_displayWidth}}"
       height="500"
-      data={{dataToPlot}}
-      current-values={{currentValues}}
+      data="{{dataToPlot}}"
+      current-values="{{currentValues}}"
+      time-bounds="{{timeBounds}}"
+      chart-area="{{chartArea}}"
       ></warp10-display-chart>
     
 
@@ -150,6 +176,10 @@
         type: Array,
         observer: "responseChanged"
       },
+      vertGuide: {
+        type: Number,
+        observer: 'vertGuideChanged'
+      },
       selectedGts: {
         type: Number,
         value: -1
@@ -185,7 +215,7 @@
       document.addEventListener('plotted-changed', function (e) {
         this.dataToPlot = e.detail;
         this.newData++;
-        console.debug(e.detail);
+        // console.debug(e.detail);
       }.bind(this));
       */
       this.$$('#gts-regex-overlay').addEventListener('iron-overlay-closed', this.hideRegexOverlay.bind(this));
@@ -203,7 +233,7 @@
         return;
       }
       this._regexModeJustOpened = false;
-      console.debug("[warp10-warpscript-plot] _currentRegexChanged");
+      // console.debug("[warp10-warpscript-plot] _currentRegexChanged");
       this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
       this.$$("#regexInput").select();
     },
@@ -211,9 +241,9 @@
       return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
-      console.debug("[warp10-warpscript-plot] dataChanged", this.data);
+      // console.debug("[warp10-warpscript-plot] dataChanged", this.data);
       if (this.data !== null) {
-        console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
+        // console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
         plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
         this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
         this.newData ++;
@@ -227,11 +257,22 @@
         this.data = null;
       }
     },
+    vertGuideChanged: function(event) {
+      if (this.vertGuide >0) {
+        this.$.vertGuide.style.display = "inline-block";
+        this.$.vertGuide.style.left = this.vertGuide+"px";
+      } else {
+        // this.$.vertGuide.style.display = "none";
+      }
+    },
     plottedChanged: function(e) {
+      
       this.dataToPlot = e.detail.data;
+      
       this.newData++;
       this.$$('#warp10-display-chart').dataChanged();
-      console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
+      this.$$("#warp10-quantumviz-annotations").dataChanged();
+      // console.debug("[warp10-warpscript-plot] plottedChanged", e.detail);
     },
     init: function() {
       // console.debug("[warp10-warpscript-plot attached() - this.data", this.data);
@@ -239,7 +280,7 @@
       this.stackedGtsListHalfLimit = 3;
 
       this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
-      console.debug("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
+      // console.debug("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
 
       // Overlay conf for selection TO-DO
       this.overlay = {};
@@ -275,7 +316,7 @@
     },
     selectRegex: function() {
       var gts, i, len, ref;
-      console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
+      // console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
       ref = this.stackedGtsList;
       for (i = 0, len = ref.length; i < len; i++) {
         gts = ref[i];
@@ -329,20 +370,20 @@
         } else {
           if (this.stackedGtsList.length > this.selectedGts + 1) {
             this.selectedGts += 1;
-            console.debug("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
+            // console.debug("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
           }
         }
       }
     },
     hotkeyRegex: function(e) {
       if (this.plot > 0) {
-        console.debug("[warp10-warpscript-plot] hotkeyRegex");
+        // console.debug("[warp10-warpscript-plot] hotkeyRegex");
         this.showRegexOverlay();
       }
     },
     hotkeyRegexEnter: function(e) {
       if (this.plot > 0 && this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
+        // console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
         this.selectRegex();
       }
     },
@@ -355,10 +396,10 @@
         var gts = this.stackedGtsList[this.selectedGts];
         if (!plottingTools.isPlotted(gts)) {
           plottingTools.add(gts);
-          console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+          // console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
         } else {
           plottingTools.remove(gts);
-          console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+          // console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
         }
         this.changed++;
         this.fire('plotted-changed', plottingTools);
@@ -367,12 +408,12 @@
     },
     hotkeyAll: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyAll")
+        // console.debug("[warp10-warpscript-plot] hotkeyAll")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
             if (!plottingTools.isPlotted(gts)) {
               plottingTools.add(gts);
-              console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+              // console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
             }
         }
         this.changed++;
@@ -381,12 +422,12 @@
     },
     hotkeyNone: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyNone")
+        // console.debug("[warp10-warpscript-plot] hotkeyNone")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
             if (plottingTools.isPlotted(gts)) {
               plottingTools.remove(gts);
-              console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+              // console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
             }
         }
         this.changed++;
@@ -401,7 +442,7 @@
     },
     hotkeyHelp: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyHelp")
+        // console.debug("[warp10-warpscript-plot] hotkeyHelp")
         this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
       }
     },
@@ -501,7 +542,7 @@
         return "";
       }
       if (this.stackedGtsList[this.selectedGts].id === this.gts.id) {
-        console.debug("[warp10-warpscript-plot] Selected gts", this.gts.id);
+        // console.debug("[warp10-warpscript-plot] Selected gts", this.gts.id);
         return "background-color:rgba(200,200,200,0.5);";
       }
       return "";
