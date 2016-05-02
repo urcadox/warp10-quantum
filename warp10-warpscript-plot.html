@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../warp10-quantum/warp10-gts-tree.html">
-<link rel="import" href="../warp10-quantum/warp10-plot-gts.html">
+<link rel="import" href="../warp10-quantumviz/warp10-display-alt-chart.html">
 <link rel="import" href="../warp10-quantum/warp10-image-overlay.html">
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
@@ -71,11 +71,16 @@
 
     <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed={{changed}}></warp10-gts-tree>
-    <warp10-plot-gts
-      height = "500"
-      show-axis="true"  tooltip="true" line-width="2" reload="0"
-      data="{{dataToPlot}}" new-data="{{newData}}">
-    </warp10-plot-gts>
+    
+    
+    <warp10-display-chart
+      id="warp10-display-chart"
+      width={{_displayWidth}}
+      height="500"
+      data={{dataToPlot}}
+      current-values={{currentValues}}
+      ></warp10-display-chart>
+    
 
     <warp10-simple-overlay id="gts-select-overlay">
       <div class="overlayGtsSelectorBox">
@@ -175,6 +180,7 @@
     attached: function() {
       this.init();
       this.newData = 0;
+      this.dataToPlot = [];
       /*
       document.addEventListener('plotted-changed', function (e) {
         this.dataToPlot = e.detail;
@@ -184,6 +190,10 @@
       */
       this.$$('#gts-regex-overlay').addEventListener('iron-overlay-closed', this.hideRegexOverlay.bind(this));
       this.$$('#gts-regex-overlay').addEventListener('iron-overlay-opened', this._regexModeOpened.bind(this));
+      
+      
+      // console.debug("[warp10-warpscript-plot] attached - width", this.offsetWidth)
+      this._displayWidth = this.offsetWidth;
     },
     _regexModeOpened: function(e) {
       this._regexModeJustOpened = true;
@@ -218,9 +228,10 @@
       }
     },
     plottedChanged: function(e) {
-      this.dataToPlot = e.detail;
+      this.dataToPlot = e.detail.data;
       this.newData++;
-      // console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
+      this.$$('#warp10-display-chart').dataChanged();
+      console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
     },
     init: function() {
       // console.debug("[warp10-warpscript-plot attached() - this.data", this.data);
