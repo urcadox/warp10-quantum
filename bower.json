@@ -24,16 +24,15 @@
   "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#~1.4.0",
-    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.1.5",
-    "warp10-iron": "cityzendata/warp10-iron#1.0.9",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.1.6",
+    "warp10-iron": "cityzendata/warp10-iron#1.0.12",
     "warp10-navbar": "cityzendata/warp10-navbar#1.0.0-rc3",
     "ace-widget": "LostInBrittany/ace-widget#~1.0.9",
     "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#~1.0.4",
     "iron-input": "PolymerElements/iron-input#~1.0.7",
     "iron-component-page": "PolymerElements/iron-component-page#~1.1.3",
-    "excess-router": "atotic/excess-router#~0.9.11",
-    "nvd3": "LostInBrittany/nvd3#v1.8.2.1"
+    "excess-router": "atotic/excess-router#~0.9.11"
   },
   "devDependencies": {},
   "resolutions": {
