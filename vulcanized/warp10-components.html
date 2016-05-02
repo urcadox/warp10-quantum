@@ -49291,21 +49291,39 @@ nv.version = "1.8.2-dev";
   /***********************************************************************************
   * Transforms quantumviz response object into annotation objects
   ***********************************************************************************/
-  quantumvizGts.getAnnotations = function(data) {
+  quantumvizGts.getAnnotations = function(data) {    
 
+
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
+    
     if (!quantumvizGts.isValidResponse(data)) {
       return [];
     }
-    var response = data[0];
+    
+    
+    var response = {};
+    if (quantumvizGts.isValidGtsListResponse(data)) {
+      response.gts = data;
+      response.params = [];
+      for (var i in response.gts) {
+        response.params[i] = {}
+      }
+      response.globalParams = {};
+    } else {
+      response = data[0];
+    }
 
     if (!gtsTools.isArray(response.gts)) {
       return []
     }
+        
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - response", response);
 
     var annotations = [];
 
     for (var i=0; i< response.gts.length; i++) {
       // Let's verify if it's a GTS to plot
+      
       if (gtsTools.isGtsToAnnotate(response.gts[i])) {
         var annotation = quantumvizGts.gtsToNvd3(response.gts[i]);
         if ((response.params !== undefined)
@@ -49324,6 +49342,7 @@ nv.version = "1.8.2-dev";
       }
     }
 
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - annotations",annotations);
     return annotations;
   };
 
@@ -62010,7 +62029,7 @@ return smoothPlotter;
       if (this.lineWidth < this._MIN_LINE_WIDTH || this._MAX_LINE_WIDTH > 20) {
           this.lineWidth = 1.5;
       }
-       console.debug("[warp10-display-chart] configure -lineWidth", this.lineWidth);
+       // console.debug("[warp10-display-chart] configure -lineWidth", this.lineWidth);
       
     },
 
@@ -62025,19 +62044,19 @@ return smoothPlotter;
       }
     },
     _removeChartData: function() {
-      console.debug("[warp10-display-chart] _removeChartData");
+      // console.debug("[warp10-display-chart] _removeChartData");
       if (this.chart) {
         this.chart.updateOptions({file: []});
       }
     },
 
     _updateChartData: function() {
-      console.debug("[warp10-display-chart] _updateChartData", this.data);
+      // console.debug("[warp10-display-chart] _updateChartData", this.data);
       this._data2dygraphs(this.data);
     },
     _tooltipContent: function() {
 
-      console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
+      // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
       var d = this.currentValues;
 
       if (d === null) {
@@ -62135,9 +62154,9 @@ return smoothPlotter;
       
       //console.debug("[warp10-display-chart] _tooltipContent - window.innerWidth",  window.innerWidth);
       //console.debug("[warp10-display-chart] _tooltipContent - chart width",  this.$$("#chart").style.width);
-      console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect().width);
-      console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect());
-      console.debug("[warp10-display-chart] _tooltipContent - chart-tooltip getBoundingClientRect()",  this.$$(".chart-tooltip").getBoundingClientRect().width);
+      // console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect().width);
+      // console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect());
+      // console.debug("[warp10-display-chart] _tooltipContent - chart-tooltip getBoundingClientRect()",  this.$$(".chart-tooltip").getBoundingClientRect().width);
 
 
 
@@ -62170,7 +62189,7 @@ return smoothPlotter;
               top:   this.$$(".chart-tooltip").style.top
             }
 
-            console.debug("[warp10-display-chart] _tooltipContent - tooltip to center", deb);
+            // console.debug("[warp10-display-chart] _tooltipContent - tooltip to center", deb);
 
           } else {
             // Tooltip to the left
@@ -62191,7 +62210,7 @@ return smoothPlotter;
               top:   this.$$(".chart-tooltip").style.top
             }
 
-            console.debug("[warp10-display-chart] _tooltipContent - tooltip to the left", deb);
+            // console.debug("[warp10-display-chart] _tooltipContent - tooltip to the left", deb);
           }
       } else {
         // Tooltip to the right
@@ -62211,7 +62230,7 @@ return smoothPlotter;
           width:   tooltipWidth,
         }
 
-        console.debug("[warp10-display-chart] _tooltipContent - tooltip to the right", deb);
+        // console.debug("[warp10-display-chart] _tooltipContent - tooltip to the right", deb);
 
       }
 
@@ -62276,7 +62295,7 @@ return smoothPlotter;
       var context = this;
 
       if (!quantumvizGts.isValidResponse(data)) {
-        console.error("[warp10-display-chart] Received invalid data", data);
+        // console.error("[warp10-display-chart] Received invalid data", data);
         return;
       }
       
@@ -62306,7 +62325,7 @@ return smoothPlotter;
         }
       }
 
-      console.debug("[warp10-display-chart] _data2dygraphs - Filtered data to plot", filteredResponse);
+      // console.debug("[warp10-display-chart] _data2dygraphs - Filtered data to plot", filteredResponse);
 
       var sparklines = this._gts2dygraphs(filteredResponse.gts);
 
@@ -62351,6 +62370,8 @@ return smoothPlotter;
       var options = {
         file: sparklines,
         labels: labels,
+        labelsUTC: true,
+        maxNumberWidth: 12,
         colors: colors,
         legend: "never",
         gridLineColor: 'rgb(196, 196, 196)',
@@ -62432,6 +62453,380 @@ return smoothPlotter;
 
 );
 </script>
+<dom-module id="quantumviz-annotation" assetpath="../dist/warp10-quantumviz/">
+  <style>
+    :host {
+      display: block;
+    }
+    .annotation {
+      position: relative;
+      display: block;
+    }
+
+    svg {
+      display: block;
+      border: solid 1px black;
+      height: 20px;
+
+    }
+    .annotation-tooltip {
+      position: absolute;
+      min-width: 200px;
+      height: auto;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.75);
+      border-radius: 10px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .annotation-tooltip.hidden {
+        display: none;
+    }
+
+    .annotation-tooltip p {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 10pt;
+        line-height: 20px;
+    }
+    .gts-classname {
+      color: #0074D9;
+    }
+
+    .gts-labelname {
+      color: #3d9970;
+    }
+
+    .gts-separator {
+      color: #bbbbbb;
+    }
+
+    .gts-labelvalue {
+      color: #AAAAAA;
+      font-style: italic;
+    }
+  </style>
+  <template>
+    <div class="annotation">
+      <svg id="svg"></svg>
+      <div class="annotation-tooltip hidden">
+        <p><strong class="timestamp"></strong></p>
+        <p><span class="name"></span> - <span class="value"></span></p>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "quantumviz-annotation",
+    properties: {
+      width: {
+        type: Number,
+        value: -1
+      },
+      timeBounds: {
+        type: Object,
+        observer: 'contentChanged'
+      },
+      /**
+        * The chart area
+        */
+      chartArea: {
+        type: Array,
+        observer: '_changeDimensions'
+      },
+      annotation: {
+        type: Array
+      },
+      vertGuide: {
+        type: Number,
+        notify: true
+      },
+      selectedTimestamp: {
+        type: Number,
+        notify: true,
+        observer: "_selectedTimestampChanged",
+        value: -1
+      }
+    },
+    created: function() {
+      this.SVG_MARGIN_LEFT = 110;
+      this.SVG_STROKE_WIDTH = 2;
+      this.NVD3_CHART_RIGHT_MARGIN = 20;
+      this.MAX_MARKER_WIDTH = 10;
+    },
+    attached: function() {
+      this.setDimensions();
+      // console.debug("[quantumviz-annotation] attached()");
+      this.isAttached = true;
+      this.contentChanged();
+    },
+    setDimensions: function() {
+      if(this.dimensionAlreadyChanged) {
+        return;
+      }
+      // console.debug("[quantumviz-annotation] setDimensions")
+      this.$$('.annotation').style.paddingLeft = this.SVG_MARGIN_LEFT+"px"
+      // Dimensions
+      if (this.width <0) {
+        this.$$('.annotation').style.width = "100%";
+        this.$$('svg').style.width = "100%";
+      } else {
+        // this.$$('.annotation').style.width = (parseInt(this.width)+50)+"px";
+        this.$$('svg').definedWidth = parseInt(this.width)-this.SVG_MARGIN_LEFT-this.NVD3_CHART_RIGHT_MARGIN;
+        // console.debug("[quantumviz-annotation] setDimensions() - definedWidth",this.$$('svg').definedWidth);
+        this.$$('svg').style.width = this.$$('svg').definedWidth+"px";
+      }
+    },
+    _changeDimensions: function() {
+      console.debug("[quantumviz-annotation] _changeDimensions", this.chartArea)
+      this.$$('.annotation').style.paddingLeft = this.chartArea.x+"px";
+      this.$$('svg').style.width = this.chartArea.w+"px";
+      this.SVG_MARGIN_LEFT = this.chartArea.x;
+      this.dimensionAlreadyChanged = true;
+    },
+    _selectedTimestampChanged: function() {
+      // console.debug("[quantumviz-annotation] _selectedTimestampChanged", this.selectedTimestamp);
+    },
+    
+
+    
+    contentChanged: function() {
+      // console.debug("[quantumviz-annotation] Content changed");
+
+      var context = this;
+
+      if (!this.isAttached) {
+        return
+      }
+
+      // console.debug("[quantumviz-annotation] Content changed - isAttached");
+
+      var svgMarginLeft = this.SVG_MARGIN_LEFT;
+      var svgStrokeWidth = this.SVG_STROKE_WIDTH;
+
+      var annotationD3 = d3.select(context.$$('.annotation'))
+
+      var svg = annotationD3.select("svg");
+
+      var width;
+      if (this.$$('svg').definedWidth !== undefined) {
+        width = this.$$('svg').definedWidth;
+      } else if (this.$$('svg').getBoundingClientRect().width > 0) {
+        width = this.$$('svg').getBoundingClientRect().width;
+      } else {
+        width = this.$$('.annotation').getBoundingClientRect().width - this.SVG_MARGIN_LEFT-this.NVD3_CHART_RIGHT_MARGIN;
+      }
+
+
+      // console.debug("[quantumviz-annotation] timeBounds", [this.timeBounds.min, this.timeBounds.max])
+
+      var scale = d3.scale.linear()
+        .domain([this.timeBounds.min, this.timeBounds.max])
+        .range([0, width])
+
+
+      var annotation = this.annotation;
+
+      var markerWidth = width / annotation.values.length - 2
+      //console.log ("markerWidth", markerWidth)
+      if (markerWidth > this.MAX_MARKER_WIDTH ) {
+        markerWidth =  this.MAX_MARKER_WIDTH;
+      }
+      //console.log ("this.MAX_MARKER_WIDTH",this.MAX_MARKER_WIDTH)
+      //console.log ("markerWidth", markerWidth)
+
+
+      var annotationMouseover = function(d) {
+          var annotationLeftOffset = context.$.svg.getBoundingClientRect().left;
+            context.selectedTimestamp = d.x;
+
+            d3.select(this)
+              .attr("fill", "orange");
+
+
+            annotationD3.select(".annotation-tooltip")
+              .select(".timestamp")
+              .text(d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d.x)));
+
+            annotationD3.select(".annotation-tooltip")
+              .select(".name")
+              .html(keyFormatter(annotation.key));
+
+            annotationD3.select(".annotation-tooltip")
+              .select(".value")
+              .text(d.y);
+
+            //Show the tooltip
+            annotationD3.select(".annotation-tooltip").classed("hidden", false);
+
+            var tooltipWidth = annotationD3.select(".annotation-tooltip").node().getBoundingClientRect().width;
+            var xPosition = parseInt(d3.select(this).attr("x")) +  markerWidth/2 + svgStrokeWidth/2 + svgMarginLeft - tooltipWidth/2;
+            // d3.select(this).attr("x")
+            if (xPosition < 0) { xPosition = 0; }
+            //var yPosition = d3.select(this).node().getBoundingClientRect().top - 0;
+            var yPosition = 30;
+
+            //Update the tooltip position and value
+            annotationD3.select(".annotation-tooltip")
+              .style("left", xPosition + "px")
+              .style("bottom", yPosition + "px")
+
+            context.vertGuide = scale(d.x) + svgMarginLeft -svgStrokeWidth/2;
+      }
+    
+      var annotationMouseout =  function(d) {
+        context.selectedTimestamp = -1;
+            d3.select(this)
+              // .transition()
+              // .duration(125)
+              .attr("fill", annotation.color);
+            //Hide the tooltip
+            annotationD3.select(".annotation-tooltip").classed("hidden", true);
+            context.vertGuide = -1;
+      }
+
+      var keyFormatter = function(d, i) {
+
+        var splitted = d.split(/[{}]/);
+        var classname = splitted[0];
+        var html = "<span class='style-scope quantumviz-annotation gts-classname'>"+classname+"</span>"
+        if (splitted.length > 1) {
+          html += "<span class='style-scope quantumviz-annotation gts-separator'>{</span>";
+
+          var labels = []
+          splitted[1].split(',').forEach(function(it) {
+            var item = it.split('=');
+            labels.push("<span class='style-scope quantumviz-annotation gts-labelname'>"
+                  +item[0]+"</span><span class='gts-separator'>=</span>"
+                  + "<span class='style-scope quantumviz-annotation gts-labelvalue'>"+item[1]+"</span>");
+          })
+          html += labels.join("<span class='style-scope quantumviz-annotation gts-separator'>,</span>")
+                  + "<span class='style-scope quantumviz-annotation gts-separator'>}</span>";
+        }
+        return html;
+      };
+
+      svg.selectAll("rect")
+        .data(annotation.values)
+        .attr("x", function(d,i) {
+          return scale(d.x) - markerWidth/2 - svgStrokeWidth/2;
+        })
+        .attr("y", 0)
+        .attr("width", markerWidth)
+        .attr("height", 20)
+        .attr("fill", annotation.color)
+        .attr("stroke", "white")
+        .attr("stroke-width", svgStrokeWidth)
+        .on("mouseover", annotationMouseover)
+        .on("mouseout", annotationMouseout);
+
+      svg.selectAll("rect")
+        .data(annotation.values)
+        .enter()
+        .append("rect")
+        .attr("x", function(d,i) {
+          return scale(d.x) - markerWidth/2 - svgStrokeWidth/2;
+        })
+        .attr("y", 0)
+        .attr("width", markerWidth)
+        .attr("height", 20)
+        .attr("fill", annotation.color)
+        .attr("stroke", "white")
+        .attr("stroke-width", svgStrokeWidth)
+        .on("mouseover", annotationMouseover)
+        .on("mouseout", annotationMouseout);
+    }
+  })
+</script>
+<dom-module id="quantumviz-annotations" assetpath="../dist/warp10-quantumviz/">
+  <style>
+    :host {
+      display: block;
+    }
+    quantumviz-annotation {
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+    #spacer {
+      height: 50px;
+    }
+  </style>
+  <template>
+    <div id="annotations">
+      <template is="dom-repeat" items="{{annotations}}" as="annotation">
+        <quantumviz-annotation width="{{width}}" time-bounds="{{timeBounds}}" chart-area="{{chartArea}}" annotation="{{annotation}}" vert-guide="{{vertGuide}}" selected-timestamp="{{selectedTimestamp}}">
+        </quantumviz-annotation>
+      </template>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "quantumviz-annotations",
+    properties: {
+      data: {
+        type: Object
+      },
+      annotations: {
+        computed: "getAnnotations(data,_newData)"
+      },
+      timeBounds: {
+        type: Object
+      },
+      chartArea: {
+        type: Array
+      },
+      vertGuide: {
+        type: Number,
+        notify: true
+      },
+      selectedTimestamp: {
+        type: Number,
+        notify: true,
+        observer: "_selectedTimestampChanged",
+        value: -1
+      },
+      _newData: {
+        type: Number,
+        value: 0
+      }
+    },
+    observers: [
+      'dataChanged(data.*)'
+    ],
+    ready: function() {
+    },
+    attached: function() {
+      this.attached = true;
+      console.debug("[quantumviz-annotations] width", this.width);
+    },
+    _selectedTimestampChanged: function() {
+      // console.debug("[quantumviz-annotations] _selectedTimestampChanged", this.selectedTimestamp);
+    },
+    contentChanged: function() {
+      console.debug("[quantumviz-annotations] - contentChanged()");
+      if (!this.attached) {
+        return
+      }
+      //console.debug("[quantumviz-annotations] bounds", this.timeBounds);
+      //console.debug("[quantumviz-annotations] annotations offset", this.$.annotations.offsetTop);
+    },
+    getAnnotations: function(){
+      var annotations = quantumvizGts.getAnnotations(this.data)
+      console.debug("[quantumviz-annotations] getAnnotations", annotations);
+      return annotations;
+    },
+    dataChanged: function(){
+      // console.debug("[quantumviz-annotations] dataChanged", this.data);
+      this._newData++;
+    }
+  });
+</script>
 <dom-module id="warp10-image-overlay" assetpath="../dist/warp10-quantum/">
 
   <style>
@@ -62487,6 +62882,16 @@ return smoothPlotter;
     <style>
       :host {
         display: block;
+        position: relative;
+      }
+      #vertGuide {
+        width:0px;
+        height: 100%;
+        border: solid 1px #aaaaaa;
+        z-index: 500;
+        position: absolute;
+        left: 250px;
+        display: none;
       }
       .overlayGtsSelectorBox, .overlayGtsRegexBox {
         display:flex;
@@ -62545,9 +62950,14 @@ return smoothPlotter;
 
     <spinner-widget active="{{loading}}" hover="" size="200"></spinner-widget>
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed="{{changed}}"></warp10-gts-tree>
+
     
+    <div id="vertGuide"></div>
+
+    <quantumviz-annotations id="warp10-quantumviz-annotations" time-bounds="{{timeBounds}}" chart-area="{{chartArea}}" data="{{dataToPlot}}" vert-guide="{{vertGuide}}" width="{{_displayWidth}}" selected-timestamp="{{annotationsSelectedTimestamp}}">
+    </quantumviz-annotations>
     
-    <warp10-display-chart id="warp10-display-chart" width="{{_displayWidth}}" height="500" data="{{dataToPlot}}" current-values="{{currentValues}}"></warp10-display-chart>
+    <warp10-display-chart id="warp10-display-chart" width="{{_displayWidth}}" height="500" data="{{dataToPlot}}" current-values="{{currentValues}}" time-bounds="{{timeBounds}}" chart-area="{{chartArea}}"></warp10-display-chart>
     
 
     <warp10-simple-overlay id="gts-select-overlay">
@@ -62610,6 +63020,10 @@ return smoothPlotter;
         type: Array,
         observer: "responseChanged"
       },
+      vertGuide: {
+        type: Number,
+        observer: 'vertGuideChanged'
+      },
       selectedGts: {
         type: Number,
         value: -1
@@ -62645,7 +63059,7 @@ return smoothPlotter;
       document.addEventListener('plotted-changed', function (e) {
         this.dataToPlot = e.detail;
         this.newData++;
-        console.debug(e.detail);
+        // console.debug(e.detail);
       }.bind(this));
       */
       this.$$('#gts-regex-overlay').addEventListener('iron-overlay-closed', this.hideRegexOverlay.bind(this));
@@ -62663,7 +63077,7 @@ return smoothPlotter;
         return;
       }
       this._regexModeJustOpened = false;
-      console.debug("[warp10-warpscript-plot] _currentRegexChanged");
+      // console.debug("[warp10-warpscript-plot] _currentRegexChanged");
       this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
       this.$$("#regexInput").select();
     },
@@ -62671,9 +63085,9 @@ return smoothPlotter;
       return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
-      console.debug("[warp10-warpscript-plot] dataChanged", this.data);
+      // console.debug("[warp10-warpscript-plot] dataChanged", this.data);
       if (this.data !== null) {
-        console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
+        // console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
         plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
         this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
         this.newData ++;
@@ -62687,11 +63101,22 @@ return smoothPlotter;
         this.data = null;
       }
     },
+    vertGuideChanged: function(event) {
+      if (this.vertGuide >0) {
+        this.$.vertGuide.style.display = "inline-block";
+        this.$.vertGuide.style.left = this.vertGuide+"px";
+      } else {
+        this.$.vertGuide.style.display = "none";
+      }
+    },
     plottedChanged: function(e) {
+      
       this.dataToPlot = e.detail.data;
+      
       this.newData++;
       this.$$('#warp10-display-chart').dataChanged();
-      console.debug("[warp10-warpscript-plot] plotedChanged", e.detail);
+      this.$$("#warp10-quantumviz-annotations").dataChanged();
+      // console.debug("[warp10-warpscript-plot] plottedChanged", e.detail);
     },
     init: function() {
       // console.debug("[warp10-warpscript-plot attached() - this.data", this.data);
@@ -62699,7 +63124,7 @@ return smoothPlotter;
       this.stackedGtsListHalfLimit = 3;
 
       this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
-      console.debug("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
+      // console.debug("[warp10-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
 
       // Overlay conf for selection TO-DO
       this.overlay = {};
@@ -62735,7 +63160,7 @@ return smoothPlotter;
     },
     selectRegex: function() {
       var gts, i, len, ref;
-      console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
+      // console.debug("[warp10-warpscript-plot] selectRegex called with regex", "/" + this._currentRegex + "/");
       ref = this.stackedGtsList;
       for (i = 0, len = ref.length; i < len; i++) {
         gts = ref[i];
@@ -62789,20 +63214,20 @@ return smoothPlotter;
         } else {
           if (this.stackedGtsList.length > this.selectedGts + 1) {
             this.selectedGts += 1;
-            console.debug("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
+            // console.debug("length " + this.stackedGtsList.length + " selected " + this.selectedGts);
           }
         }
       }
     },
     hotkeyRegex: function(e) {
       if (this.plot > 0) {
-        console.debug("[warp10-warpscript-plot] hotkeyRegex");
+        // console.debug("[warp10-warpscript-plot] hotkeyRegex");
         this.showRegexOverlay();
       }
     },
     hotkeyRegexEnter: function(e) {
       if (this.plot > 0 && this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
+        // console.debug("[warp10-warpscript-plot] hotkeyRegexEnter");
         this.selectRegex();
       }
     },
@@ -62815,10 +63240,10 @@ return smoothPlotter;
         var gts = this.stackedGtsList[this.selectedGts];
         if (!plottingTools.isPlotted(gts)) {
           plottingTools.add(gts);
-          console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+          // console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
         } else {
           plottingTools.remove(gts);
-          console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+          // console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
         }
         this.changed++;
         this.fire('plotted-changed', plottingTools);
@@ -62827,12 +63252,12 @@ return smoothPlotter;
     },
     hotkeyAll: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyAll")
+        // console.debug("[warp10-warpscript-plot] hotkeyAll")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
             if (!plottingTools.isPlotted(gts)) {
               plottingTools.add(gts);
-              console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
+              // console.debug("[warp10-warpscript-plot] addToPlot", plottingTools);
             }
         }
         this.changed++;
@@ -62841,12 +63266,12 @@ return smoothPlotter;
     },
     hotkeyNone: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyNone")
+        // console.debug("[warp10-warpscript-plot] hotkeyNone")
         for (var i in this.stackedGtsList) {
             var gts = this.stackedGtsList[i];
             if (plottingTools.isPlotted(gts)) {
               plottingTools.remove(gts);
-              console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
+              // console.debug("[warp10-warpscript-plot] removeFromPlot", plottingTools);
             }
         }
         this.changed++;
@@ -62861,7 +63286,7 @@ return smoothPlotter;
     },
     hotkeyHelp: function(e) {
       if (this.plot > 0 && !this._regexMode) {
-        console.debug("[warp10-warpscript-plot] hotkeyHelp")
+        // console.debug("[warp10-warpscript-plot] hotkeyHelp")
         this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
       }
     },
@@ -62961,7 +63386,7 @@ return smoothPlotter;
         return "";
       }
       if (this.stackedGtsList[this.selectedGts].id === this.gts.id) {
-        console.debug("[warp10-warpscript-plot] Selected gts", this.gts.id);
+        // console.debug("[warp10-warpscript-plot] Selected gts", this.gts.id);
         return "background-color:rgba(200,200,200,0.5);";
       }
       return "";
