@@ -119,7 +119,7 @@
               on-click="selectNodeHead"></i>
 
             <template is="dom-if" if="{{isGts(node)}}">
-              <i class="normal" style$="{{gtsColor(node.gts, plottedChanged)}}"></i>
+              <i class="normal" style$="{{gtsColor(node.gts, plottedChanged)}}" on-click="switchPlotState"></i>
               <span class="gtsInfo" on-click="switchPlotState">
                 <span class='gts-classname'>{{node.gts.c}}</span>
                 <span class='gts-separator'>{</span>
