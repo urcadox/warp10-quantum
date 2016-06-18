@@ -1,9 +1,9 @@
 # Warp 10 Quantum
 
-Warp 10's Quantum is a web application developed to easily deal with the [http://www.warp10.io](Warp 10)
+Warp 10's Quantum is a web application developed to easily deal with the [Warp 10](http://www.warp10.io)
 platform.
 
-Entirely developed as [https://www.polymer-project.org/](Polymer) elements, you will
+Entirely developed as [Polymer](https://www.polymer-project.org/) elements, you will
 find in this repository not only the full application but the whole set of web-components
 allowing to customize your Warp 10 experience.
 
@@ -35,7 +35,7 @@ You will find on `tools` folder two building scripts:
 * `build.sh`: it copies all the needed files into `dist` folder
 
 * `vulcanize.sh`: it calls `build.sh` to build `dist`, then it uses
-[https://github.com/Polymer/vulcanize](vulcanize) to reduce Quantum and all its
+[vulcanize](https://github.com/Polymer/vulcanize) to reduce Quantum and all its
 dependent HTML and CSS files into one file inside `vulcanized` folder.
 
   It also generates some other files on that folder, including `warp10-quantum-doc.html`,
