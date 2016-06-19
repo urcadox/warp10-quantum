@@ -267,7 +267,12 @@
     },
     plottedChanged: function(e) {
       
-      this.dataToPlot = e.detail.data;
+      this.dataToPlot = [{ 
+         gts: e.detail.data,
+         params: e.detail.params,
+         globalParams: {}
+      }];
+      // console.debug("[warp10-warpscript-plot] plottedChanged", this.dataToPlot);
       
       this.newData++;
       this.$$('#warp10-display-chart').dataChanged();

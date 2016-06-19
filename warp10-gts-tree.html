@@ -260,11 +260,12 @@
       if (gts === undefined){
         return ""
       }
-      // console.debug("[warp10-gts-tree] gtsColor", plottingTools.gtsColor(gts))
+      // console.debug("[warp10-gts-tree] gtsColor", plottingTools.color);
+      // console.debug("[warp10-gts-tree] gtsColor", plottingTools.id);
       return plottingTools.gtsColor(gts);
     },
     showImageOverlay: function(e) {
-      console.debug("[warp10-gts-tree] showImageOverlay", e);
+      // console.debug("[warp10-gts-tree] showImageOverlay", e);
       var image = e.model.node.image;
       var caption = e.model.node.caption;
       var id = 'image-overlay'
@@ -277,13 +278,13 @@
         }
         dialog.setAttribute('src', image )
         dialog.setAttribute('caption', caption )
-        console.debug("[warp10-gts-tree] let's open", dialog.opened);
+        // console.debug("[warp10-gts-tree] let's open", dialog.opened);
         if (!dialog.opened) {
           dialog.open();
         }
 
-        console.debug("[warp10-gts-tree] dialog.noCancelOnOutsideClick",dialog.noCancelOnOutsideClick);
-        console.debug("[warp10-gts-tree] and now it should be open", dialog.opened);
+        // console.debug("[warp10-gts-tree] dialog.noCancelOnOutsideClick",dialog.noCancelOnOutsideClick);
+        // console.debug("[warp10-gts-tree] and now it should be open", dialog.opened);
       }
     },
     hideImageOverlay: function(e) {
