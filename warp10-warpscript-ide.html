@@ -270,9 +270,8 @@
       return !this.showPermalink;
     },
     editorChangeAction: function(value, oldValue) {
-      this.fire('editor-content', {value: value, oldValue: oldValue});
-      this.content = value.detail.value;
-      console.debug("[warp10-warpscript-ide] editorChangeAction");
+      this.content  = value.detail.value;
+      // console.debug("[warp10-warpscript-ide] editorChangeAction", this.content);
     },
     hotkeyExecute: function(e) {
       // console.debug("[warp10-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)

@@ -27,7 +27,7 @@
     "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.1.15",
     "warp10-iron": "cityzendata/warp10-iron#1.0.15",
     "warp10-navbar": "cityzendata/warp10-navbar#1.0.0-rc3",
-    "ace-widget": "LostInBrittany/ace-widget#~1.0.12",
+    "ace-widget": "LostInBrittany/ace-widget#~1.0.13",
     "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#~1.0.4",
     "iron-input": "PolymerElements/iron-input#~1.0.7",

@@ -98,7 +98,7 @@
       // console.debug("[warp10-warpscript-permalink] created called", this._maxDisplayLength);
     },
     generatePermalink: function(){
-      console.debug("[warp10-warpscript-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
+      // console.debug("[warp10-warpscript-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
       if (this.backend === undefined || this.backend.length == 0) {
         // return btoa(unescape(encodeURIComponent(this.warpscript)));
         return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
