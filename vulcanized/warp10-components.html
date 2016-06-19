@@ -62540,7 +62540,8 @@ return smoothPlotter;
     _removeChartData: function() {
       // console.debug("[warp10-display-chart] _removeChartData");
       if (this.chart) {
-        this.chart.updateOptions({file: []});
+        this.chart.destroy();
+        this.chart = null;
       }
     },
 
@@ -62831,6 +62832,7 @@ return smoothPlotter;
 
       if (filteredResponse.gts.length == 0) {
         console.warn("[warp10-display-chart] _data2dygraphs - Empty data set", filteredResponse);
+        this._removeChartData();
         return;
       }
       
@@ -62886,10 +62888,12 @@ return smoothPlotter;
         gridLineColor: 'rgb(196, 196, 196)',
         axes: {
           x : {
+            drawAxis: true,
             axisLabelFontSize: 12, 
             axisLineColor:'rgb(196, 196, 196)'
           },
           y: {
+            drawAxis: true,
             axisLabelFontSize: 12, 
             axisLabelFormatter: function(y) {
               var value = y.toFixed(5);
