@@ -41749,10 +41749,6 @@ nv.version = "1.8.2-dev";
       reponse: {
         type: Array,
         observer: 'responseChanged'
-      },
-      received: {
-        type: Number,
-        observer: 'responseChanged'
       }
     },
     observers: [
@@ -44177,11 +44173,11 @@ Examples:
 
     <style>
       :host {
-        display: inline-block;
+        display: none;
       }
     </style>
 
-    <iron-ajax id="xhr" url="{{baseUrl}}" content-type="application/x-www-form-urlencoded; charset=UTF-8" method="POST" body="{{warpscript}}" handle-as="text" on-response="receivedResponse" on-error="receivedError"></iron-ajax>
+    <iron-ajax id="xhr" url="{{url}}" content-type="application/x-www-form-urlencoded; charset=UTF-8" method="POST" body="{{warpscript}}" handle-as="text" on-response="_handleResponse" on-error="_handleError" loading="{{loading}}" debounce-duration="{{debounceDuration}}"></iron-ajax>
 
   </template>
 </dom-module>
@@ -44189,45 +44185,42 @@ Examples:
 <script>
   Polymer({
     is: "warp10-warpscript-caller",
+    
+    /**
+     * Fired when a request is sent.
+     *
+     * @event request
+     */
+    
+    /**
+     * Fired when a response is received.
+     *
+     * @event response
+     */
+    
+    /**
+     * Fired when an error is received.
+     *
+     * @event error
+     */
+    
     properties: {
       /**
-       * Base URL of WarpScript platform
+       * URL of WarpScript platform
        */
-      baseUrl: {
+      url: {
         type: String,
         value: ""
       },
+      
       /**
        * WarpScript script to execute
        */
       warpscript:{
         type: String,
-        value: "",
-        observer: 'warpscriptChanged'
+        value: ""
       },
-      /**
-       * Stack received from server
-       */
-      data: {
-        type: Object,
-        notify: true
-      },
-      /**
-       * If received an erroneus response, error ++
-       */
-      error: {
-        type: Number,
-        value: 0,
-        notify: true
-      },
-      /**
-       * If received an erroneus response, here we displayu the message
-       */
-      errorMsg: {
-        type: String,
-        value: "",
-        notify: true
-      },
+
       /**
        * If `reload > 0` it's the number of seconds between two calls
        * to the WarpScript server
@@ -44236,38 +44229,17 @@ Examples:
         type: Number,
         value: -1
       },
+
       /**
-       * No call is done while `blockCalls` is 1
+       * If true, automatically performs an Ajax request when either `url` or
+       * `warpscript` changes.
        */
-      blockCalls: {
-        type: Number,
-        value: 0,
-        observer: "blockChanged"
+      auto: {
+        type: Boolean,
+        value: false
       },
-      /**
-       * No call is done while `call` is `0`
-       */
-      call: {
-        type: Number,
-        value: 0,
-        observer: "callChanged"
-      },
-      /**
-       * Boolean to indicate loading in progress
-       */
-      loading: {
-       type: Boolean,
-       value:false,
-       notify: true
-      },
-      /**
-       * Elapsed time for the call
-       */
-      elapsed: {
-        type: Number,
-        value: -1,
-        notify: true
-      },
+
+      
       /**
        * Non standard header name
        * If the platform uses a non standard header format, put it here.
@@ -44279,90 +44251,109 @@ Examples:
       headerName: {
         type: String,
         value: null
-      }
-    },
-    attached: function() {      
-      console.debug("[warp10-warpscript-caller] attached");
-      this._isAttached = true;
+      },
+
+      /**
+       * Boolean to indicate loading in progress
+       */
+      loading: {
+       type: Boolean,
+       value:false,
+       notify: true
+      },
       
+      /**
+       * The most recent request made by this iron-ajax element.
+       */
+      lastRequest: {
+        type: Object,
+        notify: true,
+        readOnly: true
+      },      
+      
+       /**
+       * lastRequest's response.
+       *
+       * Note that lastResponse and lastError are set when lastRequest finishes,
+       * so if loading is true, then lastResponse and lastError will correspond
+       * to the result of the previous request.       *
+       *
+       * @type {Object}
+       */
+      lastResponse: {
+        type: Object,
+        notify: true,
+        readOnly: true
+      },
+      
+      /**
+       * lastRequest's error, if any.
+       *
+       * @type {Object}
+       */
+      lastError: {
+        type: Object,
+        notify: true,
+        readOnly: true
+      },
+      
+      /**
+       * Length of time in milliseconds to debounce multiple automatically generated requests.
+       */
+      debounceDuration: {
+        type: Number,
+        value: 0,
+        notify: true
+      },
 
-      // Look for a global conf, and apply if it exists
-      if (window.quantumConf !== undefined) {
-        this.embedded = window.quantumConf.embedded;
-        this.backend = window.quantumConf.backend;
-        this.execEndpoint = window.quantumConf.execEndpoint;
-        this.headerName = window.quantumConf.headerName;
-      }
-      // console.debug("[warp10-warpscript-caller] headerName", this.headerName);
-
-
-      // console.debug("[warp10-warpscript-caller] attached");
-      this.initCall();
     },
-    warpscriptChanged: function() {
-      // console.debug("[warp10-warpscript-caller] called via warpscriptChanged", this.warpscript);
-      this.initCall();
-    },
-    callChanged: function() {
-      // console.debug("[warp10-warpscript-caller] called via callChanged");
-      this.initCall();
-    },
-    blockChanged: function() {
-     // console.debug("[warp10-warpscript-caller] called via blockChanged");
-      this.initCall();
-    },
-    initCall: function() {
-
-      if (!this.isAttached) {
-        // If widget isn't attached, we do nothing yet
-        // console.debug("[warp10-warpscript-caller] initCall - is not attached, quitting");
-        return;
-      }
-
-      if (this.blockCalls) {
-        // If calls are blocked, we do nothing yet
-        // console.debug("[warp10-warpscript-caller] initCall - calls blocked, this.blockCalls="+this.blockCalls);
-        return;
-      }
 
 
-      if (!this.call) {
-        // If calls are blocked, we do nothing yet
-        // console.debug("[warp10-warpscript-caller] initCall - calls not allowed yet, this.call="+this.call);
-        return;
-      }
+    observers: [
+      '_optionsChanged(url, warpscript, reload, headerName, auto)'
+    ],
 
-      if ((this.warpscript === undefined) || (this.warpscript.length <= 0)) {
-        // If we haven't an WarpScript script, we do nothing yet
-        // console.debug("[warp10-warpscript-caller] initCall - no warpscript script", this.warpscript);
-        return;
-      }
-
-      // console.debug("[warp10-warpscript-caller] initCall - attached and ready to call, baseURL", this.baseUrl);
-
+    /**
+     * Performs an AJAX request to the specified URL with the WarpScript payload     
+     */
+    generateRequest: function() {
+      // console.debug("[warp10-warpscript-caller] generateRequest - WarpScript script", this.warpscript);
       if (this.reload > 0) {
         // If `reload > 0` set reloading interval and call, else call directly
         this.reloadInterval = parseFloat(this.reload)*1000;
-        this.doCallWithReload();
+        this._doCallWithReload();
       } else {
-        this.doCall();
+        this._doCall();
       }
     },
-    doCall: function() {
-      // Activate spinner
-      this.loading = true;
-      // console.debug("[warp10-warpscript-caller] doCall - Calling with WarpScript script", this.warpscript);
-      this.$.xhr.generateRequest();
+
+
+    _optionsChanged: function() {
+      this.debounce('generate-request', function() {
+        if ( (this.url == null) || (this.warpscript === undefined) || (this.warpscript.length <= 0) ) {
+          return;
+        }
+        if (this.auto) {
+          this.generateRequest();
+        }
+      }, this.debounceDuration);
     },
-    doCallWithReload: function() {
+
+    _doCall: function() {
+      // console.debug("[warp10-warpscript-caller] doCall - Calling with WarpScript script", this.warpscript);
+      this.lastRequest = this.$.xhr.generateRequest();
+       
+    },
+    _doCallWithReload: function() {
       // console.debug("[warp10-warpscript-caller] doReload called with interval "+this.reloadInterval+" ms");
-      this.doCall();
+      this._doCall();
       this.async(this.doCallWithReload, this.reloadInterval);
     },
 
-    receivedResponse: function(event, ironRequest) {
-      var allowerHeaders =  ironRequest.xhr.getAllResponseHeaders().split(',').map(function(i){ return i.split(':')[0].trim(); });
-      console.debug("[warp10-warpscript-caller] receivedResponse - ", allowerHeaders);
+
+    _getElapsed: function(ironRequest) {
+        var allowerHeaders =  ironRequest.xhr.getAllResponseHeaders().split(',').map(function(i){ return i.split(':')[0].trim(); });
+      // console.debug("[warp10-warpscript-caller] _getElapsed - allowerHeaders", allowerHeaders);
       
       var elapsedHeader = "X-Warp10-Elapsed";
       for (var i in allowerHeaders) {
@@ -44370,21 +44361,25 @@ Examples:
           elapsedHeader = allowerHeaders[i];
         }
       }
-      this.elapsed = ironRequest.xhr.getResponseHeader(elapsedHeader);
-      this.error = 0;
-      this.data = looseJSON.parse(ironRequest.response);
-      console.debug("[warp10-warpscript-caller] receivedResponse - Updated!", this.data);
-      // Desctivate spinner
-      this.loading = false;
+      return ironRequest.xhr.getResponseHeader(elapsedHeader);      
     },
-    receivedError: function(event, ironRequest) {
-      console.debug("[warp10-warpscript-caller] receivedError - Updated!", ironRequest);
-      this.elapsed = -1;
-      this.data = null;
-      this.errorMsg = ironRequest.request.statusText
-      this.error++;
-      // Desctivate spinner
-      this.loading = false;
+    _handleResponse: function(event, ironRequest) {
+      var elapsed = this._getElapsed(ironRequest);      
+      var stack = looseJSON.parse(ironRequest.response);
+      
+      var response = {stack: stack, options: { elapsed: elapsed } }; 
+            
+      this.lastResponse = response; 
+      
+      console.debug("[warp10-warpscript-caller] receivedResponse - Updated!", response);
+      
+      this.fire('response',response, {bubbles: false});
+    },
+    _handleError: function(event, error) {      
+      error.elapsed = this._getElapsed(error.request);   
+      this.fire('error', error,  {bubbles: false});
+      
+      
     },
 
   })
@@ -44643,7 +44638,7 @@ Examples:
      * Generates a GTS stack from the received JSON
      */
     gtsTools.gtsFromJSONList = function(jsonList, prefixId) {
-      // console.debug("[czd-gts-tools] gtsFromJSONList, jsonList", {list: jsonList});
+      console.debug("[czd-gts-tools] gtsFromJSONList, jsonList", {list: jsonList});
       var gts, gtsList, i, id;
       gtsList = [];
       for (i = 0;  i < jsonList.length; i++) {
@@ -44674,7 +44669,7 @@ Examples:
             id: id
           });
         }
-        // console.debug("[czd-gts-tools] gtsFromJSONList, gtsList ", gtsList);
+        console.debug("[czd-gts-tools] gtsFromJSONList, gtsList ", gtsList);
 
       }
       return {
@@ -46929,10 +46924,9 @@ exports.Mode = Mode;
     .right {
       float: right;
     }
-    .btn[hidden] {
-      display: none;
-    }
-    warp10-warpscript-permalink-generator[hidden]{
+    .btn[hidden],
+    warp10-warpscript-permalink-generator[hidden],
+    warp10-response-container[hidden] {
       display: none;
     }
     .overlayBox {
@@ -46970,7 +46964,7 @@ exports.Mode = Mode;
       </div>
     </warp10-simple-overlay>
 
-    <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
+    <warp10-warpscript-caller id="warpscriptcaller" url="{{_baseUrl}}" warpscript="{{warpscriptScript}}" on-response="_handleResponse" on-error="_handleError" loading="{{loading}}">
     </warp10-warpscript-caller>
 
 
@@ -46985,7 +46979,7 @@ exports.Mode = Mode;
     <div class="top-10">
       <template is="dom-if" if="{{!hidePlot}}">
         <div class="left">
-          <button class="btn btn-primary btn-lg" on-click="doPlot" disabled$="{{loading}}" hidden$="{{!response.length}}">
+          <button class="btn btn-primary btn-lg" on-click="doPlot" disabled$="{{loading}}" hidden$="{{!_hasAResponse}}">
             Plot
           </button>
         </div>
@@ -47006,8 +47000,8 @@ exports.Mode = Mode;
 
 
     <div class="top-10">
-      <warp10-response-container id="response-container" response="{{response}}" received="{{received}}"></warp10-response-container>
-      <div class="alert alert-danger" hidden$="{{hideError}}">
+      <warp10-response-container id="response_container" response="{{stack}}" received="{{received}}" hidden$="{{!_hasAResponse}}">&gt;</warp10-response-container>
+      <div class="alert alert-danger" hidden$="{{!_hasAnError}}">
         {{errorMsg}}
       </div>
     </div>
@@ -47037,7 +47031,6 @@ exports.Mode = Mode;
       },
       response: {
         type: Array,
-        observer: "responseChanged",
         value: function() {
           return null;
         }
@@ -47051,23 +47044,11 @@ exports.Mode = Mode;
         type: Array,
         notify: true
       },
-      error: {
-        type: Number,
-        observer: "errorChanged"
-      },
-      hideError:{
-        type: Boolean,
-        computed: "withoutError(error)"
-      },
       target: {
         type: Object,
         value: function() {
           return document.body;
         }
-      },
-      call: {
-        type: Number,
-        value: 0
       },
       /**
        * Elapsed time for the call
@@ -47107,10 +47088,18 @@ exports.Mode = Mode;
         type: String,
         computed: "_getBaseUrl(backend,execEndpoint)"
       },
+      
+      _hasAResponse: {
+        type: Boolean,
+        value: false
+      },
+      _hasAnError: {
+        type: Boolean,
+        value: false
+      },
 
     },
     ready: function() {
-      this.received = 0;
     },
     attached: function() {
       editor = this.$.editor;
@@ -47129,25 +47118,40 @@ exports.Mode = Mode;
     },
     _getBaseUrl: function() {
       return this.backend + this.execEndpoint;
+    },    
+    _calcHasAResponse: function() {
+      // console.debug("[warp10-warpscript-ide] _calcHasAResponse"); 
     },
-    withoutError: function() {
-      if (this.error > 0) {
-        return false
-      }
-      return true
-    },
-    errorChanged: function() {
-      // console.debug("[warp10-warpscript-ide] errorChanged", { response: this.errorMsg });
-    },
-    responseChanged: function() {
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response });
-      if (this.response !== null) {
-          this.data = gtsTools.gtsFromJSONList(this.response);
-      } else {
-        this.data = null;
-      }
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response, data: this.data });
-      this.received += 1;
+    _handleResponse: function(event, response) {      
+        if (!response.stack ||
+          !response.stack instanceof Array ) {
+          this.data = null;
+          return;
+        }        
+        this.elapsed = response.options.elapsed;
+        this.data = gtsTools.gtsFromJSONList(response.stack);
+        this.stack = response.stack;  
+        this._hasAResponse = true;
+        this._hasAnError = false;
+        
+        this.$.response_container.responseChanged();
+        
+        // console.debug("[warp10-warpscript-ide] _handleResponse", { stack: this.stack, elapsed: this.elapsed, data: this.data });
+    },    
+    _handleError: function(event, error) {        
+        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+        } else {
+          this.errorMsg =  error.request.statusText;
+        }
+        
+        console.debug("[warp10-warpscript-ide] _handleError", { error: error, errorMsg: this.errorMsg });
+        
+        this.elapsed = error.elapsed;
+        this._hasAResponse = false;
+        this._hasAnError = true;       
+        
+        console.debug("[warp10-warpscript-ide] _handleError - _hasAResponse", this._hasAResponse);
     },
     isPermalinkHidden: function() {
       return !this.showPermalink;
@@ -47178,16 +47182,16 @@ exports.Mode = Mode;
       }
     },
     execute: function() {
-      // console.debug("[warp10-warpscript-ide] Execute", this.content)
+      console.debug("[warp10-warpscript-ide] Execute", this.content)
       if (this.showPermalink) {
         this.updatePermalink();
       }
       this.warpscriptScript = this.content;
-      this.call +=1 ;
+      this.$.warpscriptcaller.generateRequest();    
     },
     doPlot: function() {
-      // console.debug([warp10-warpscript-ide] Plot", this.response)
-      if (this.response.length) {
+      // console.debug([warp10-warpscript-ide] Plot", this.stack)
+      if (this.stack.length) {
           this.plot += 1;
           this.target = undefined;
       }
@@ -47675,7 +47679,9 @@ exports.Mode = Mode;
       return JSON.stringify(this.data);
     },
     dataChanged: function() {
-      //console.debug("[warp10-gts-tree] dataChanged", this.data);
+      console.debug("[warp10-gts-tree] dataChanged", this.data);
+      this.fire('plotted-changed', plottingTools);
+      this.plottedChanged++;
     },
     selectNodeHead: function(e, detail) {
       // console.debug("[warp10-gts-tree] selectNodeHead", e.model.node);
@@ -79190,6 +79196,7 @@ return smoothPlotter;
       :host {
         display: block;
         text-align: center;
+        position: relative;
       }
       #chart {
         display: inline-block;
@@ -79211,7 +79218,23 @@ return smoothPlotter;
       .chart-tooltip.hidden {
           display: none;
       }
-      :host ::content table {
+      .table    { display: table }
+      .tr       { display: table-row }
+      .thead    { display: table-header-group }
+      .tbody    { display: table-row-group }
+      .tfoot    { display: table-footer-group }
+      .col      { display: table-column }
+      .colgroup { display: table-column-group }
+      .td, .th  { display: table-cell }
+      .caption  { display: table-caption }
+      .table {
+        table-layout: fixed;
+      }      
+      
+      
+      :host ::content .table {
+        display: table;
+        width: 100%;
         white-space: normal;
         font-size: 10pt !important;
       }
@@ -79227,7 +79250,7 @@ return smoothPlotter;
         margin-right: 5px;
         margin-top: 5px;
       }
-      :host ::content tr.highlight {
+      :host ::content .tr.highlight {
         background-color: #ffffa4;
       }
       :host ::content .gts-classname {
@@ -79408,7 +79431,7 @@ return smoothPlotter;
         // Component not ready yet
         return;
       }
-      // console.debug("[warp10-display-chart] dataChanged() - ", this.data);
+      //console.debug("[warp10-display-chart] dataChanged() - ", this.data);
       if (this.data != null) {
         this._updateChartData();
       } else {
@@ -79542,14 +79565,15 @@ return smoothPlotter;
       };
 
 
-      var table = d3.select(document.createElement("table"));
+      var table = d3.select(document.createElement("div"));
+      table.classed("table");
+      
       if (headerEnabled) {
-        var theadEnter = table.selectAll("thead")
+        var theadEnter = table.selectAll("div.thead")
           .data([d])
-          .enter().append("thead");
-
-        theadEnter.append("tr")
-          .append("td")
+          .enter().append("div").classed("thead", true);
+        theadEnter.append("div").classed("tr",true)
+          .append("div").classed("td", true)
           .attr("colspan", 3)
           .append("strong")
           .classed("x-value", true)
@@ -79557,34 +79581,34 @@ return smoothPlotter;
 
       }
 
-      var tbodyEnter = table.selectAll("tbody")
+      var tbodyEnter = table.selectAll("div.tbody")
         .data([d])
-        .enter().append("tbody");
+        .enter().append("div").classed("tbody", true);
 
-      var trowEnter = tbodyEnter.selectAll("tr")
+      var trowEnter = tbodyEnter.selectAll("div.tr")
         .data(d.yValues)
         .enter()
-        .append("tr")
+        .append("div").classed("tr", true)
         .classed("highlight", function(p) {
           // console.debug("[warp10-display-chart] hightlight", p);
           return p.highlight
         });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("legend-color-guide",true)
         .append("div")
         .style("background-color", function(p) { return p.color });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("key",true)
         .html(function(p, i) { return keyFormatter(p.name, i) });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("value",true)
         .html(function(p, i) { return valueFormatter(p.yval, i) });
 
 
-      trowEnter.selectAll("td").each(function(p) {
+      trowEnter.selectAll("div.td").each(function(p) {
         if (p.highlight) {
           var opacityScale = d3.scale.linear().domain([0,1]).range(["#fff",p.color]);
           var opacity = 0.6;
@@ -79834,7 +79858,26 @@ return smoothPlotter;
         colors: colors,
         legend: "never",
         gridLineColor: 'rgb(196, 196, 196)',
-        axes: {
+        xRangePad: 5,
+        yRangePad: 5,        
+        drawCallback: function(me, initial) {
+          context.chartArea = me.getArea();
+          context.timeBounds = {
+            min: me.xAxisRange()[0],
+            max: me.xAxisRange()[1]
+          }
+          context.valueBounds = {
+            min: me.yAxisRange()[0],
+            max: me.yAxisRange()[1]
+          } 
+          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
+        },
+      }
+      if (this.hideAxis) {
+        options.drawAxis = false;
+        options.drawGrid = false;
+      } else {        
+        options.axes = {
           x : {
             drawAxis: true,
             axisLabelFontSize: 12, 
@@ -79855,25 +79898,7 @@ return smoothPlotter;
               return formattedIntPart+'.'+formattedDecimalPart;
             }
           }
-        },
-        xRangePad: 5,
-        yRangePad: 5,        
-        drawCallback: function(me, initial) {
-          context.chartArea = me.getArea();
-          context.timeBounds = {
-            min: me.xAxisRange()[0],
-            max: me.xAxisRange()[1]
-          }
-          context.valueBounds = {
-            min: me.yAxisRange()[0],
-            max: me.yAxisRange()[1]
-          } 
-          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
-        },
-      }
-      if (this.hideAxis) {
-        options.drawAxis = false;
-        options.drawGrid = false;
+        };
       }
       options.highlightCallback = function(event, x, points, row, name) {
         // console.debug("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x,points:points, row:row, xCoord: context.chart.toDomXCoord(x)});
@@ -79941,8 +79966,8 @@ return smoothPlotter;
   }
 
 );
-</script>
-<dom-module id="quantumviz-annotation" assetpath="../warp10-quantumviz/">
+
+</script><dom-module id="quantumviz-annotation" assetpath="../warp10-quantumviz/">
   <style>
     :host {
       display: block;
@@ -80421,6 +80446,7 @@ return smoothPlotter;
     <iron-a11y-keys target="[[target]]" keys="/ help:keypress" on-keys-pressed="hotkeyRegex"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="enter" on-keys-pressed="hotkeyRegexEnter"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="h ?:keypress" on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    
     <warp10-simple-overlay id="warpscript-plot-keyboard-shortcuts-overlay">
       <div class="overlay-box">
         <h4>Keyboard Shortcuts:</h4>
@@ -80438,6 +80464,7 @@ return smoothPlotter;
     <warp10-image-overlay id="image-overlay"></warp10-image-overlay>
 
     <spinner-widget active="{{loading}}" hover="" size="200"></spinner-widget>
+    
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed="{{changed}}"></warp10-gts-tree>
 
     
@@ -80470,8 +80497,7 @@ return smoothPlotter;
       </div>
     </warp10-simple-overlay>
 
-
-    <warp10-warpscript-caller id="warpscript-caller" base-url="{{_baseUrl}}" warpscript="{{warpscript}}" data="{{response}}" loading="{{loading}}" call="{{call}}" error="{{error}}" error-msg="{{errorMsg}}">
+    <warp10-warpscript-caller id="warpscriptcaller" url="{{_baseUrl}}" warpscript="{{warpscript}}" on-response="_handleResponse" on-error="_handleError" loading="{{loading}}">
     </warp10-warpscript-caller>
 
   </template>
@@ -80505,10 +80531,6 @@ return smoothPlotter;
         type: String,
         value: "/exec"
       },
-      response: {
-        type: Array,
-        observer: "responseChanged"
-      },
       vertGuide: {
         type: Number,
         observer: 'vertGuideChanged'
@@ -80523,10 +80545,6 @@ return smoothPlotter;
       stackedGtsListSlidingWindow: {
         type: Array,
         computed: "getStackedGtsListSlidingWindow(stackedGtsList, selectedGts)"
-      },
-      call: {
-        type: Number,
-        value: 0
       },
       _baseUrl: {
         type: String,
@@ -80574,22 +80592,22 @@ return smoothPlotter;
       return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
-      // console.debug("[warp10-warpscript-plot] dataChanged", this.data);
+      console.debug("[warp10-warpscript-plot] dataChanged", this.data);
       if (this.data !== null) {
-        // console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
+        console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
         plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
         this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
         this.newData ++;
       }
     },
-    responseChanged: function() {
-      // console.debug([warp10-warpscript-plot] responseChanged", { response: this.response });
-      if (this.response !== null) {
-          this.data = gtsTools.gtsFromJSONList(this.response);
-      } else {
+    _handleResponse: function(event, response) {      
+      if (!response.stack ||
+        !response.stack instanceof Array ) {
         this.data = null;
-      }
-    },
+        return;
+      }        
+      this.data = gtsTools.gtsFromJSONList(response.stack);
+    },    
     vertGuideChanged: function(event) {
       if (this.vertGuide >0) {
         this.$.vertGuide.style.display = "inline-block";
@@ -80605,7 +80623,7 @@ return smoothPlotter;
          params: e.detail.params,
          globalParams: {}
       }];
-      // console.debug("[warp10-warpscript-plot] plottedChanged", this.dataToPlot);
+      console.debug("[warp10-warpscript-plot] plottedChanged", this.dataToPlot);
       
       this.newData++;
       this.$$('#warp10-display-chart').dataChanged();
@@ -80775,7 +80793,7 @@ return smoothPlotter;
     hotkeyReload: function(e) {
       if (this.plot > 0 && !this._regexMode) {
         // console.debug([warp10-warpscript-plot] hotkey r");
-        this.call++;
+        this.$.warpscriptcaller.generateRequest();    
       }
     },
     hotkeyHelp: function(e) {
@@ -80786,11 +80804,6 @@ return smoothPlotter;
     },
   });
 </script>
-
-
-/******************************************************************************/
-/******************************************************************************/
-
 
 <dom-module id="warp10-gts-in-selection-overlay" assetpath="/">
   <template>
