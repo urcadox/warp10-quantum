@@ -4,7 +4,7 @@
 <link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 <link rel="import" href="../warp10-quantum/warp10-response-container.html">
 <link rel="import" href="../warp10-quantum/warp10-warpscript-permalink.html">
-<link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+<link rel="import" href="../warp10-iron/warp10-alt-warpscript-caller.html">
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
 
@@ -28,10 +28,9 @@
     .right {
       float: right;
     }
-    .btn[hidden] {
-      display: none;
-    }
-    warp10-warpscript-permalink-generator[hidden]{
+    .btn[hidden],
+    warp10-warpscript-permalink-generator[hidden],
+    warp10-response-container[hidden] {
       display: none;
     }
     .overlayBox {
@@ -70,10 +69,10 @@
     </warp10-simple-overlay>
 
     <warp10-warpscript-caller
-      id="warpscript-caller"
-      base-url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
-      data="{{response}}"    loading="{{loading}}" call="{{call}}"
-      error="{{error}}" error-msg="{{errorMsg}}" elapsed="{{elapsed}}">
+      id="warpscriptcaller"
+      url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
+      on-response="_handleResponse"  on-error="_handleError"
+      loading="{{loading}}">
     </warp10-warpscript-caller>
 
 
@@ -95,7 +94,7 @@
             class="btn btn-primary btn-lg"
             on-click="doPlot"
             disabled$="{{loading}}"
-            hidden$="{{!response.length}}">
+            hidden$="{{!_hasAResponse}}">
             Plot
           </button>
         </div>
@@ -121,10 +120,11 @@
 
     <div  class="top-10">
       <warp10-response-container
-        id="response-container"
-        response="{{response}}"
-        received="{{received}}"></warp10-response-container>
-      <div class="alert alert-danger" hidden$="{{hideError}}">
+        id="response_container"
+        response="{{stack}}"
+        received="{{received}}" 
+        hidden$="{{!_hasAResponse}}">></warp10-response-container>
+      <div class="alert alert-danger" hidden$="{{!_hasAnError}}">
         {{errorMsg}}
       </div>
     </div>
@@ -154,7 +154,6 @@
       },
       response: {
         type: Array,
-        observer: "responseChanged",
         value: function() {
           return null;
         }
@@ -168,23 +167,11 @@
         type: Array,
         notify: true
       },
-      error: {
-        type: Number,
-        observer: "errorChanged"
-      },
-      hideError:{
-        type: Boolean,
-        computed: "withoutError(error)"
-      },
       target: {
         type: Object,
         value: function() {
           return document.body;
         }
-      },
-      call: {
-        type: Number,
-        value: 0
       },
       /**
        * Elapsed time for the call
@@ -224,10 +211,18 @@
         type: String,
         computed: "_getBaseUrl(backend,execEndpoint)"
       },
+      
+      _hasAResponse: {
+        type: Boolean,
+        value: false
+      },
+      _hasAnError: {
+        type: Boolean,
+        value: false
+      },
 
     },
     ready: function() {
-      this.received = 0;
     },
     attached: function() {
       editor = this.$.editor;
@@ -246,25 +241,40 @@
     },
     _getBaseUrl: function() {
       return this.backend + this.execEndpoint;
+    },    
+    _calcHasAResponse: function() {
+      // console.debug("[warp10-warpscript-ide] _calcHasAResponse"); 
     },
-    withoutError: function() {
-      if (this.error > 0) {
-        return false
-      }
-      return true
-    },
-    errorChanged: function() {
-      // console.debug("[warp10-warpscript-ide] errorChanged", { response: this.errorMsg });
-    },
-    responseChanged: function() {
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response });
-      if (this.response !== null) {
-          this.data = gtsTools.gtsFromJSONList(this.response);
-      } else {
-        this.data = null;
-      }
-      //console.debug("[warp10-warpscript-ide] responseChanged", { response: this.response, data: this.data });
-      this.received += 1;
+    _handleResponse: function(event, response) {      
+        if (!response.stack ||
+          !response.stack instanceof Array ) {
+          this.data = null;
+          return;
+        }        
+        this.elapsed = response.options.elapsed;
+        this.data = gtsTools.gtsFromJSONList(response.stack);
+        this.stack = response.stack;  
+        this._hasAResponse = true;
+        this._hasAnError = false;
+        
+        this.$.response_container.responseChanged();
+        
+        // console.debug("[warp10-warpscript-ide] _handleResponse", { stack: this.stack, elapsed: this.elapsed, data: this.data });
+    },    
+    _handleError: function(event, error) {        
+        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+        } else {
+          this.errorMsg =  error.request.statusText;
+        }
+        
+        console.debug("[warp10-warpscript-ide] _handleError", { error: error, errorMsg: this.errorMsg });
+        
+        this.elapsed = error.elapsed;
+        this._hasAResponse = false;
+        this._hasAnError = true;       
+        
+        console.debug("[warp10-warpscript-ide] _handleError - _hasAResponse", this._hasAResponse);
     },
     isPermalinkHidden: function() {
       return !this.showPermalink;
@@ -295,16 +305,16 @@
       }
     },
     execute: function() {
-      // console.debug("[warp10-warpscript-ide] Execute", this.content)
+      console.debug("[warp10-warpscript-ide] Execute", this.content)
       if (this.showPermalink) {
         this.updatePermalink();
       }
       this.warpscriptScript = this.content;
-      this.call +=1 ;
+      this.$.warpscriptcaller.generateRequest();    
     },
     doPlot: function() {
-      // console.debug([warp10-warpscript-ide] Plot", this.response)
-      if (this.response.length) {
+      // console.debug([warp10-warpscript-ide] Plot", this.stack)
+      if (this.stack.length) {
           this.plot += 1;
           this.target = undefined;
       }

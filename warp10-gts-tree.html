@@ -213,7 +213,9 @@
       return JSON.stringify(this.data);
     },
     dataChanged: function() {
-      //console.debug("[warp10-gts-tree] dataChanged", this.data);
+      console.debug("[warp10-gts-tree] dataChanged", this.data);
+      this.fire('plotted-changed', plottingTools);
+      this.plottedChanged++;
     },
     selectNodeHead: function(e, detail) {
       // console.debug("[warp10-gts-tree] selectNodeHead", e.model.node);

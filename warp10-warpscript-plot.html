@@ -5,7 +5,7 @@
 <link rel="import" href="../warp10-quantum/warp10-image-overlay.html">
 <link rel="import" href="../warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../warp10-iron/warp10-simple-overlay.html">
-<link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+<link rel="import" href="../warp10-iron/warp10-alt-warpscript-caller.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link   rel="import" href="../warp10-quantum/quantum-external-deps.html">
 
@@ -64,6 +64,7 @@
     <iron-a11y-keys target="[[target]]" keys="/ help:keypress"  on-keys-pressed="hotkeyRegex" ></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="enter"  on-keys-pressed="hotkeyRegexEnter"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="h ?:keypress"     on-keys-pressed="hotkeyHelp"></iron-a11y-keys>
+    
     <warp10-simple-overlay id="warpscript-plot-keyboard-shortcuts-overlay">
       <div class="overlay-box">
         <h4>Keyboard Shortcuts:</h4>
@@ -81,6 +82,7 @@
     <warp10-image-overlay id="image-overlay"></warp10-image-overlay>
 
     <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
+    
     <warp10-gts-tree id="gts-tree" data="{{data}}" new-data="{{newData}}" plotted-changed={{changed}}></warp10-gts-tree>
 
     
@@ -133,12 +135,11 @@
       </div>
     </warp10-simple-overlay>
 
-
     <warp10-warpscript-caller
-      id="warpscript-caller"
-      base-url="{{_baseUrl}}" warpscript="{{warpscript}}"
-      data="{{response}}"    loading="{{loading}}" call="{{call}}"
-      error="{{error}}" error-msg="{{errorMsg}}" >
+      id="warpscriptcaller"
+      url="{{_baseUrl}}" warpscript="{{warpscript}}"
+      on-response="_handleResponse"  on-error="_handleError"
+      loading="{{loading}}">
     </warp10-warpscript-caller>
 
   </template>
@@ -172,10 +173,6 @@
         type: String,
         value: "/exec"
       },
-      response: {
-        type: Array,
-        observer: "responseChanged"
-      },
       vertGuide: {
         type: Number,
         observer: 'vertGuideChanged'
@@ -190,10 +187,6 @@
       stackedGtsListSlidingWindow: {
         type: Array,
         computed: "getStackedGtsListSlidingWindow(stackedGtsList, selectedGts)"
-      },
-      call: {
-        type: Number,
-        value: 0
       },
       _baseUrl: {
         type: String,
@@ -241,22 +234,22 @@
       return this.backend + this.execEndpoint;
     },
     dataChanged: function() {
-      // console.debug("[warp10-warpscript-plot] dataChanged", this.data);
+      console.debug("[warp10-warpscript-plot] dataChanged", this.data);
       if (this.data !== null) {
-        // console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
+        console.debug("[warp10-warpscript-plot] dataChanged - do refresh");
         plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
         this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
         this.newData ++;
       }
     },
-    responseChanged: function() {
-      // console.debug([warp10-warpscript-plot] responseChanged", { response: this.response });
-      if (this.response !== null) {
-          this.data = gtsTools.gtsFromJSONList(this.response);
-      } else {
+    _handleResponse: function(event, response) {      
+      if (!response.stack ||
+        !response.stack instanceof Array ) {
         this.data = null;
-      }
-    },
+        return;
+      }        
+      this.data = gtsTools.gtsFromJSONList(response.stack);
+    },    
     vertGuideChanged: function(event) {
       if (this.vertGuide >0) {
         this.$.vertGuide.style.display = "inline-block";
@@ -272,7 +265,7 @@
          params: e.detail.params,
          globalParams: {}
       }];
-      // console.debug("[warp10-warpscript-plot] plottedChanged", this.dataToPlot);
+      console.debug("[warp10-warpscript-plot] plottedChanged", this.dataToPlot);
       
       this.newData++;
       this.$$('#warp10-display-chart').dataChanged();
@@ -442,7 +435,7 @@
     hotkeyReload: function(e) {
       if (this.plot > 0 && !this._regexMode) {
         // console.debug([warp10-warpscript-plot] hotkey r");
-        this.call++;
+        this.$.warpscriptcaller.generateRequest();    
       }
     },
     hotkeyHelp: function(e) {
@@ -453,11 +446,6 @@
     },
   });
 </script>
-
-
-/******************************************************************************/
-/******************************************************************************/
-
 
 <dom-module id="warp10-gts-in-selection-overlay">
   <template>
