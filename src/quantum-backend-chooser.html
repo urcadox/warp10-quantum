@@ -8,10 +8,12 @@
 
 <link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html">
 
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
@@ -41,6 +43,13 @@
         background-color: var(--google-grey-200) !important;
       }
 
+
+      paper-material {
+        margin: 10px;
+        padding:15px;
+        background-color: var(--app-background-color);
+      }
+
       .more_info_label {
         float: right;
         cursor: pointer;
@@ -51,6 +60,38 @@
           display:block;
           clear: both;
       }
+      .horizontal_flex {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-justified);
+      }
+      .edit_button {
+        color: var(--app-primary-color);
+        cursor: pointer;
+      }
+      .item { 
+        margin-top: 8px; 
+        margin-bottom: 8px; 
+      } 
+
+      .item_name { 
+        color: var(--paper-grey-600); 
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        font-size: 12px; 
+        font-weight: 400; 
+        letter-spacing: 0.011em; 
+        line-height: 20px; 
+      } 
+
+      .item_value { 
+        @apply(--layout-horizontal); 
+        @apply(--layout-center); 
+        @apply(--layout-wrap); 
+      } 
     </style>
 
 
@@ -59,7 +100,10 @@
     
     <paper-radio-group id="backendRadioGroup" on-iron-select="_backendChoosen" >
       <template is="dom-repeat" items="{{configuredBackends}}" as="item">
-        <paper-radio-button data-backend$="{{item}}" name$="{{item.id}}">
+        <paper-radio-button
+            id$="backend_{{item.id}}"
+            name$="backend_{{item.id}}" 
+            data-backend$="{{item}}">
           {{item.label}}
         </paper-radio-button>
       </template>
@@ -69,55 +113,141 @@
       </paper-radio-button>
     </paper-radio-group>
 
-    <template is="dom-if" if="{{_chooseAltBackendSelected}}">
-      <paper-input
-        auto-validate
-        prevent-invalid-input 
-        name="altBackendUrl" 
-        label="{{ localize('backendUrl')}}"
-        type="text" 
-        value="{{_altBackendUrl}}"
-        validator="warp10-backend-validator"
-        maxlength="256"
-        required ></paper-input>
-      <div class="more_info">  
-        <div class="more_info_label" on-tap="_toggleOtherParamState">
-          <iron-icon icon$="{{_otherParamsStateIcon}}"></iron-icon>
-          {{ localize('otherParams') }}
-        </div>
-      </div>
-      <template is="dom-if" if="{{_otherParamsOpen}}">
-        <div>            
-          <paper-input
-            name="altBackendHeader" label="{{ localize('headerName')}}"
-            type="text" value="{{_altBackendHeaderName}}"
-            required maxlength="64"></paper-input>
-          <paper-input
-            name="altBackendExecEndpoint" label="{{ localize('execEndpoint')}}"
-            type="text" value="{{_altBackendExecEndpoint}}"
-            required maxlength="64"></paper-input>  
-          <paper-input
-            name="altBackendFindEndpoint" label="{{ localize('findEndpoint')}}"
-            type="text" value="{{_altBackendFindEndpoint}}"
-            required maxlength="64"></paper-input>    
-          <paper-input
-            name="altBackendUpdateEndpoint" label="{{ localize('updateEndpoint')}}"
-            type="text" value="{{_altBackendUpdateEndpoint}}"
-            required maxlength="64"></paper-input>   
-          <paper-input
-            name="altBackendDeleteEndpoint" label="{{ localize('deleteEndpoint')}}"
-            type="text" value="{{_altBackendDeleteEndpoint}}"
-            required maxlength="64"></paper-input>  
-        </div>
-      </template>  
 
-      <paper-button  
-          name="validateAltBackend" on-tap="_validateAltBackend"
-          disabled="{{_invalidAltBackend}}"
-          raised>
-          <iron-icon icon="done"></iron-icon>
-      </paper-button>     
+    <template is="dom-if" if="{{_chooseAltBackendSelected}}">
+      <paper-material elevation="1">
+
+
+        <template is="dom-if" if="{{_altBackendValidation}}">        
+          <div class="horizontal_flex">
+            <div>{{ localize('validAltBackend') }} </div>
+            <div>
+              <iron-icon 
+                  class="edit_button" 
+                  icon="create"
+                  on-tap="_editAltBackend"></iron-icon>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item_name">
+              {{ localize('backendUrl')}}
+            </div>
+            <div class="item_value">
+              {{_altBackendUrl}}
+            </div>
+          </div>  
+
+          <div class="more_info">  
+            <div class="more_info_label" on-tap="_toggleOtherParamState">
+              <iron-icon icon$="{{_otherParamsStateIcon}}"></iron-icon>
+              {{ localize('otherParams') }}
+            </div>
+          </div>
+          <template is="dom-if" if="{{_otherParamsOpen}}">
+
+            <div class="item">
+              <div class="item_name">
+                {{ localize('headerName')}}
+              </div>
+              <div class="item_value">
+                {{_altBackendHeaderName}}
+              </div>
+            </div>  
+            <div class="item">
+              <div class="item_name">
+                {{ localize('execEndpoint')}}
+              </div>
+              <div class="item_value">
+                {{_altBackendExecEndpoint}}
+              </div>
+            </div>  
+            <div class="item">
+              <div class="item_name">
+                {{ localize('findEndpoint')}}
+              </div>
+              <div class="item_value">
+                {{_altBackendFindEndpoint}}
+              </div>
+            </div>  
+            <div class="item">
+              <div class="item_name">
+                {{ localize('updateEndpoint')}}
+              </div>
+              <div class="item_value">
+                {{_altBackendUpdateEndpoint}}
+              </div>
+            </div>  
+            <div class="item">
+              <div class="item_name">
+                {{ localize('deleteEndpoint')}}
+              </div>
+              <div class="item_value">
+                {{_altBackendDeleteEndpoint}}
+              </div>
+            </div>  
+          </template>  
+        </template>
+
+
+        <template is="dom-if" if="{{!_altBackendValidation}}">        
+          <div>{{ localize('configAltBackend') }}</div>
+
+          <paper-input
+              auto-validate
+              prevent-invalid-input 
+              name="altBackendUrl" 
+              label="{{ localize('backendUrl')}}"
+              type="text" 
+              value="{{_altBackendUrl}}"
+              validator="warp10-backend-validator"
+              maxlength="256"
+              required ></paper-input>
+          <div class="more_info">  
+            <div class="more_info_label" on-tap="_toggleOtherParamState">
+              <iron-icon icon$="{{_otherParamsStateIcon}}"></iron-icon>
+              {{ localize('otherParams') }}
+            </div>
+          </div>
+          <template is="dom-if" if="{{_otherParamsOpen}}">
+            <div>            
+              <paper-input
+                name="altBackendHeader" label="{{ localize('headerName')}}"
+                type="text" value="{{_altBackendHeaderName}}"
+                required maxlength="64"></paper-input>
+              <paper-input
+                name="altBackendExecEndpoint" label="{{ localize('execEndpoint')}}"
+                type="text" value="{{_altBackendExecEndpoint}}"
+                required maxlength="64"></paper-input>  
+              <paper-input
+                name="altBackendFindEndpoint" label="{{ localize('findEndpoint')}}"
+                type="text" value="{{_altBackendFindEndpoint}}"
+                required maxlength="64"></paper-input>    
+              <paper-input
+                name="altBackendUpdateEndpoint" label="{{ localize('updateEndpoint')}}"
+                type="text" value="{{_altBackendUpdateEndpoint}}"
+                required maxlength="64"></paper-input>   
+              <paper-input
+                name="altBackendDeleteEndpoint" label="{{ localize('deleteEndpoint')}}"
+                type="text" value="{{_altBackendDeleteEndpoint}}"
+                required maxlength="64"></paper-input>  
+            </div>  
+          </template>  
+
+          <paper-button  
+              name="validateAltBackend" on-tap="_validateAltBackend"
+              disabled="{{_invalidAltBackend}}"
+              raised>
+              <iron-icon icon="done"></iron-icon>
+          </paper-button>
+        </template>
+      </paper-material>     
     </template>  
+
+
+
+    
+   <warp10-backend-validator></warp10-backend-validator>
+
 
   </template>
 
@@ -148,6 +278,7 @@
          */        
         backend: {
           type: Object,
+          observer: "_backendChanged",
           notify: true
         },
 
@@ -195,7 +326,7 @@
 
         _altBackendUrl: {
           type: String,
-          value: ""
+          value: "http://127.0.0.1:8080/api/v0"
         },
         _altBackendHeaderName: {
           type: String,
@@ -221,6 +352,10 @@
           type: Boolean,
           computed: "_isInvalidAltBackend(_altBackendUrl,_altBackendHeaderName,_altBackendExecEndpoint,_altBackendFindEndpoint,_altBackendUpdateEndpoint,_altBackendDeleteEndpoint)"
         },
+        _altBackendValidation: {
+          type: Boolean,
+          value: false
+        },
 
 
         /* Overriden from AppLocalizeBehavior */
@@ -241,7 +376,7 @@
                 'findEndpoint': "'Find' endpoint",
                 'updateEndpoint': "'Update' endpoint",  
                 'deleteEndpoint': "'Delete' endpoint",
-                'validateAltBackend': "Validate",
+                'configAltBackend': "Configure backend",
                 'validAltBackend': "Backend configurated"
               },
             }
@@ -250,6 +385,34 @@
       },
 
       // Observers
+      _backendChanged: function() {
+        if (!this.backend) {
+          return;
+        }
+        var preconfiguredBackend = false;
+        console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", this.backend);
+        for (i in this.configuredBackends) {
+          console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend});
+          if (this.configuredBackends[i].url == this.backend.url) {
+            console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
+            this.$.backendRadioGroup.selectIndex(i); 
+            preconfiguredBackend = true;
+          }
+        }
+        if (!preconfiguredBackend) {
+          if (this.configuredBackends && this.configuredBackends.length>0 ) {
+            this._chooseAltBackendSelected = true;
+          }
+          this._altBackendUrl = this.backend.url;
+          this._altBackendHeaderName = this.backend.headerName;
+          this. _altBackendExecEndpoint = this.backend.execEndpoint;
+          this._altBackendFindEndpoint = this.backend.findEndpoint;
+          this._altBackendUpdateEndpoint = this.backend.updateEndpoint;
+          this._altBackendDeleteEndpoint = this.backend.deleteEndpoint;     
+          
+          this._altBackendValidation = true;
+        }
+      },
       _setInitialBackend: function() {
         // console.debug("[quantum-backend-chooser] _setInitialBackend", this.$.backendRadioGroup.items);
         this.$.backendRadioGroup.selectIndex(0); 
@@ -303,22 +466,32 @@
           deleteEndpoint: this._altBackendDeleteEndpoint
         }
         console.debug("[quantum-backend-chooser] _validateAltBackend", this._altBackend);
-        this.backend = this._altBackend;         
+        this.backend = this._altBackend;    
+        this._altBackendValidation = true;     
+        this.fire("backend-choosen", this.backend);
+      },
+
+      _editAltBackend: function() {
+        this._altBackendValidation = false;     
       },
 
       // Event listeners
       _backendChoosen: function(evt, model) {
-        var backend = model.item.getAttribute('data-backend');
+        var backend = JSON.parse(model.item.getAttribute('data-backend'));
         if (backend) {
           this.backend = backend;
           console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
         }
+        this.fire("backend-choosen", this.backend);
       },
 
       // Lifecycle methods
       attached: function() {
         this._setInitialBackend();
-      }
+      },
+
+
+
 
     });
   </script>

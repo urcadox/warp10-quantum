@@ -109,7 +109,9 @@
         </app-header>
 
         <paper-material elevation="1">
-          <quantum-backend-chooser configured-backends="{{configuredBackends}}"></quantum-backend-chooser>
+          <quantum-backend-chooser 
+            backend="{{backend}}" 
+            configured-backends="{{configuredBackends}}"></quantum-backend-chooser>
         </paper-material>
 
         <iron-pages 
