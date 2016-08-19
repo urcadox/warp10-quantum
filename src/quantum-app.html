@@ -114,16 +114,19 @@
             configured-backends="{{configuredBackends}}"></quantum-backend-chooser>
         </paper-material>
 
-        <iron-pages 
-            role="main" 
-            selected="[[page]]" 
-            attr-for-selected="name"
-            fallback-selection="warpscript">
-          <quantum-warpscript name="warpscript"></quantum-warpscript>
-          <quantum-find name="find"></quantum-find>
-          <quantum-update name="update"></quantum-update>
-          <quantum-delete name="delete"></quantum-delete>
-        </iron-pages>
+
+        <paper-material elevation="1">
+          <iron-pages 
+              role="main" 
+              selected="[[page]]" 
+              attr-for-selected="name"
+              fallback-selection="warpscript">
+            <quantum-warpscript name="warpscript"></quantum-warpscript>
+            <quantum-find name="find"></quantum-find>
+            <quantum-update name="update"></quantum-update>
+            <quantum-delete name="delete"></quantum-delete>
+          </iron-pages>
+        </paper-material>
 
       </app-header-layout>
 

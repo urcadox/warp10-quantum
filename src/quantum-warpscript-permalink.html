@@ -1,0 +1,125 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="quantum-warpscript-permalink-decoder">
+  <template>
+    <style>
+      :host {
+      }
+    </style>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "quantum-warpscript-permalink-decoder",
+    properties: {
+      encodedWarpscript: {
+        type: String
+      },
+      encodedBackend:{
+        type: String
+      },
+      warpscript: {
+        type:String,
+        computed: "decodeWarpscript(encodedWarpscript)",
+        notify: true
+      },
+      backend: {
+        type: String,
+        computed: "decodeBackend(encodedBackend)",
+        notify: true
+      }
+    },
+    decodeWarpscript: function(){
+      console.debug("[quantum-warpscript-permalink-decoder] decodeWarpscript - encodedWarpscript :", this.encodedWarpscript);
+      try {
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedWarpscript))));
+        console.debug("[quantum-warpscript-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
+        return decoded;
+      } catch  (e) {
+      }
+    },
+    decodeBackend: function(){
+      // console.debug([quantum-warpscript-permalink-decoder] decodeBackend - encodedBackend :", this.encodedBackend);
+      try {
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend))));
+        console.debug("[quantum-warpscript-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
+        return decoded;
+      } catch  (e) {
+      }
+    }
+  });
+</script>
+
+
+<dom-module id="quantum-warpscript-permalink-generator">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .top-10 { margin-top:10px; }
+    </style>
+
+    <div class="top-10">
+      <b>Permalink:</b> <a href="#/warpscript/{{permalink}}">{{croppedPermalink}}</a>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "quantum-warpscript-permalink-generator",
+    properties: {
+      warpscript: {
+        type: String,
+        value: ""
+      },
+      backend: {
+        type: String,
+        value: ""
+      },
+      permalink: {
+        type: String,
+        notify: true,
+        computed: "generatePermalink(warpscript, backend)"
+      },
+      croppedPermalink: {
+        type: String,
+        computed: "cropPermalink(permalink)"
+      },
+      _maxDisplayLength: {
+        type: Number,
+        value: 80
+      }
+    },
+    created: function(){
+      this._maxDisplayLength = 80;
+      // console.debug("[quantum-warpscript-permalink] created called", this._maxDisplayLength);
+    },
+    generatePermalink: function(){
+      // console.debug("[quantum-warpscript-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
+      if (this.backend === undefined || this.backend.length == 0) {
+        // return btoa(unescape(encodeURIComponent(this.warpscript)));
+        return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
+      }
+      // return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend))));
+    },
+    cropPermalink: function() {
+      if (this.permalink.length > this._maxDisplayLength) {
+        return this.permalink.slice(0, this._maxDisplayLength)+"...";
+      }
+      return this.permalink;
+    },
+    updatePermalink: function() {
+      console.debug("[quantum-warpscript-permalink] updatePermalink called",this.permalink);
+      window.history.pushState({}, null, '#/warpscript'+this.permalink);
+      window.dispatchEvent(new CustomEvent('location-changed'));
+    }
+  });
+</script>

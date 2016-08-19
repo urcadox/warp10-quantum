@@ -1,0 +1,77 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+
+<link rel="import" href="quantum-warpscript-ide.html">
+
+
+<dom-module is="quantum-warpscript">
+  <template>
+    <style>
+    </style>  
+      <quantum-warpscript-ide
+        id="editor-widget" 
+        theme="chaos" 
+        content="{{warpscript}}"
+        data="{{data}}" 
+        backend="{{backend}}"
+        show-permalink="{{showPermalink}}" 
+        hide-plot="{{hidePlot}}"></warp10-warpscript-ide>    
+  </template>
+  <script>
+    Polymer({
+      is: "quantum-warpscript",
+      properties: {
+        /**
+         * The  warpscript code in the IDE
+         */
+        warpscript: {
+          type: String,
+          notify: true,
+          observer: "_warpscriptChanged",
+          value: ""
+        },
+        /**
+         * If false, the `warp10-warpscript-ide` component inside this one won't show
+         * the permalink, useful for embedded mode
+         */
+        showPermalink: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If true, the `warp10-warpscript-ide` component inside this one won't show
+         * the plot Button, useful for embedded mode
+         */
+        hidePlot: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The choosen backend
+         *  The `backend` object is composed of:
+         *
+         *  - `id`: an unique id, a simple string to be used as HTML id
+         *  - `label`: the label to show in the UI
+         *  - `url`: the backend URL
+         *  - `execEndpoint`: the path of the WarpScript execution endpoint 
+         *  - `findEndpoint`: the path of the Find endpoint
+         *  - `updateEndpoint`: the path of the update endpoint
+         *  - `deleteEndpoint`: the path of the delete endpoint
+         *  - `headerName`: the Warp10 header name to add for different operations
+         *
+         */        
+        backend: {
+          type: Object,
+          observer: "_backendChanged",
+          notify: true
+        },
+      },
+    });
+  </script>
+</dom-module>
+
