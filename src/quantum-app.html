@@ -1,0 +1,191 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+
+<link rel="import" href="./quantum-backend-chooser.html">
+
+
+<dom-module id="quantum-app">
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        --app-primary-color: var(--google-blue-500);
+        --app-secondary-color: black;
+        --app-background-color: white;
+      }
+
+      app-header {
+        background-color: var(--app-primary-color);
+        color: #fff;
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      paper-material {
+        margin: 10px;
+        background-color: var(--app-background-color);
+      }
+      .drawer-list {
+        margin: 0 20px;
+      }
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        line-height: 40px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+      }
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      .drawer-list a.subroute {
+        padding-left: 32px;
+      }
+
+
+    </style>
+
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>      
+
+    <app-drawer-layout fullbleed>
+
+      <!-- Drawer content -->
+      <app-drawer>
+
+        <app-toolbar>Menu</app-toolbar>
+
+        <iron-selector 
+            selected="[[page]]" 
+            attr-for-selected="name"  
+            class="drawer-list" 
+            role="navigation">
+          <a name="warpscript" on-click="_goToPage">WarpScript</a>
+          <a name="find" on-click="_goToPage">Find</a>
+          <a name="update" on-click="_goToPage">Update</a>
+          <a name="delete" on-click="_goToPage">Delete</a>
+        </iron-selector>
+
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <app-header condenses reveals effects="waterfall">
+          <app-toolbar>
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div title>Warp10 Quantum</div>
+          </app-toolbar>
+        </app-header>
+
+        <paper-material elevation="1">
+          <quantum-backend-chooser configured-backends="{{configuredBackends}}"></quantum-backend-chooser>
+        </paper-material>
+
+        <iron-pages 
+            role="main" 
+            selected="[[page]]" 
+            attr-for-selected="name"
+            fallback-selection="warpscript">
+          <quantum-warpscript name="warpscript"></quantum-warpscript>
+          <quantum-find name="find"></quantum-find>
+          <quantum-update name="update"></quantum-update>
+          <quantum-delete name="delete"></quantum-delete>
+        </iron-pages>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'quantum-app',
+
+      properties: {
+
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+
+
+
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'warpscript';
+      },
+
+      _pageChanged: function(page) {
+        // load page import on demand.
+        this.importHref(
+          this.resolveUrl('quantum-' + page + '.html'), null, null, true);
+      },
+
+      _goToPage: function(evt) {
+        console.debug("[quantum-app] _goToPage", evt);
+        var pageId = evt.target.getAttribute('name');
+        window.history.pushState({}, null, '#/'+pageId);
+        window.dispatchEvent(new CustomEvent('location-changed'));
+      },
+
+
+      ready: function() {
+        this.configuredBackends = [
+          {
+            "id": "dist",
+            "label": "Distributed Warp",
+            "url": "https://warp.cityzendata.net/dist/api/v0",
+            "execEndpoint": "/exec",
+            "findEndpoint": "/find",
+            "updateEndpoint": "/update",
+            "deleteEndpoint": "/delete",
+            "headerName": "Warp10"
+          }
+        ];     
+      },
+
+    });
+
+  </script>
+
+</dom-module>
