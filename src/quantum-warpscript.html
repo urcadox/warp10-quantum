@@ -20,7 +20,8 @@
         data="{{data}}" 
         backend="{{backend}}"
         show-permalink="{{showPermalink}}" 
-        hide-plot="{{hidePlot}}"></warp10-warpscript-ide>    
+        hide-plot="{{hidePlot}}"
+        on-plot="_handlePlot"></quantum-warpscript-ide> 
   </template>
   <script>
     Polymer({
@@ -71,6 +72,11 @@
           notify: true
         },
       },
+
+      // Event listeners
+      _handlePlot: function(evt, stack) {
+        console.debug("[quantum-warpscript] _handlePlot - Received plot event", stack);
+      }
     });
   </script>
 </dom-module>

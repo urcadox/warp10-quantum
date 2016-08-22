@@ -52,7 +52,16 @@
       }
 
     </style>
-
+    <style>
+      .clearfix:before,
+      .clearfix:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+      .clearfix:after {
+        clear: both;
+      }      
+    </style>
     <template is="dom-if" if="{{showResponse}}">
       <h4>Response:</h4>
       <div class="response-panel">
@@ -69,52 +78,52 @@
         </template>
     </template>
   </template>
+
+
+
+  <script>
+    Polymer({
+      is:"quantum-response-container",
+      properties: {
+        reponse: {
+          type: Array,
+          observer: 'responseChanged'
+        }
+      },
+      observers: [
+        'responseChanged(reponse.*)'
+      ],
+      ready: function() {
+        this.showResponse = false;
+        this.data = []
+      },
+      attached: function() {
+        this.responseChanged();
+      },
+      responseChanged: function() {
+        console.debug("[quantum-response-container] responseChanged", this.response )
+        if ((this.response === null) || (this.response === undefined)) {
+          this.showResponse = false;
+          return;
+        }
+
+        this.data = this.response
+
+        // console.debug([quantum-response-container] responseChanged", this.data);
+
+        if ( (this.data != undefined) && (this.data !== null) ) {
+          this.showResponse = true;
+        } else {
+          this.showResponse = false;
+        }
+      },
+      hide: function() {
+        this.showResponse = false;
+      },
+      stringify: function(line) {
+        return looseJSON.stringify(line);
+      }
+    });
+
+  </script>
 </dom-module>
-
-
-
-<script>
-  Polymer({
-    is:"quantum-response-container",
-    properties: {
-      reponse: {
-        type: Array,
-        observer: 'responseChanged'
-      }
-    },
-    observers: [
-      'responseChanged(reponse.*)'
-    ],
-    ready: function() {
-      this.showResponse = false;
-      this.data = []
-    },
-    attached: function() {
-      this.responseChanged();
-    },
-    responseChanged: function() {
-      console.debug("[quantum-response-container] responseChanged", this.response )
-      if ((this.response === null) || (this.response === undefined)) {
-        this.showResponse = false;
-        return;
-      }
-
-      this.data = this.response
-
-      // console.debug([quantum-response-container] responseChanged", this.data);
-
-      if ( (this.data != undefined) && (this.data !== null) ) {
-        this.showResponse = true;
-      } else {
-        this.showResponse = false;
-      }
-    },
-    hide: function() {
-      this.showResponse = false;
-    },
-    stringify: function(line) {
-      return looseJSON.stringify(line);
-    }
-  });
-
-</script>

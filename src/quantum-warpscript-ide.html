@@ -8,6 +8,8 @@
 
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 
+<link rel="import" href="../bower_components/granite-alert/granite-alert.html">
+
 <link rel="import" href="../bower_components/ace-widget/ace-widget.html">
 
 <link rel="import" href="../bower_components/spinner-widget/spinner-widget.html">
@@ -20,53 +22,79 @@
 <link rel="import" href="quantum-response-container.html">
 <link rel="import" href="quantum-warpscript-permalink.html">
 
-<script src="../bower_components/ace/mode-warpscript.js"></script>
+<script src="../ace/mode-warpscript.js"></script>
 <script src="../bower_components/ace-builds/src-min-noconflict/theme-eclipse.js"></script>
 <script src="../bower_components/ace-builds/src-min-noconflict/snippets/text.js"></script>
 
-<dom-module id="quantum-warpscript-ide">
-  <style>
-    :host {
-      display: block;
-    }
-    .ace-editor {
-      font-size: 14px;
-    }
-    .top-10 { margin-top:10px; }
-
-    .left {
-      float: left;
-    }
-    .right {
-      float: right;
-    }
-    .btn[hidden],
-    quantum-warpscript-permalink-generator[hidden],
-    quantum-response-container[hidden] {
-      display: none;
-    }
-    .overlayBox {
-      display:flex;
-      flex-flow: row;
-      justify-content: center;
-      font-size: 1.2em;
-    }
-    .overlayContent  {
-    }
-    .hotkey-key {
-      background-color: #333;
-      border: 1px solid #333;
-      border-radius: 5px;
-      box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
-      color: #fff;
-      display: inline-block;
-      font-size: 1em;
-      margin-right: 5px;
-      padding: 5px 9px;
-      text-align: center;
-    }
-  </style>
+<dom-module id="quantum-warpscript-ide">  
   <template>
+    <style>
+      :host {
+        display: block;
+        padding: 15px;
+        --app-primary-color: var(--google-blue-500);
+        --app-secondary-color: black;
+        --app-background-color: white;
+        --app-on-background-color: white;
+      }
+      ace-widget {
+        --ace-widget-editor: {
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        };
+      }
+      .ace-editor {
+        font-size: 18px;
+      }
+      .top-10 { margin-top:10px; }
+
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      .btn[hidden],
+      quantum-warpscript-permalink-generator[hidden],
+      quantum-response-container[hidden],
+      granite-alert[hidden] {
+        display: none;
+      }
+      .overlayBox {
+        display:flex;
+        flex-flow: row;
+        justify-content: center;
+        font-size: 1.2em;
+      }
+      .overlayContent  {
+      }
+      .hotkey-key {
+        background-color: #333;
+        border: 1px solid #333;
+        border-radius: 5px;
+        box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
+        color: #fff;
+        display: inline-block;
+        font-size: 1em;
+        margin-right: 5px;
+        padding: 5px 9px;
+        text-align: center;
+      }
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: var(--app-on-background-color)
+      }
+    </style>
+
+    <style>
+      .clearfix:before,
+      .clearfix:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+      .clearfix:after {
+        clear: both;
+      }      
+    </style>
 
     <iron-a11y-keys target="[[target]]" keys="e" on-keys-pressed="hotkeyExecute"></iron-a11y-keys>
     <iron-a11y-keys target="[[target]]" keys="p" on-keys-pressed="hotkeyPlot"></iron-a11y-keys>
@@ -80,12 +108,12 @@
       </div>
     </warp10-simple-overlay>
 
-    <quantum-warpscript-caller
+    <warp10-warpscript-caller
       id="warpscriptcaller"
       url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
       on-response="_handleResponse"  on-error="_handleError"
       loading="{{loading}}">
-    </quantum-warpscript-caller>
+    </warp10-warpscript-caller>
 
 
     <ace-widget
@@ -102,23 +130,22 @@
     <div  class="top-10">
       <template is="dom-if" if="{{!hidePlot}}">
         <div class="left">
-          <button
-            class="btn btn-primary btn-lg"
+          <paper-button
             on-click="doPlot"
             disabled$="{{loading}}"
             hidden$="{{!_hasAResponse}}">
             Plot
-          </button>
+          </paper-button>
         </div>
       </template>
       <div class="right">
-        <button
+        <paper-button
           id="btn_execute"
           class="btn btn-primary btn-lg"
           on-click="execute"
           disabled$="{{loading}}">
           Execute!
-        </button>
+        </paper-button>
       </div>
     </div>
     <template is="dom-if" if="{{showedElapsedTime}}">
@@ -136,222 +163,232 @@
         response="{{stack}}"
         received="{{received}}" 
         hidden$="{{!_hasAResponse}}">></quantum-response-container>
-      <div class="alert alert-danger" hidden$="{{!_hasAnError}}">
+      <granite-alert level="danger" hidden$="{{!_hasAnError}}">
         {{errorMsg}}
-      </div>
+      </granite-alert>
     </div>
 
 
   </template>
-</dom-module>
 
-<script>
-  Polymer({
-    is:"quantum-warpscript-ide",
-    properties: {
-      content: {
-        type: String,
-        notify: true
+  <script>
+    Polymer({
+      is:"quantum-warpscript-ide",
+      properties: {
+        /**
+         * The WarpScript
+         */
+        content: {
+          type: String,
+          notify: true
+        },
+
+        /**
+         * The choosen backend
+         *  The `backend` object is composed of:
+         *
+         *  - `id`: an unique id, a simple string to be used as HTML id
+         *  - `label`: the label to show in the UI
+         *  - `url`: the backend URL
+         *  - `execEndpoint`: the path of the WarpScript execution endpoint 
+         *  - `findEndpoint`: the path of the Find endpoint
+         *  - `updateEndpoint`: the path of the update endpoint
+         *  - `deleteEndpoint`: the path of the delete endpoint
+         *  - `headerName`: the Warp10 header name to add for different operations
+         *
+         */        
+        backend: {
+          type: Object,
+          observer: "_backendChanged",
+          notify: true
+        },
+
+        response: {
+          type: Array,
+          value: function() {
+            return null;
+          }
+        },
+        plot: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+        data: {
+          type: Array,
+          notify: true
+        },
+        target: {
+          type: Object,
+          value: function() {
+            return document.body;
+          }
+        },
+        /**
+         * Elapsed time for the call
+         */
+        elapsed: {
+          type: Number,
+          value: -1
+        },
+        /**
+         * Elapsed time for the call, formated for view
+         */
+        formattedElapsedTime: {
+          type: String,
+          computed: "formatElapsedTime(elapsed)"
+        },
+        showedElapsedTime: {
+          type: Boolean,
+          computed: "showElapsedTime(elapsed)"
+        },
+        showPermalink: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If true, the `quantum-warpscript-ide` component inside this one won't show
+         * the plot Button, useful for embedded mode
+         */
+        hidePlot: {
+          type: Boolean,
+          value: false
+        },
+        hidePermalink: {
+          type: Boolean,
+          computed: "isPermalinkHidden(showPermalink)"
+        },
+        _baseUrl: {
+          type: String,
+          computed: "_getBaseUrl(backend)"
+        },
+        
+        _hasAResponse: {
+          type: Boolean,
+          value: false
+        },
+        _hasAnError: {
+          type: Boolean,
+          value: false
+        },
+
       },
-      backend: {
-        type: String,
-        value: "http://127.0.0.1:8080/api/v0"
+      ready: function() {
       },
-      /**
-       * The  exec endpoint
-       */
-      execEndpoint: {
-        type: String,
-        value: "/exec"
+      attached: function() {
+        editor = this.$.editor;
+        editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
+
+        console.debug("[quantum-warpscript-ide] backend before conf", this.backend);
+        // Look for a global conf, and apply if it exists
+        if (window.quantumConf !== undefined) {
+          this.hidePlot = window.quantumConf.embedded;
+          this.backend = window.quantumConf.backend;
+          this.execEndpoint = window.quantumConf.execEndpoint;
+          this.headerName = window.quantumConf.headerName;
+        }
+        console.debug("[quantum-warpscript-ide] backend after conf", this.backend);
+
       },
-      response: {
-        type: Array,
-        value: function() {
-          return null;
+      _getBaseUrl: function() {
+        return this.backend.url + this.backend.execEndpoint;
+      },   
+      _handleResponse: function(event, response) {      
+          if (!response.stack ||
+            !response.stack instanceof Array ) {
+            this.data = null;
+            return;
+          }        
+          this.elapsed = response.options.elapsed;
+          this.data = gtsTools.gtsFromJSONList(response.stack);
+          this.stack = response.stack;  
+          this._hasAResponse = true;
+          this._hasAnError = false;
+          
+          this.$.response_container.responseChanged();
+          
+          // console.debug("[quantum-warpscript-ide] _handleResponse", { stack: this.stack, elapsed: this.elapsed, data: this.data });
+      },    
+      _handleError: function(event, error) {        
+          if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+            this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+          } else {
+            this.errorMsg =  error.request.statusText;
+          }
+          
+          console.debug("[quantum-warpscript-ide] _handleError", { error: error, errorMsg: this.errorMsg });
+          
+          this.elapsed = error.elapsed;
+          this._hasAResponse = false;
+          this._hasAnError = true;       
+          
+          console.debug("[quantum-warpscript-ide] _handleError - _hasAResponse", this._hasAResponse);
+      },
+      isPermalinkHidden: function() {
+        return !this.showPermalink;
+      },
+      editorChangeAction: function(value, oldValue) {
+        this.content  = value.detail.value;
+        // console.debug("[quantum-warpscript-ide] editorChangeAction", this.content);
+      },
+      hotkeyExecute: function(e) {
+        // console.debug("[quantum-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          this.execute();
         }
       },
-      plot: {
-        type: Number,
-        value: 0,
-        notify: true
-      },
-      data: {
-        type: Array,
-        notify: true
-      },
-      target: {
-        type: Object,
-        value: function() {
-          return document.body;
+      hotkeyPlot: function(e) {
+        // console.debug("[quantum-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          this.doPlot();
         }
       },
-      /**
-       * Elapsed time for the call
-       */
-      elapsed: {
-        type: Number,
-        value: -1
-      },
-      /**
-       * Elapsed time for the call, formated for view
-       */
-      formattedElapsedTime: {
-        type: String,
-        computed: "formatElapsedTime(elapsed)"
-      },
-      showedElapsedTime: {
-        type: Boolean,
-        computed: "showElapsedTime(elapsed)"
-      },
-      showPermalink: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * If true, the `quantum-warpscript-ide` component inside this one won't show
-       * the plot Button, useful for embedded mode
-       */
-      hidePlot: {
-        type: Boolean,
-        value: false
-      },
-      hidePermalink: {
-        type: Boolean,
-        computed: "isPermalinkHidden(showPermalink)"
-      },
-      _baseUrl: {
-        type: String,
-        computed: "_getBaseUrl(backend,execEndpoint)"
-      },
-      
-      _hasAResponse: {
-        type: Boolean,
-        value: false
-      },
-      _hasAnError: {
-        type: Boolean,
-        value: false
-      },
-
-    },
-    ready: function() {
-    },
-    attached: function() {
-      editor = this.$.editor;
-      editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
-
-      console.debug("[quantum-warpscript-ide] backend before conf", this.backend);
-      // Look for a global conf, and apply if it exists
-      if (window.quantumConf !== undefined) {
-        this.hidePlot = window.quantumConf.embedded;
-        this.backend = window.quantumConf.backend;
-        this.execEndpoint = window.quantumConf.execEndpoint;
-        this.headerName = window.quantumConf.headerName;
-      }
-      console.debug("[quantum-warpscript-ide] backend after conf", this.backend);
-
-    },
-    _getBaseUrl: function() {
-      return this.backend + this.execEndpoint;
-    },    
-    _calcHasAResponse: function() {
-      // console.debug("[quantum-warpscript-ide] _calcHasAResponse"); 
-    },
-    _handleResponse: function(event, response) {      
-        if (!response.stack ||
-          !response.stack instanceof Array ) {
-          this.data = null;
-          return;
-        }        
-        this.elapsed = response.options.elapsed;
-        this.data = gtsTools.gtsFromJSONList(response.stack);
-        this.stack = response.stack;  
-        this._hasAResponse = true;
-        this._hasAnError = false;
-        
-        this.$.response_container.responseChanged();
-        
-        // console.debug("[quantum-warpscript-ide] _handleResponse", { stack: this.stack, elapsed: this.elapsed, data: this.data });
-    },    
-    _handleError: function(event, error) {        
-        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
-          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
-        } else {
-          this.errorMsg =  error.request.statusText;
+      hotkeyHelp: function(e) {
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          console.debug("[quantum-warpscript-ide] hotkeyHelp")
+          this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
         }
-        
-        console.debug("[quantum-warpscript-ide] _handleError", { error: error, errorMsg: this.errorMsg });
-        
-        this.elapsed = error.elapsed;
-        this._hasAResponse = false;
-        this._hasAnError = true;       
-        
-        console.debug("[quantum-warpscript-ide] _handleError - _hasAResponse", this._hasAResponse);
-    },
-    isPermalinkHidden: function() {
-      return !this.showPermalink;
-    },
-    editorChangeAction: function(value, oldValue) {
-      this.content  = value.detail.value;
-      // console.debug("[quantum-warpscript-ide] editorChangeAction", this.content);
-    },
-    hotkeyExecute: function(e) {
-      // console.debug("[quantum-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
-      var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
-        this.execute();
-      }
-    },
-    hotkeyPlot: function(e) {
-      // console.debug("[quantum-warpscript-ide] hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
-      var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
-        this.doPlot();
-      }
-    },
-    hotkeyHelp: function(e) {
-      var nodeName =  e.detail.keyboardEvent.target.nodeName;
-      if ((this.plot ==0) && (nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
-        console.debug("[quantum-warpscript-ide] hotkeyHelp")
-        this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
-      }
-    },
-    execute: function() {
-      console.debug("[quantum-warpscript-ide] Execute", this.content)
-      if (this.showPermalink) {
-        this.updatePermalink();
-      }
-      this.warpscriptScript = this.content;
-      this.$.warpscriptcaller.generateRequest();    
-    },
-    doPlot: function() {
-      // console.debug([quantum-warpscript-ide] Plot", this.stack)
-      if (this.stack.length) {
-          this.plot += 1;
+      },
+      execute: function() {
+        console.debug("[quantum-warpscript-ide] Execute", this.content)
+        if (this.showPermalink) {
+          this.updatePermalink();
+        }
+        this.warpscriptScript = this.content;
+        this.$.warpscriptcaller.generateRequest();    
+      },
+      doPlot: function() {
+        // console.debug([quantum-warpscript-ide] Plot", this.stack)
+        if (this.stack.length) {
           this.target = undefined;
+          this.fire("plot",this.stack);
+        }
+      },
+      updatePermalink: function() {
+        console.debug("[quantum-warpscript-ide] updatePermalink");
+        this.$$("quantum-warpscript-permalink-generator").updatePermalink();
+      },
+      formatElapsedTime: function() {
+        if (this.elapsed < 1000) {
+          return ""+this.elapsed+" ns";
+        }
+        if (this.elapsed < 1000000) {
+          return ""+(this.elapsed/1000).toFixed(3)+" μs";
+        }
+        if (this.elapsed < 1000000000) {
+          return ""+(this.elapsed/1000000).toFixed(3)+" ms";
+        }
+        return ""+(this.elapsed/1000000000).toFixed(3)+" s";
+      },
+      showElapsedTime: function() {
+        if (this.elapsed >0) {
+          return true;
+        }
+        return false;
       }
-    },
-    updatePermalink: function() {
-      console.debug("[quantum-warpscript-ide] updatePermalink");
-      this.$$("quantum-warpscript-permalink-generator").updatePermalink();
-    },
-    formatElapsedTime: function() {
-      if (this.elapsed < 1000) {
-        return ""+this.elapsed+" ns";
-      }
-      if (this.elapsed < 1000000) {
-        return ""+(this.elapsed/1000).toFixed(3)+" μs";
-      }
-      if (this.elapsed < 1000000000) {
-        return ""+(this.elapsed/1000000).toFixed(3)+" ms";
-      }
-      return ""+(this.elapsed/1000000000).toFixed(3)+" s";
-    },
-    showElapsedTime: function() {
-      if (this.elapsed >0) {
-        return true;
-      }
-      return false;
-    }
-  })
-</script>
+    })
+  </script>
+</dom-module>

@@ -36,6 +36,7 @@
         --app-primary-color: var(--google-blue-500);
         --app-secondary-color: black;
         --app-background-color: white;
+        --app-on-background-color: white;
       }
 
       app-header {
@@ -121,7 +122,9 @@
               selected="[[page]]" 
               attr-for-selected="name"
               fallback-selection="warpscript">
-            <quantum-warpscript name="warpscript"></quantum-warpscript>
+            <quantum-warpscript 
+                name="warpscript"
+                backend="{{backend}}" ></quantum-warpscript>
             <quantum-find name="find"></quantum-find>
             <quantum-update name="update"></quantum-update>
             <quantum-delete name="delete"></quantum-delete>
