@@ -23,6 +23,7 @@
 <link rel="import" href="../bower_components/paper-styles/color.html">
 
 <link rel="import" href="./quantum-backend-chooser.html">
+<link rel="import" href="./quantum-permalink.html">
 
 
 <dom-module id="quantum-app">
@@ -77,7 +78,24 @@
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}"></app-route>      
+        tail="{{routeContent}}"></app-route>      
+    <app-route
+        route="{{routeContent}}"
+        pattern="/:content"
+        data="{{routeContentData}}"
+        tail="{{routeBackend}}"></app-route>    
+
+    <app-route
+        route="{{routeBackend}}"
+        pattern="/:backend"
+        data="{{routeBackendData}}"></app-route>                 
+
+    <quantum-permalink-decoder
+        encoded-warpscript="{{routeContentData.content}}"
+        encoded-backend="{{routeBackendData.backend}}"
+        decoded-warpscript="{{decodedWarpscript}}"
+        decoded-backend="{{decodedBackend}}"></quantum-permalink-decoder>
+
 
     <app-drawer-layout fullbleed>
 
@@ -151,19 +169,38 @@
           observer: '_pageChanged'
         },
 
-
+        route: {
+          type: Object,
+          observer: '_routeChanged'
+        }
 
       },
 
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(routeData.page)',
+        '_routeContentChanged(routeContentData.content)',
+        '_routeBackendChanged(routeBackendData.backendInfo)'
       ],
 
+      _routeChanged: function(route) {
+        console.debug("[quantum-app] _routeChanged", route);
+      },
+
       _routePageChanged: function(page) {
+        console.debug("[quantum-app] _routePageChanged", page);
         this.page = page || 'warpscript';
       },
 
+      _routeContentChanged: function(content) {
+        console.debug("[quantum-app] _routeContentChanged", this.routeContentData.content);
+      }, 
+
+      _routeBackendChanged: function(backend) {
+        console.debug("[quantum-app] _routeBackendChanged", this.routeBackendData.backend);
+      },   
+
       _pageChanged: function(page) {
+        console.debug("[quantum-app] _pageChanged", page);
         // load page import on demand.
         this.importHref(
           this.resolveUrl('quantum-' + page + '.html'), null, null, true);

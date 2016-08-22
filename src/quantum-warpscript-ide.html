@@ -19,8 +19,8 @@
 <link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
 
 
-<link rel="import" href="quantum-response-container.html">
-<link rel="import" href="quantum-warpscript-permalink.html">
+<link rel="import" href="./quantum-response-container.html">
+<link rel="import" href="./quantum-permalink.html">
 
 <script src="../ace/mode-warpscript.js"></script>
 <script src="../bower_components/ace-builds/src-min-noconflict/theme-eclipse.js"></script>
@@ -54,7 +54,7 @@
         float: right;
       }
       .btn[hidden],
-      quantum-warpscript-permalink-generator[hidden],
+      quantum-permalink-generator[hidden],
       quantum-response-container[hidden],
       granite-alert[hidden] {
         display: none;
@@ -124,8 +124,8 @@
     <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
 
 
-    <quantum-warpscript-permalink-generator
-      warpscript="{{content}}" backend="{{backend}}" hidden$="{{hidePermalink}}"></quantum-warpscript-permalink-generator>
+    <quantum-permalink-generator
+      warpscript="{{content}}" backend="{{backend}}" hidden$="{{hidePermalink}}"></quantum-permalink-generator>
 
     <div  class="top-10">
       <template is="dom-if" if="{{!hidePlot}}">
@@ -369,7 +369,7 @@
       },
       updatePermalink: function() {
         console.debug("[quantum-warpscript-ide] updatePermalink");
-        this.$$("quantum-warpscript-permalink-generator").updatePermalink();
+        this.$$("quantum-permalink-generator").updatePermalink();
       },
       formatElapsedTime: function() {
         if (this.elapsed < 1000) {
