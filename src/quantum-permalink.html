@@ -35,15 +35,6 @@
         notify: true
       }
     },
-    _decodedPayloadChanged: function() {
-      console.debug("[quantum-permalink-decoder] _decodePayloadChanged", this.decodedPayload);
-      this.fire("payload-decoded", this.decodedPayload)
-    },
-    _decodedBackendChanged: function() {
-      console.debug("[quantum-permalink-decoder] _decodePayloadChanged", this.decodedPayload);
-      this.fire("payload-decoded", this.decodedPayload)
-    },
-
 
     /**************************************************************************/
     /* Computed properties                                                    */
@@ -88,6 +79,19 @@
       } catch  (e) {        
       }      
     },
+
+    /**************************************************************************/
+    /* Observers                                                              */
+    /**************************************************************************/  
+    _decodedPayloadChanged: function(decodedPayload) {
+      console.debug("[quantum-permalink-decoder] _decodePayloadChanged", decodedPayload);
+      this.fire("payload-decoded", decodedPayload)
+    },
+    _decodedBackendChanged: function(decodedBackend) {
+      console.debug("[quantum-permalink-decoder] _decodeBackendChanged", decodedBackend);
+      this.fire("backend-decoded", decodedBackend)
+    },
+    
   });
 </script>
 

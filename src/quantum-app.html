@@ -96,7 +96,8 @@
         encoded-backend="[[routeBackendData.backend]]"
         decoded-payload="{{payload}}"
         decoded-backend="{{backend}}"
-        on-permalink-decoded="_handlePermalinkDecoded"></quantum-permalink-decoder>
+        on-payload-decoded="_handlePayloadDecoded"
+        on-backend-decoded="_handleBackendDecoded"></quantum-permalink-decoder>
 
 
     <app-drawer-layout fullbleed>
@@ -209,6 +210,8 @@
 
       _routePayloadChanged: function(payload) {
         console.debug("[quantum-app] _routePayloadChanged", this.routePayloadData.payload);
+
+
       }, 
 
       _routeBackendChanged: function(backend) {
@@ -223,20 +226,21 @@
       },
 
       _payloadChanged: function(payload) {
-         console.debug("[quantum-app] _payloadChanged", payload);
+        console.debug("[quantum-app] _payloadChanged", payload);
         this.fire('payload-change', payload);
       },
 
-      _handlePayloadChange: function(evt, payload) {
-         console.debug("[quantum-app] _handlePayloadChange", this.payload);
+      _handlePayloadDecoded: function(evt, payload) {
+        console.debug("[quantum-app] _handlePayloadDecoded", payload);
+        if (this.page === "warpscript" || this.page === "plot") {
+          this._lastWarpscript = this.routePayloadData.payload;
+          console.debug("[quantum-app] _routePayloadChanged - _lastWarpscript", this._lastWarpscript);
+        }
       },
 
-      _handleBackendChange: function(evt, backend) {
-         console.debug("[quantum-app] _handleBackendChange", backend);
+      _handleBackendDecoded: function(evt, backend) {
+        console.debug("[quantum-app] _handleBackendDecoded", backend);
       },  
-      _handlePermalinkDecoded: function(evt, permalink) {
-        console.debug("[quantum-app] _handlePermalinkDecoded", permalink);
-      },    
       _handlePlot: function(evt, data) {
         console.debug("[quantum-app] _handlePlot", data);
         this._goToPage('plot', true);
@@ -244,14 +248,9 @@
 
       _doChangePage: function(evt) {
         console.debug("[quantum-app] _doChangePage - current page", this.page);
-        if (this.page === "warpscript" || this.page === "plot") {
-
-        }
-
-
         var pageId = evt.target.getAttribute('name');
         if (pageId === "warpscript" || pageId === "plot" ) {
-          console.debug("[quantum-app] _doChangePage - is warpscript or plot",this.payload);
+          console.debug("[quantum-app] _doChangePage - is warpscript or plot",this._lastWarpscript);
           this._goToPage(pageId, true);
         } else {
           this._goToPage(pageId);
@@ -262,7 +261,7 @@
         var location = "#/"+pageId+"/"
 
         if (keepPayload) {
-          location += this.routePayloadData.payload
+          location += this._lastWarpscript
         }
         location += "/"+this.routeBackendData.backend
 
