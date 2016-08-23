@@ -16,7 +16,7 @@ var keywordMap = {
     "support.function": warpscriptFunctions
 }
 
-console.debug("[mode-warpscript] keywordMap", keywordMap);
+// console.debug("[mode-warpscript] keywordMap", keywordMap);
 exports.KeywordMap = keywordMap;
 });
 
@@ -100,7 +100,7 @@ ace.define("ace/mode/warpscript_completions",["require","exports","module","ace/
     keywordList = keywordList.concat(keywordMap[key].split(/\|/));
   }
   keywordList = keywordList.sort();
-  console.debug("[mode-warpscript] keyword list", keywordList);
+  // console.debug("[mode-warpscript] keyword list", keywordList);
 
   var WarpScriptCompletions = function() {
   };

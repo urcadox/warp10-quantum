@@ -24,6 +24,7 @@
 
 <link rel="import" href="./quantum-backend-chooser.html">
 <link rel="import" href="./quantum-permalink.html">
+<link rel="import" href="./quantum-module-behavior.html">
 
 
 <dom-module id="quantum-app">
@@ -78,11 +79,11 @@
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{routeContent}}"></app-route>      
+        tail="{{routePayload}}"></app-route>      
     <app-route
-        route="{{routeContent}}"
-        pattern="/:content"
-        data="{{routeContentData}}"
+        route="{{routePayload}}"
+        pattern="/:payload"
+        data="{{routePayloadData}}"
         tail="{{routeBackend}}"></app-route>    
 
     <app-route
@@ -91,10 +92,11 @@
         data="{{routeBackendData}}"></app-route>                 
 
     <quantum-permalink-decoder
-        encoded-warpscript="{{routeContentData.content}}"
-        encoded-backend="{{routeBackendData.backend}}"
-        decoded-warpscript="{{decodedWarpscript}}"
-        decoded-backend="{{decodedBackend}}"></quantum-permalink-decoder>
+        encoded-payload="[[routePayloadData.payload]]"
+        encoded-backend="[[routeBackendData.backend]]"
+        decoded-payload="{{payload}}"
+        decoded-backend="{{backend}}"
+        on-permalink-decoded="_handlePermalinkDecoded"></quantum-permalink-decoder>
 
 
     <app-drawer-layout fullbleed>
@@ -109,10 +111,10 @@
             attr-for-selected="name"  
             class="drawer-list" 
             role="navigation">
-          <a name="warpscript" on-click="_goToPage">WarpScript</a>
-          <a name="find" on-click="_goToPage">Find</a>
-          <a name="update" on-click="_goToPage">Update</a>
-          <a name="delete" on-click="_goToPage">Delete</a>
+          <a name="warpscript" on-click="_doChangePage">WarpScript</a>
+          <a name="find" on-click="_doChangePage">Find</a>
+          <a name="update" on-click="_doChangePage">Update</a>
+          <a name="delete" on-click="_doChangePage">Delete</a>
         </iron-selector>
 
       </app-drawer>
@@ -140,9 +142,16 @@
               selected="[[page]]" 
               attr-for-selected="name"
               fallback-selection="warpscript">
-            <quantum-warpscript 
-                name="warpscript"
-                backend="{{backend}}" ></quantum-warpscript>
+            <quantum-warpscript   
+                name="warpscript" 
+                application="warpscript"
+                content="[[payload]]"
+                data="{{data}}" 
+                backend="[[backend]]"
+                theme="chaos" 
+                on-plot="_handlePlot"
+                show-permalink></quantum-warpscript>                 
+            <quantum-plot name="plot"></quantum-plot>            
             <quantum-find name="find"></quantum-find>
             <quantum-update name="update"></quantum-update>
             <quantum-delete name="delete"></quantum-delete>
@@ -161,6 +170,10 @@
 
       is: 'quantum-app',
 
+      behaviors: [
+        QuantumModule
+      ],
+
       properties: {
 
         page: {
@@ -172,13 +185,16 @@
         route: {
           type: Object,
           observer: '_routeChanged'
-        }
+        },
 
+        _encodedWarpscript: {
+
+        }
       },
 
       observers: [
         '_routePageChanged(routeData.page)',
-        '_routeContentChanged(routeContentData.content)',
+        '_routePayloadChanged(routePayloadData.payload)',
         '_routeBackendChanged(routeBackendData.backendInfo)'
       ],
 
@@ -191,8 +207,8 @@
         this.page = page || 'warpscript';
       },
 
-      _routeContentChanged: function(content) {
-        console.debug("[quantum-app] _routeContentChanged", this.routeContentData.content);
+      _routePayloadChanged: function(payload) {
+        console.debug("[quantum-app] _routePayloadChanged", this.routePayloadData.payload);
       }, 
 
       _routeBackendChanged: function(backend) {
@@ -206,10 +222,51 @@
           this.resolveUrl('quantum-' + page + '.html'), null, null, true);
       },
 
-      _goToPage: function(evt) {
-        console.debug("[quantum-app] _goToPage", evt);
+      _payloadChanged: function(payload) {
+         console.debug("[quantum-app] _payloadChanged", payload);
+        this.fire('payload-change', payload);
+      },
+
+      _handlePayloadChange: function(evt, payload) {
+         console.debug("[quantum-app] _handlePayloadChange", this.payload);
+      },
+
+      _handleBackendChange: function(evt, backend) {
+         console.debug("[quantum-app] _handleBackendChange", backend);
+      },  
+      _handlePermalinkDecoded: function(evt, permalink) {
+        console.debug("[quantum-app] _handlePermalinkDecoded", permalink);
+      },    
+      _handlePlot: function(evt, data) {
+        console.debug("[quantum-app] _handlePlot", data);
+        this._goToPage('plot', true);
+      },
+
+      _doChangePage: function(evt) {
+        console.debug("[quantum-app] _doChangePage - current page", this.page);
+        if (this.page === "warpscript" || this.page === "plot") {
+
+        }
+
+
         var pageId = evt.target.getAttribute('name');
-        window.history.pushState({}, null, '#/'+pageId);
+        if (pageId === "warpscript" || pageId === "plot" ) {
+          console.debug("[quantum-app] _doChangePage - is warpscript or plot",this.payload);
+          this._goToPage(pageId, true);
+        } else {
+          this._goToPage(pageId);
+        }
+      },
+
+      _goToPage: function(pageId, keepPayload) {
+        var location = "#/"+pageId+"/"
+
+        if (keepPayload) {
+          location += this.routePayloadData.payload
+        }
+        location += "/"+this.routeBackendData.backend
+
+        window.history.pushState({}, null, location);
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 

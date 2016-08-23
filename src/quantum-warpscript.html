@@ -6,78 +6,405 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 
-<link rel="import" href="quantum-warpscript-ide.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+
+<link rel="import" href="../bower_components/granite-alert/granite-alert.html">
+
+<link rel="import" href="../bower_components/ace-widget/ace-widget.html">
+
+<link rel="import" href="../bower_components/spinner-widget/spinner-widget.html">
+
+<link rel="import" href="../bower_components/warp10-iron/warp10-warpscript-caller.html">
+<link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
+<link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
 
 
-<dom-module is="quantum-warpscript">
+<link rel="import" href="./quantum-module-behavior.html">
+<link rel="import" href="./quantum-response-container.html">
+<link rel="import" href="./quantum-permalink.html">
+
+<script src="../ace/mode-warpscript.js"></script>
+<script src="../bower_components/ace-builds/src-min-noconflict/theme-eclipse.js"></script>
+<script src="../bower_components/ace-builds/src-min-noconflict/snippets/text.js"></script>
+
+<dom-module id="quantum-warpscript">  
   <template>
     <style>
-    </style>  
-      <quantum-warpscript-ide
-        id="editor-widget" 
-        theme="chaos" 
-        content="{{warpscript}}"
-        data="{{data}}" 
-        backend="{{backend}}"
-        show-permalink="true" 
-        hide-plot="false"
-        on-plot="_handlePlot"></quantum-warpscript-ide> 
+      :host {
+        display: block;
+        padding: 15px;
+        --app-primary-color: var(--google-blue-500);
+        --app-secondary-color: black;
+        --app-background-color: white;
+        --app-on-background-color: white;
+      }
+      ace-widget {
+        --ace-widget-editor: {
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        };
+      }
+      .ace-editor {
+        font-size: 18px;
+      }
+      .top-10 { margin-top:10px; }
+
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      .btn[hidden],
+      quantum-permalink-generator[hidden],
+      quantum-response-container[hidden],
+      granite-alert[hidden] {
+        display: none;
+      }
+      .overlayBox {
+        display:flex;
+        flex-flow: row;
+        justify-content: center;
+        font-size: 1.2em;
+      }
+      .overlayContent  {
+      }
+      .hotkey-key {
+        background-color: #333;
+        border: 1px solid #333;
+        border-radius: 5px;
+        box-shadow: 0 1px 0 #666 inset, 0 1px 0 #bbb;
+        color: #fff;
+        display: inline-block;
+        font-size: 1em;
+        margin-right: 5px;
+        padding: 5px 9px;
+        text-align: center;
+      }
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: var(--app-on-background-color)
+      }
+    </style>
+
+    <style>
+      .clearfix:before,
+      .clearfix:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+      .clearfix:after {
+        clear: both;
+      }      
+    </style>
+
+    <iron-a11y-keys target="[[_target]]" keys="e" on-keys-pressed="_hotkeyExecute"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="p" on-keys-pressed="_hotkeyPlot"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="h ?:keypress" on-keys-pressed="_hotkeyHelp"></iron-a11y-keys>
+    <warp10-simple-overlay id="warpscript-ide-keyboard-shortcuts-overlay">
+      <div class="overlay-box">
+        <h4>Keyboard Shortcuts:</h4>
+        <p><span class="hotkey-key">?</span> Show / hide this help menu</p>
+        <p><span class="hotkey-key">e</span> Execute WarpScript</p>
+        <p><span class="hotkey-key">p</span> Plot result</p>
+      </div>
+    </warp10-simple-overlay>
+
+    <warp10-warpscript-caller
+      id="warpscriptcaller"
+      url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
+      on-response="_handleResponse"  on-error="_handleError"
+      loading="{{loading}}">
+    </warp10-warpscript-caller>
+
+
+    <ace-widget
+      id="editor" theme="ace/theme/eclipse" mode="ace/mode/warpscript"
+      softtabs="true" wrap="true" value="{{content}}"></ace-widget>
+
+
+    <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
+
+
+    <quantum-permalink-generator
+      warpscript="{{content}}" 
+      backend="{{backend}}" 
+      hidden$="{{!showPermalink}}"></quantum-permalink-generator>
+
+    <div  class="top-10">
+      <template is="dom-if" if="{{!hidePlot}}">
+        <div class="left">
+          <paper-button
+            on-click="plot"
+            disabled$="{{loading}}"
+            hidden$="{{!_hasAResponse}}">
+            Plot
+          </paper-button>
+        </div>
+      </template>
+      <div class="right">
+        <paper-button
+          id="btn_execute"
+          class="btn btn-primary btn-lg"
+          on-click="execute"
+          disabled$="{{loading}}">
+          Execute!
+        </paper-button>
+      </div>
+    </div>
+    <template is="dom-if" if="{{_elapsedTimeShown}}">
+      <div class="clearfix"> </div>
+      <div  class="top-10">
+        <div class="right">Your script execution took {{_formattedElapsedTime}} serverside</div>
+      </div>
+    </template>
+    <div class="clearfix"> </div>
+
+
+    <div  class="top-10">
+      <quantum-response-container
+        id="response_container"
+        response="{{stack}}"
+        received="{{received}}" 
+        hidden$="{{!_hasAResponse}}"></quantum-response-container>
+      <granite-alert level="danger" hidden$="{{!_hasAnError}}">
+        {{errorMsg}}
+      </granite-alert>
+    </div>
+
+
   </template>
+
   <script>
     Polymer({
-      is: "quantum-warpscript",
+      is:"quantum-warpscript",
+      behaviors: [
+        QuantumModule
+      ],
       properties: {
+
         /**
-         * The  warpscript code in the IDE
+         * Fired when user clicks on plot
+         *
+         * @event plot
+         * @param {Array} the stack
          */
-        warpscript: {
+
+        /**
+         * The application name for this widget
+         */
+        application: {
           type: String,
-          notify: true,
-          observer: "_warpscriptChanged",
-          value: ""
         },
         /**
-         * If false, the `warp10-warpscript-ide` component inside this one won't show
-         * the permalink, useful for embedded mode
+         * The WarpScript
+         */
+        content: {
+          type: String,
+          value: "Type your code here...",
+          observer: "_onContentChange"
+        },
+
+        _dataToPlot: {
+          type: Array,
+          notify: true
+        },
+        _target: {
+          type: Object,
+          value: function() {
+            return document.body;
+          }
+        },
+
+        /**
+         * Elapsed time for the call
+         */
+        elapsed: {
+          type: Number,
+          value: -1
+        },
+        _formattedElapsedTime: {
+          type: String,
+          computed: "_formatElapsedTime(elapsed)"
+        },
+        _elapsedTimeShown: {
+          type: Boolean,
+          computed: "_isElapsedTimeShown(elapsed)"
+        },
+
+        /**
+         * If true, the `quantum-warpscript` component inside this one won't show
+         * the plot Button, useful for embedded mode
          */
         showPermalink: {
           type: Boolean,
           value: false
         },
         /**
-         * If true, the `warp10-warpscript-ide` component inside this one won't show
+         * If true, the `quantum-warpscript` component inside this one won't show
          * the plot Button, useful for embedded mode
          */
         hidePlot: {
           type: Boolean,
           value: false
         },
-        /**
-         * The choosen backend
-         *  The `backend` object is composed of:
-         *
-         *  - `id`: an unique id, a simple string to be used as HTML id
-         *  - `label`: the label to show in the UI
-         *  - `url`: the backend URL
-         *  - `execEndpoint`: the path of the WarpScript execution endpoint 
-         *  - `findEndpoint`: the path of the Find endpoint
-         *  - `updateEndpoint`: the path of the update endpoint
-         *  - `deleteEndpoint`: the path of the delete endpoint
-         *  - `headerName`: the Warp10 header name to add for different operations
-         *
-         */        
-        backend: {
-          type: Object,
-          observer: "_backendChanged",
-          notify: true
+        
+        _hasAResponse: {
+          type: Boolean,
+          value: false
+        },
+        _hasAnError: {
+          type: Boolean,
+          value: false
+        },
+        
+        _baseUrl: {
+          type: String,
+          computed: "_getBaseUrl(backend)"
         },
       },
 
-      // Event listeners
-      _handlePlot: function(evt, stack) {
-        console.debug("[quantum-warpscript] _handlePlot - Received plot event", stack);
-      }
-    });
+      /**************************************************************************/
+      /* Lifecycle methods                                                      */
+      /**************************************************************************/
+      ready: function() {
+      },
+      attached: function() {
+        editor = this.$.editor;
+        editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
+      },
+
+      /**************************************************************************/
+      /* Computed properties                                                    */
+      /**************************************************************************/
+      _formatElapsedTime: function() {
+        if (this.elapsed < 1000) {
+          return ""+this.elapsed+" ns";
+        }
+        if (this.elapsed < 1000000) {
+          return ""+(this.elapsed/1000).toFixed(3)+" μs";
+        }
+        if (this.elapsed < 1000000000) {
+          return ""+(this.elapsed/1000000).toFixed(3)+" ms";
+        }
+        return ""+(this.elapsed/1000000000).toFixed(3)+" s";
+      },
+      _isElapsedTimeShown: function() {
+        if (this.elapsed >0) {
+          return true;
+        }
+        return false;
+      },
+      _getBaseUrl: function() {
+        return this.backend.url + this.backend.execEndpoint;
+      },
+
+
+      /**************************************************************************/
+      /* Observers                                                              */
+      /**************************************************************************/
+      _onContentChange: function(content) {
+        console.debug("[quantum-warpscript] _onContentChange", content);
+      },
+
+
+      /**************************************************************************/
+      /* Event Listeners                                                        */
+      /**************************************************************************/
+      _handleResponse: function(event, response) {      
+          if (!response.stack ||
+            !response.stack instanceof Array ) {
+            this._dataToPlot = null;
+            return;
+          }        
+          this.elapsed = response.options.elapsed;
+          this._dataToPlot = gtsTools.gtsFromJSONList(response.stack);
+          this.stack = response.stack;  
+          this._hasAResponse = true;
+          this._hasAnError = false;
+          
+          this.$.response_container.responseChanged();
+          
+          // console.debug("[quantum-warpscript] _handleResponse", { stack: this.stack, elapsed: this.elapsed, _dataToPlot: this._dataToPlot });
+      },    
+      _handleError: function(event, error) {        
+          if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+            this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+          } else {
+            this.errorMsg =  error.request.statusText;
+          }
+          
+          console.debug("[quantum-warpscript] _handleError", { error: error, errorMsg: this.errorMsg });
+          
+          this.elapsed = error.elapsed;
+          this._hasAResponse = false;
+          this._hasAnError = true;       
+          
+          console.debug("[quantum-warpscript] _handleError - _hasAResponse", this._hasAResponse);
+      },
+
+      editorChangeAction: function(value, oldValue) {
+        this.content  = value.detail.value;
+        // console.debug("[quantum-warpscript] editorChangeAction", this.content);
+      },
+
+      /**************************************************************************/
+      /* Action listeners                                                       */
+      /**************************************************************************/    
+      /**
+       * Executes the warpscript request
+       */
+      execute: function() {
+        console.debug("[quantum-warpscript] Execute", this.content)
+        if (this.showPermalink) {
+          this._updateLocation();
+        }
+        this.warpscriptScript = this.content;
+        this.$.warpscriptcaller.generateRequest();    
+      },
+      plot: function() {
+        // console.debug([quantum-warpscript] Plot", this.stack)
+        if (this.stack.length) {
+          this._target = undefined;
+          this.fire("plot",this._dataToPlot);
+        }
+      },
+
+
+      /**************************************************************************/
+      /* Other methods                                                          */
+      /**************************************************************************/
+       
+      _updateLocation: function() {
+        console.debug("[quantum-warpscript] _updateLocation");
+        this.$$("quantum-permalink-generator").updateLocation(this.application);
+      },
+
+
+      /**************************************************************************/
+      /* Hotkeys                                                                */
+      /**************************************************************************/      
+      _hotkeyExecute: function(e) {
+        console.debug("[quantum-warpscript] _hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          this.execute();
+        }
+      },
+      _hotkeyPlot: function(e) {
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          this.plot();
+        }
+      },
+      _hotkeyHelp: function(e) {
+        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
+          console.debug("[quantum-warpscript] _hotkeyHelp")
+          this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
+        }
+      },
+
+
+    })
   </script>
 </dom-module>
-

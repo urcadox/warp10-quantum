@@ -103,6 +103,7 @@
       <template is="dom-repeat" items="{{configuredBackends}}" as="item">
         <paper-radio-button
             id$="backend_{{item.id}}"
+            checked="{{item.checked}}"
             name$="backend_{{item.id}}" 
             data-backend$="{{item}}">
           {{item.label}}
@@ -279,7 +280,7 @@
          */        
         backend: {
           type: Object,
-          observer: "_backendChanged",
+          // observer: "_backendChanged",
           notify: true
         },
 
@@ -358,7 +359,6 @@
           value: false
         },
 
-
         /* Overriden from AppLocalizeBehavior */
         language: {
           value: 'en'
@@ -382,22 +382,35 @@
               },
             }
           }
-        }           
+        },           
+
       },
+      observers: [
+        "_backendChanged(backend,configuredBackends)"
+      ],
+
+      /**************************************************************************/
+      /* Lifecycle methods                                                      */
+      /**************************************************************************/
+
 
       // Observers
       _backendChanged: function() {
+        // console.debug("[quantum-backend-chooser] _backendChanged", this.backend)
         if (!this.backend) {
           return;
         }
         var preconfiguredBackend = false;
-        console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", this.backend);
+        
         for (i in this.configuredBackends) {
-          console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend});
+          // console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend.url});
           if (this.configuredBackends[i].url == this.backend.url) {
-            console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
-            this.$.backendRadioGroup.selectIndex(i); 
+            // console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
+            this.set(['configuredBackends',i,'checked'],true);
             preconfiguredBackend = true;
+          } else {
+            // console.debug("[quantum-backend-chooser] _backendChanged - unselect backend: ",  this.configuredBackends[i].id )
+            this.set(['configuredBackends',i,'checked'],false);
           }
         }
         if (!preconfiguredBackend) {
@@ -412,11 +425,16 @@
           this._altBackendDeleteEndpoint = this.backend.deleteEndpoint;     
           
           this._altBackendValidation = true;
+        } else {
+          // console.debug("[quantum-backend-chooser] _backendChanged - preconfiguredBackend"); 
+          this._chooseAltBackendSelected = false;
         }
       },
       _setInitialBackend: function() {
-        // console.debug("[quantum-backend-chooser] _setInitialBackend", this.$.backendRadioGroup.items);
-        this.$.backendRadioGroup.selectIndex(0); 
+        if (!this.backend) {
+          console.debug("[quantum-backend-chooser] _setInitialBackend", this.$.backendRadioGroup.items);
+          this.$.backendRadioGroup.selectIndex(0);
+        }         
       },
 
       // Computed properties
@@ -427,7 +445,7 @@
         return "arrow-drop-up";
       },
       _isInvalidAltBackend: function(){ 
-        console.debug("[quantum-backend-chooser] _isInvalidAltBackend");
+        // console.debug("[quantum-backend-chooser] _isInvalidAltBackend");
         if (!this._altBackendUrl) return true;
         if (!this._altBackendHeaderName) return true;
         if (!this._altBackendExecEndpoint) return true;
@@ -445,7 +463,7 @@
           return index === self.indexOf(val);
         }  
         var uniqueEndpoints = endpoints.filter(unique);
-        console.debug("[quantum-backend-chooser] _isInvalidAltBackend - uniqueEndpoints",uniqueEndpoints);
+        // console.debug("[quantum-backend-chooser] _isInvalidAltBackend - uniqueEndpoints",uniqueEndpoints);
         
         if (uniqueEndpoints.length != 4) return true;
 
@@ -466,7 +484,7 @@
           updateEndpoint: this._altBackendUpdateEndpoint,
           deleteEndpoint: this._altBackendDeleteEndpoint
         }
-        console.debug("[quantum-backend-chooser] _validateAltBackend", this._altBackend);
+        // console.debug("[quantum-backend-chooser] _validateAltBackend", this._altBackend);
         this.backend = this._altBackend;    
         this._altBackendValidation = true;     
         this.fire("backend-choosen", this.backend);
@@ -481,7 +499,7 @@
         var backend = JSON.parse(model.item.getAttribute('data-backend'));
         if (backend) {
           this.backend = backend;
-          console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
+          // console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
         }
         this.fire("backend-choosen", this.backend);
       },

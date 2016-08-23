@@ -5,62 +5,89 @@
 -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="./quantum-module-behavior.html">
+
 <script>
   Polymer({
     is: "quantum-permalink-decoder",
+
+    behaviors: [
+      QuantumModule
+    ],
+
     properties: {
-      encodedWarpscript: {
+      encodedPayload: {
         type: String
       },
       encodedBackend:{
-        type: String
+        type: String,
       },
-      warpscript: {
+      decodedPayload: {
         type:String,
-        computed: "decodeWarpscript(encodedWarpscript)",
+        computed: "_decodePayload(encodedPayload)",
+        observer: "_decodedPayloadChanged",
         notify: true
       },
-      backend: {
+      decodedBackend: {
         type: String,
-        computed: "decodeBackend(encodedBackend)",
+        computed: "_decodeBackend(encodedBackend)",
+        observer: "_decodedBackendChanged",
         notify: true
       }
     },
-    decodeWarpscript: function(){
-      console.debug("[quantum-permalink-decoder] decodeWarpscript - encodedWarpscript :", this.encodedWarpscript);
+    _decodedPayloadChanged: function() {
+      console.debug("[quantum-permalink-decoder] _decodePayloadChanged", this.decodedPayload);
+      this.fire("payload-decoded", this.decodedPayload)
+    },
+    _decodedBackendChanged: function() {
+      console.debug("[quantum-permalink-decoder] _decodePayloadChanged", this.decodedPayload);
+      this.fire("payload-decoded", this.decodedPayload)
+    },
+
+
+    /**************************************************************************/
+    /* Computed properties                                                    */
+    /**************************************************************************/    
+    /** 
+     * Decodes payload from permalink
+     * Fires 'payload-change' event 
+     */
+    _decodePayload: function(){
+      // console.debug("[quantum-permalink-decoder] decodePayload - encodedPayload :", this.encodedPayload);
       try {
-        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedWarpscript))));
-        console.debug("[quantum-permalink-decoder] decodeWarpscript - decode :", {encodedWarpscript: this.encodedWarpscript, warpscript: decoded });
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedPayload))));
+        console.debug("[quantum-permalink-decoder] decodePayload - decode :", {encodedPayload: this.encodedPayload, payload: decoded });
         return decoded;
       } catch  (e) {
       }
-    },
-    decodeBackend: function(){
+    }, 
+    /** 
+     * Decodes backend from permalink
+     * Fires 'backend-change' event 
+     */
+    _decodeBackend: function(){
       // console.debug([quantum-permalink-decoder] decodeBackend - encodedBackend :", this.encodedBackend);
-      try {
+      var self = this;
+      var fields = ['url', 'execEndpoint', 'findEndpoint', 'updateEndpoint', 'deleteEndpoint', 'headerName'];
+      var decoded;
 
+      try {
         var decodedString = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend))));
-        var decoded;
         try {
-          decoded = JSON.parse(decodedString);
-          
+          decoded = JSON.parse(decodedString);        
         } catch (e) {
           decoded = {
-            "url": decodedString,
-            "execEndpoint": "/exec",
-            "findEndpoint": "/find",
-            "updateEndpoint": "/update",
-            "deleteEndpoint": "/delete",
-            "headerName": "Warp10"
+            "url": decodedString
           }
         }
-
-        
+        fields.forEach(function(field){ 
+          if (!decoded[field]) decoded[field] = self.defaultBackend[field];
+        });         
         console.debug("[quantum-permalink-decoder] decodeBackend - decode :", { encodedBackend: this.encodedBackend, backend: decoded});
         return decoded;
-      } catch  (e) {
-      }
-    }
+      } catch  (e) {        
+      }      
+    },
   });
 </script>
 
@@ -83,6 +110,9 @@
 <script>
   Polymer({
     is: "quantum-permalink-generator",
+    behaviors: [
+      QuantumModule
+    ],
     properties: {
       warpscript: {
         type: String,
@@ -95,40 +125,89 @@
       permalink: {
         type: String,
         notify: true,
-        computed: "generatePermalink(warpscript, backend)"
+        computed: "_generatePermalink(warpscript, backend)"
       },
       croppedPermalink: {
         type: String,
-        computed: "cropPermalink(permalink)"
+        computed: "_cropPermalink(permalink)"
       },
       _maxDisplayLength: {
         type: Number,
         value: 40
       }
     },
+
+
+    /**************************************************************************/
+    /* Lifecycle methods                                                      */
+    /**************************************************************************/
     created: function(){
       this._maxDisplayLength = 80;
       // console.debug("[quantum-permalink] created called", this._maxDisplayLength);
     },
-    generatePermalink: function(){
-      // console.debug("[quantum-permalink] generatePermalink called", encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.backend)))));
-      if (this.backend === undefined) {
-        // return btoa(unescape(encodeURIComponent(this.warpscript)));
-        return "/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
-      }
-      // return btoa(unescape(encodeURIComponent(this.warpscript)))+"/"+btoa(unescape(encodeURIComponent(this.backend)));
-      return "/"+encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))))+"/"+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(this.backend)))));
-    },
-    cropPermalink: function() {
+
+
+    /**************************************************************************/
+    /* Computed properties                                                    */
+    /**************************************************************************/
+    /**
+     * Crops the permalink to get a display-friendly version
+     */
+    _cropPermalink: function() {
       if (this.permalink.length > this._maxDisplayLength) {
         return this.permalink.slice(0, this._maxDisplayLength)+"...";
       }
       return this.permalink;
     },
-    updatePermalink: function() {
-      console.debug("[quantum-permalink] updatePermalink called",this.permalink);
-      window.history.pushState({}, null, '#/warpscript'+this.permalink);
+    /**
+     * Generates the permalink
+     * @return {string} the permalink
+     */
+    _generatePermalink: function(){
+      console.debug("[quantum-permalink] _generatePermalink ws/backend", "/"+this._encodeWarpscript()+"/"+this._encodeBackend());
+      return this._encodeWarpscript()+"/"+this._encodeBackend();
+    },
+
+    /**************************************************************************/
+    /* Other methods                                                          */
+    /**************************************************************************/
+    /**
+     * Updates the location according to the permalink
+     */
+    updateLocation: function(application) {
+      console.debug("[quantum-permalink] updateLocation called",{application:application, permalink:this.permalink});
+      window.history.pushState({}, null, '#/'+application+"/"+this.permalink);
       window.dispatchEvent(new CustomEvent('location-changed'));
+    },
+    /**
+     * Encodes Warpscript code into UrlEncoded Base64 
+     * @return {string} the encoded warpscript
+     */
+    _encodeWarpscript: function() {
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
+    },
+    /**
+     * Encodes backend object, in UrlEncoded Base64.
+     * Only encodes backend fields that differs from the default backend 
+     * @return {string} the encoded backend
+     */
+    _encodeBackend: function() {
+      // console.debug("[quantum-permalink] _encodeBackend", this.backend);
+      
+      var self = this;
+
+      if (!this.backend) return;
+      
+      var backendToEncode = {};
+      var fields = ['url', 'execEndpoint', 'findEndpoint', 'updateEndpoint', 'deleteEndpoint', 'headerName'];     
+
+      fields.forEach(function(field){ 
+        if (self.backend[field] !== self.defaultBackend[field]) {
+          backendToEncode[field] = self.backend[field];  
+        }
+      });      
+      console.debug("[quantum-permalink] _encodeBackend - backendToEncode", backendToEncode);
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(backendToEncode)))));
     }
   });
 </script>
