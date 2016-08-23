@@ -56,8 +56,7 @@
       }
       .btn[hidden],
       quantum-permalink-generator[hidden],
-      quantum-response-container[hidden],
-      granite-alert[hidden] {
+      quantum-response-container[hidden]{
         display: none;
       }
       .overlayBox {
@@ -80,13 +79,41 @@
         padding: 5px 9px;
         text-align: center;
       }
+      granite-alert[hidden] {
+        display: none;
+      }
       paper-button {
         background-color: var(--app-primary-color);
         color: var(--app-on-background-color)
       }
+      spinner-widget {
+        z-index: 100;
+      }
     </style>
 
     <style>
+      .item { 
+        margin-top: 8px; 
+        margin-bottom: 8px; 
+      } 
+
+      .item_name { 
+        color: var(--paper-grey-600); 
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        font-size: 12px; 
+        font-weight: 400; 
+        letter-spacing: 0.011em; 
+        line-height: 20px; 
+      } 
+
+      .item_value { 
+        @apply(--layout-horizontal); 
+        @apply(--layout-center); 
+        @
       .clearfix:before,
       .clearfix:after {
         content: " "; /* 1 */
@@ -311,35 +338,35 @@
       /* Event Listeners                                                        */
       /**************************************************************************/
       _handleResponse: function(event, response) {      
-          if (!response.stack ||
-            !response.stack instanceof Array ) {
-            this._dataToPlot = null;
-            return;
-          }        
-          this.elapsed = response.options.elapsed;
-          this._dataToPlot = gtsTools.gtsFromJSONList(response.stack);
-          this.stack = response.stack;  
-          this._hasAResponse = true;
-          this._hasAnError = false;
-          
-          this.$.response_container.responseChanged();
-          
-          // console.debug("[quantum-warpscript] _handleResponse", { stack: this.stack, elapsed: this.elapsed, _dataToPlot: this._dataToPlot });
+        if (!response.stack ||
+          !response.stack instanceof Array ) {
+          this._dataToPlot = null;
+          return;
+        }        
+        this.elapsed = response.options.elapsed;
+        this._dataToPlot = gtsTools.gtsFromJSONList(response.stack);
+        this.stack = response.stack;  
+        this._hasAResponse = true;
+        this._hasAnError = false;
+        
+        this.$.response_container.responseChanged();
+        
+        // console.debug("[quantum-warpscript] _handleResponse", { stack: this.stack, elapsed: this.elapsed, _dataToPlot: this._dataToPlot });
       },    
       _handleError: function(event, error) {        
-          if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
-            this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
-          } else {
-            this.errorMsg =  error.request.statusText;
-          }
-          
-          console.debug("[quantum-warpscript] _handleError", { error: error, errorMsg: this.errorMsg });
-          
-          this.elapsed = error.elapsed;
-          this._hasAResponse = false;
-          this._hasAnError = true;       
-          
-          console.debug("[quantum-warpscript] _handleError - _hasAResponse", this._hasAResponse);
+        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+        } else {
+          this.errorMsg =  error.request.statusText;
+        }
+        
+        console.debug("[quantum-warpscript] _handleError", { error: error, errorMsg: this.errorMsg });
+        
+        this.elapsed = error.elapsed;
+        this._hasAResponse = false;
+        this._hasAnError = true;       
+        
+        console.debug("[quantum-warpscript] _handleError - _hasAResponse", this._hasAResponse);
       },
 
       editorChangeAction: function(value, oldValue) {

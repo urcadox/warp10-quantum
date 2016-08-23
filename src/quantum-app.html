@@ -152,10 +152,17 @@
                 theme="chaos" 
                 on-plot="_handlePlot"
                 show-permalink></quantum-warpscript>                 
-            <quantum-plot name="plot"></quantum-plot>            
-            <quantum-find name="find"></quantum-find>
-            <quantum-update name="update"></quantum-update>
-            <quantum-delete name="delete"></quantum-delete>
+            <quantum-plot 
+                name="plot"></quantum-plot>            
+            <quantum-find 
+                name="find"
+                backend="[[backend]]"></quantum-find>
+            <quantum-update 
+                name="update"
+                backend="[[backend]]"></quantum-update>
+            <quantum-delete 
+                name="delete"
+                backend="[[backend]]"></quantum-delete>
           </iron-pages>
         </paper-material>
 
