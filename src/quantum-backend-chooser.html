@@ -380,12 +380,13 @@
       /* Computed properties                                                    */
       /**************************************************************************/
       _getHasConfiguredBackends: function() {
-        return (this.configuredBackends.size > 0);
+        return (this.configuredBackends.length > 0);
       },
 
       // Observers
       _backendChanged: function() {
-       console.debug("[quantum-backend-chooser] _backendChanged", this.backend)
+       console.debug("[quantum-backend-chooser] _backendChanged - backend ", this.backend)
+       console.debug("[quantum-backend-chooser] _backendChanged - configuredBackends ", this.configuredBackends)
         if (!this.backend) {
           return;
         }
@@ -417,7 +418,9 @@
           this._chooseAltBackendSelected = false;
         }
       },
-      _setInitialBackend: function() {        
+      _setInitialBackend: function() {     
+        if (!this._isAttached) return;
+           
         if (!this.backend) {
           if (this.configuredBackends.length > 0) {
             this.backend = this.configuredBackends[0];
@@ -425,7 +428,7 @@
             this.backend = this.defaultBackend;
           }  
         }   
-        console.debug("[quantum-backend-chooser] _backendChanged - preconfiguredBackend", this.backend);   
+        console.debug("[quantum-backend-chooser] _setInitialBackend - preconfiguredBackend", this.backend);   
       },
 
       // Computed properties
@@ -496,12 +499,9 @@
 
       // Lifecycle methods
       attached: function() {
+        this._isAttached = true;
         this._setInitialBackend();
       },
-
-
-
-
     });
   </script>
 </dom-module>
