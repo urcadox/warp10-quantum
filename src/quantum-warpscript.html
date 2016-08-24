@@ -232,6 +232,13 @@
           value: "Type your code here...",
           observer: "_onContentChange"
         },
+        /**
+         * The name of the currently selected module
+         */
+        selected: {
+          type: String,
+          observer: "_onSelectedChanged"
+        },
 
         _dataToPlot: {
           type: Array,
@@ -334,7 +341,15 @@
       _onContentChange: function(content) {
         console.debug("[quantum-warpscript] _onContentChange", content);
       },
-
+      _onSelectedChanged: function(selected) {
+        
+        if (selected === this.name) {
+          this._target = document.body;          
+        } else {
+          this._target = null;
+        }
+        console.debug("[warp10-warpscript-plot] _onSelectedChanged", {selected: selected, name:this.name, target: this._target});
+      },
 
       /**************************************************************************/
       /* Event Listeners                                                        */
@@ -393,7 +408,6 @@
       plot: function() {
         // console.debug([quantum-warpscript] Plot", this.stack)
         if (this.stack.length) {
-          this._target = undefined;
           this.fire("plot",this._dataToPlot);
         }
       },

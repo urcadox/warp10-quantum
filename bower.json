@@ -27,6 +27,7 @@
     "app-localize-behavior": "polymerelements/app-localize-behavior#^0.9.2",
     "app-route": "polymerelements/app-route#^0.9.1",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.6",
+    "iron-a11y-keys-behavior": "polymerelements/iron-a11y-keys-behavior#^1.1.7",
     "iron-flex-layout": "polymerelements/iron-flex-layout#^1.0.0",
     "iron-icon": "polymerelements/iron-icon#^1.0.0",
     "iron-icons": "polymerelements/iron-icons#^1.1.3",

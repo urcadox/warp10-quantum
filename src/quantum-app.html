@@ -145,6 +145,7 @@
               fallback-selection="warpscript">
             <quantum-warpscript   
                 name="warpscript" 
+               selected="[[page]]"
                 application="warpscript"
                 content="[[payload]]"
                 backend="[[backend]]"
@@ -153,6 +154,7 @@
                 show-permalink></quantum-warpscript>                 
             <quantum-plot 
                 name="plot"
+                selected="[[page]]"
                 data="{{dataToPlot}}"
                 backend="[[backend]]" ></quantum-plot>            
             <quantum-find 
@@ -279,19 +281,7 @@
       },
 
 
-      ready: function() {
-        this.configuredBackends = [
-          {
-            "id": "dist",
-            "label": "Distributed Warp",
-            "url": "https://warp.cityzendata.net/dist/api/v0",
-            "execEndpoint": "/exec",
-            "findEndpoint": "/find",
-            "updateEndpoint": "/update",
-            "deleteEndpoint": "/delete",
-            "headerName": "Warp10"
-          }
-        ];     
+      ready: function() {   
       },
 
     });

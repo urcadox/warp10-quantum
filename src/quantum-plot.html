@@ -6,7 +6,6 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
@@ -197,6 +196,13 @@ Warp plot widget
         warpscript: {
           type: String
         },
+        /**
+         * The name of the currently selected module
+         */
+        selected: {
+          type: String,
+          observer: "_onSelectedChanged"
+        },
         _target: {
           type: Object,
           value: function() {
@@ -227,8 +233,8 @@ Warp plot widget
         _baseUrl: {
           type: String,
           computed: "_getBaseUrl(backend)"
-        },        
-      },
+        },  
+      },   
 
       listeners: {
         'plotted-changed': '_onPlottedChanged'
@@ -285,6 +291,15 @@ Warp plot widget
         // console.debug("[warp10-warpscript-plot] _onCurrentRegexChanged");
         this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
         this.$$("#regexInput").select();
+      },
+      _onSelectedChanged: function(selected) {
+        
+        if (selected === this.name) {
+          this._target = document.body;          
+        } else {
+          this._target = null;
+        }
+        console.debug("[warp10-warpscript-plot] _onSelectedChanged", {selected: selected, name:this.name, target: this._target});
       },
 
       /**************************************************************************/
@@ -404,7 +419,7 @@ Warp plot widget
       /**************************************************************************/  
       _hotkeyUp: function(e) {
         console.debug("[quantum-warpscript-plot] _hotkey up");
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           // console.debug([quantum-warpscript-plot] _hotkey up");
           this._showSelectionOverlay();
           if ((this.selectedGts == null) || this.selectedGts < 0) {
@@ -416,7 +431,8 @@ Warp plot widget
         }
       },
       _hotkeyDown: function(e) {
-        if (this.plot > 0 && !this._regexMode) {
+        console.debug("[quantum-warpscript-plot] _hotkey down");
+        if (!this._regexMode) {
           // console.debug([quantum-warpscript-plot] _hotkey down");
           this._showSelectionOverlay();
           if ((this.selectedGts == null) || this.selectedGts < 0) {
@@ -430,20 +446,17 @@ Warp plot widget
         }
       },
       _hotkeyRegex: function(e) {
-        if (this.plot > 0) {
-          // console.debug("[quantum-warpscript-plot] _hotkeyRegex");
-          this._showRegexOverlay();
-        }
+        this._showRegexOverlay();
       },
       _hotkeyRegexEnter: function(e) {
-        if (this.plot > 0 && this._regexMode) {
+        if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyRegexEnter");
           this.selectRegex();
         }
       },
       _hotkeySpace: function(e) {
         // console.debug("[quantum-warpscript-plot] _hotkeySpace");
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           this._showSelectionOverlay();
           if (this.selectedGts < 0) {
             this.selectedGts = 0;
@@ -462,7 +475,7 @@ Warp plot widget
         }
       },
       _hotkeyAll: function(e) {
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyAll")
           for (var i in this.stackedGtsList) {
               var gts = this.stackedGtsList[i];
@@ -476,7 +489,7 @@ Warp plot widget
         }
       },
       _hotkeyNone: function(e) {
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyNone")
           for (var i in this.stackedGtsList) {
               var gts = this.stackedGtsList[i];
@@ -490,13 +503,13 @@ Warp plot widget
         }
       },
       _hotkeyReload: function(e) {
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           // console.debug([quantum-warpscript-plot] _hotkey r");
           this.$.warpscriptcaller.generateRequest();    
         }
       },
       _hotkeyHelp: function(e) {
-        if (this.plot > 0 && !this._regexMode) {
+        if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyHelp")
           this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
         }
