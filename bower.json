@@ -23,8 +23,8 @@
   "homepage": "http://www.warp10.io",
   "ignore": [],
   "dependencies": {
-    "polymer": "~1.6.0",
-    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.2.0-rc3",
+    "polymer": "^1.6.0",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.2.0",
     "warp10-navbar": "cityzendata/warp10-navbar#1.0.0-rc3",
     "ace-widget": "LostInBrittany/ace-widget#~1.0.13",
     "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
@@ -35,6 +35,6 @@
   },
   "devDependencies": {},
   "resolutions": {
-    "polymer": "~1.6.0"
+    "polymer": "^1.6.0"
   }
 }

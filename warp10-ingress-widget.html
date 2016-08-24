@@ -225,6 +225,7 @@ Warp ingress widget
       }
       this.$.xhr.headers = {}
       this.$.xhr.headers[header] = this.token;
+      console.debug("[warp10-ingress-widget] _doCall - headers", this.$.xhr.headers);
       // console.debug("[warp10-ingress-widget] _doCall - Calling with Einstein script", this.einstein);
       this.$.xhr.generateRequest();
     },
