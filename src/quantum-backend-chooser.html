@@ -20,6 +20,8 @@
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-backend-validator.html">
 
+<link rel="import" href="./quantum-module-behavior.html">
+
 <dom-module id="quantum-backend-chooser">
 
   <template>
@@ -259,30 +261,12 @@
       is: "quantum-backend-chooser",    
 
       behaviors: [
-        Polymer.AppLocalizeBehavior     
+        Polymer.AppLocalizeBehavior, 
+        QuantumModule     
       ],
 
       properties: {
 
-        /**
-         * The choosen backend
-         *  The `backend` object is composed of:
-         *
-         *  - `id`: an unique id, a simple string to be used as HTML id
-         *  - `label`: the label to show in the UI
-         *  - `url`: the backend URL
-         *  - `execEndpoint`: the path of the WarpScript execution endpoint 
-         *  - `findEndpoint`: the path of the Find endpoint
-         *  - `updateEndpoint`: the path of the update endpoint
-         *  - `deleteEndpoint`: the path of the delete endpoint
-         *  - `headerName`: the Warp10 header name to add for different operations
-         *
-         */        
-        backend: {
-          type: Object,
-          // observer: "_backendChanged",
-          notify: true
-        },
 
         /**
          *  An array of pre-configured `backend` objects.
@@ -401,20 +385,20 @@
 
       // Observers
       _backendChanged: function() {
-        // console.debug("[quantum-backend-chooser] _backendChanged", this.backend)
+       console.debug("[quantum-backend-chooser] _backendChanged", this.backend)
         if (!this.backend) {
           return;
         }
         var preconfiguredBackend = false;
         
         for (i in this.configuredBackends) {
-          // console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend.url});
+         console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend.url});
           if (this.configuredBackends[i].url == this.backend.url) {
-            // console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
+           console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
             this.set(['configuredBackends',i,'checked'],true);
             preconfiguredBackend = true;
           } else {
-            // console.debug("[quantum-backend-chooser] _backendChanged - unselect backend: ",  this.configuredBackends[i].id )
+           console.debug("[quantum-backend-chooser] _backendChanged - unselect backend: ",  this.configuredBackends[i].id )
             this.set(['configuredBackends',i,'checked'],false);
           }
         }
@@ -429,18 +413,19 @@
           
           this._altBackendValidation = true;
         } else {
-          // console.debug("[quantum-backend-chooser] _backendChanged - preconfiguredBackend"); 
+         console.debug("[quantum-backend-chooser] _backendChanged - preconfiguredBackend"); 
           this._chooseAltBackendSelected = false;
         }
       },
-      _setInitialBackend: function() {
+      _setInitialBackend: function() {        
         if (!this.backend) {
           if (this.configuredBackends.length > 0) {
             this.backend = this.configuredBackends[0];
           } else {
             this.backend = this.defaultBackend;
           }  
-        }     
+        }   
+        console.debug("[quantum-backend-chooser] _backendChanged - preconfiguredBackend", this.backend);   
       },
 
       // Computed properties
@@ -451,7 +436,7 @@
         return "arrow-drop-up";
       },
       _isInvalidAltBackend: function(){ 
-        // console.debug("[quantum-backend-chooser] _isInvalidAltBackend");
+        console.debug("[quantum-backend-chooser] _isInvalidAltBackend");
         if (!this._altBackendUrl) return true;
         if (!this._altBackendHeaderName) return true;
         if (!this._altBackendExecEndpoint) return true;
@@ -469,8 +454,7 @@
           return index === self.indexOf(val);
         }  
         var uniqueEndpoints = endpoints.filter(unique);
-        // console.debug("[quantum-backend-chooser] _isInvalidAltBackend - uniqueEndpoints",uniqueEndpoints);
-        
+               
         if (uniqueEndpoints.length != 4) return true;
 
         return false;
@@ -490,7 +474,7 @@
           updateEndpoint: this._altBackendUpdateEndpoint,
           deleteEndpoint: this._altBackendDeleteEndpoint
         }
-        // console.debug("[quantum-backend-chooser] _validateAltBackend", this._altBackend);
+       console.debug("[quantum-backend-chooser] _validateAltBackend", this._altBackend);
         this.backend = this._altBackend;    
         this._altBackendValidation = true;     
         this.fire("backend-choosen", this.backend);
@@ -505,7 +489,7 @@
         var backend = JSON.parse(model.item.getAttribute('data-backend'));
         if (backend) {
           this.backend = backend;
-          // console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
+         console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
         }
         this.fire("backend-choosen", this.backend);
       },
