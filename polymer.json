@@ -1,9 +1,11 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/quantum-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html"
+    "src/quantum-warpscript.html",
+    "src/quantum-plot.html",
+    "src/quantum-find.html",
+    "src/quantum-update.html",
+    "src/quantum-delete.html"
   ]
 }
