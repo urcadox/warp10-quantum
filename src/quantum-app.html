@@ -147,13 +147,14 @@
                 name="warpscript" 
                 application="warpscript"
                 content="[[payload]]"
-                data="{{data}}" 
                 backend="[[backend]]"
                 theme="chaos" 
                 on-plot="_handlePlot"
                 show-permalink></quantum-warpscript>                 
             <quantum-plot 
-                name="plot"></quantum-plot>            
+                name="plot"
+                data="{{dataToPlot}}"
+                backend="[[backend]]" ></quantum-plot>            
             <quantum-find 
                 name="find"
                 backend="[[backend]]"></quantum-find>
@@ -250,6 +251,7 @@
       },  
       _handlePlot: function(evt, data) {
         console.debug("[quantum-app] _handlePlot", data);
+        this.dataToPlot = data;
         this._goToPage('plot', true);
       },
 
