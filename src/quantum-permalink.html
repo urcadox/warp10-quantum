@@ -136,8 +136,7 @@
         computed: "_cropPermalink(permalink)"
       },
       _maxDisplayLength: {
-        type: Number,
-        value: 40
+        type: Number
       }
     },
 
@@ -146,7 +145,7 @@
     /* Lifecycle methods                                                      */
     /**************************************************************************/
     created: function(){
-      this._maxDisplayLength = 80;
+      this._maxDisplayLength = 60;
       // console.debug("[quantum-permalink] created called", this._maxDisplayLength);
     },
 
@@ -158,6 +157,7 @@
      * Crops the permalink to get a display-friendly version
      */
     _cropPermalink: function() {
+      // console.debug("[quantum-permalink] _cropPermalink",this._maxDisplayLength);
       if (this.permalink.length > this._maxDisplayLength) {
         return this.permalink.slice(0, this._maxDisplayLength)+"...";
       }

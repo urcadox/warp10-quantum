@@ -12,7 +12,7 @@
 
 <link rel="import" href="../bower_components/ace-widget/ace-widget.html">
 
-<link rel="import" href="../bower_components/spinner-widget/spinner-widget.html">
+<link rel="import" href="../bower_components/granite-spinner/granite-spinner.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
@@ -86,7 +86,7 @@
         background-color: var(--app-primary-color);
         color: var(--app-on-background-color)
       }
-      spinner-widget {
+      granite-spinner {
         z-index: 100;
       }
     </style>
@@ -149,8 +149,10 @@
       softtabs="true" wrap="true" value="{{content}}"></ace-widget>
 
 
-    <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
-
+    <granite-spinner
+        active="{{loading}}" 
+        size="200"
+        hover></granite-spinner>
 
     <quantum-permalink-generator
       warpscript="{{content}}" 

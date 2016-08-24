@@ -12,7 +12,7 @@
 
 <link rel="import" href="../bower_components/granite-alert/granite-alert.html">
 
-<link rel="import" href="../bower_components/spinner-widget/spinner-widget.html">
+<link rel="import" href="../bower_components/granite-spinner/granite-spinner.html">
 
 <link rel="import" href="./quantum-module-behavior.html">
 
@@ -58,7 +58,7 @@ Warp update widget
         background-color: var(--app-primary-color);
         color: var(--app-on-background-color)
       }
-      spinner-widget {
+      granite-spinner {
         z-index: 100;
       }
     </style>
@@ -97,7 +97,10 @@ Warp update widget
       }      
     </style>
 
-    <spinner-widget active="{{loading}}" hover size="200" ></spinner-widget>
+    <granite-spinner
+        active="{{loading}}" 
+        size="200"
+        hover></granite-spinner>
 
     <h4>Update</h4>
 
