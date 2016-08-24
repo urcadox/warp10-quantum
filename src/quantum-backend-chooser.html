@@ -98,23 +98,23 @@
 
     <h4>{{ localize('chooseYourBackend') }}</h4>
 
-    
-    <paper-radio-group id="backendRadioGroup" on-iron-select="_backendChoosen" >
-      <template is="dom-repeat" items="{{configuredBackends}}" as="item">
-        <paper-radio-button
-            id$="backend_{{item.id}}"
-            checked="{{item.checked}}"
-            name$="backend_{{item.id}}" 
-            data-backend$="{{item}}">
-          {{item.label}}
+    <template is="dom-if" if="{{_hasConfiguredBackends}}">
+      <paper-radio-group id="backendRadioGroup" on-iron-select="_backendChoosen" >
+        <template is="dom-repeat" items="{{configuredBackends}}" as="item">
+          <paper-radio-button
+              id$="backend_{{item.id}}"
+              checked="{{item.checked}}"
+              name$="backend_{{item.id}}" 
+              data-backend$="{{item}}">
+            {{item.label}}
+          </paper-radio-button>
+        </template>
+        <paper-radio-button 
+            name="chooseAltBackend" checked="{{_chooseAltBackendSelected}}">
+          Choose another backend
         </paper-radio-button>
-      </template>
-      <paper-radio-button 
-          name="chooseAltBackend" checked="{{_chooseAltBackendSelected}}">
-        Choose another backend
-      </paper-radio-button>
-    </paper-radio-group>
-
+      </paper-radio-group>
+    </template>
 
     <template is="dom-if" if="{{_chooseAltBackendSelected}}">
       <paper-material elevation="1">
@@ -358,7 +358,10 @@
           type: Boolean,
           value: false
         },
-
+        _hasConfiguredBackends: {
+          type: Boolean,
+          computed: "_getHasConfiguredBackends(configuredBackends)"
+        },   
         /* Overriden from AppLocalizeBehavior */
         language: {
           value: 'en'
@@ -390,9 +393,11 @@
       ],
 
       /**************************************************************************/
-      /* Lifecycle methods                                                      */
+      /* Computed properties                                                    */
       /**************************************************************************/
-
+      _getHasConfiguredBackends: function() {
+        return (this.configuredBackends.size > 0);
+      },
 
       // Observers
       _backendChanged: function() {
@@ -414,9 +419,7 @@
           }
         }
         if (!preconfiguredBackend) {
-          if (this.configuredBackends && this.configuredBackends.length>0 ) {
-            this._chooseAltBackendSelected = true;
-          }
+          this._chooseAltBackendSelected = true;
           this._altBackendUrl = this.backend.url;
           this._altBackendHeaderName = this.backend.headerName;
           this. _altBackendExecEndpoint = this.backend.execEndpoint;
@@ -432,9 +435,12 @@
       },
       _setInitialBackend: function() {
         if (!this.backend) {
-          console.debug("[quantum-backend-chooser] _setInitialBackend", this.$.backendRadioGroup.items);
-          this.$.backendRadioGroup.selectIndex(0);
-        }         
+          if (this.configuredBackends.length > 0) {
+            this.backend = this.configuredBackends[0];
+          } else {
+            this.backend = this.defaultBackend;
+          }  
+        }     
       },
 
       // Computed properties
