@@ -1,34 +1,39 @@
-# Polymer App Toolbox - Drawer Template
+# Warp 10 Quantum
 
-This template is a starting point for building apps using a drawer-based
-layout.  The layout is provided by `app-layout` elements.
+Warp 10's Quantum is a web application developed to easily deal with the [Warp 10](http://www.warp10.io)
+platform.
 
-This template, along with the `polymer-cli` toolchain, also demonstrates use
-of the "PRPL pattern" This pattern allows fast first delivery and interaction with
-the content at the initial route requested by the user, along with fast subsequent
-navigation by pre-caching the remaining components required by the app and
-progressively loading them on-demand as the user navigates through the app.
+Entirely developed as [Polymer](https://www.polymer-project.org/) elements, you will
+find in this repository not only the full application but the whole set of web-components
+allowing to customize your Warp 10 experience.
 
-The PRPL pattern, in a nutshell:
 
-* **Push** components required for the initial route
-* **Render** initial route ASAP
-* **Pre-cache** components for remaining routes
-* **Lazy-load** and progressively upgrade next routes on-demand
+
+
+## Contributing
+
+The Warp 10 team loves contributions from the community! Issues and pull request are welcome.
+
+## License
+
+Warp 10's Quantum uses Apache 2.0 Licence, available [here](./LICENCE.txt).
 
 ### Setup
 
-##### Prerequisites
+#### Prerequisites
+
+##### Install polymer-cli
 
 Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     npm install -g polymer-cli
 
-##### Initialize project from template
+##### Get dependencies with Bower
 
-    mkdir my-app
-    cd my-app
-    polymer init app-drawer-template
+After cloning the repository, you will need to use [Bower](http:/bower.io) to get
+all the dependencies for the project (described in `bower.json` as usual).
+
+    bower install
 
 ### Start the development server
 
@@ -71,5 +76,4 @@ of the application.  Each new demand-loaded fragment should be added to the
 list of `fragments` in the included `polymer.json` file.  This will ensure
 those components and their dependencies are added to the list of pre-cached
 components (and will have bundles created in the fallback `bundled` build).
-
 
