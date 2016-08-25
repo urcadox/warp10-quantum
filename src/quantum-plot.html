@@ -544,7 +544,11 @@ Warp plot widget
       _hotkeyHelp: function(e) {
         if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyHelp")
-          this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
+          if (!this.$$("#warpscript-plot-keyboard-shortcuts-overlay").opened) {
+            this.$$("#warpscript-plot-keyboard-shortcuts-overlay").open();
+          } else {
+            this.$$("#warpscript-plot-keyboard-shortcuts-overlay").close();
+          }          
         }
       }, 
 

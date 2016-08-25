@@ -453,7 +453,11 @@
         var nodeName =  normKeyboardEvt.rootTarget.nodeName;
         if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
           console.debug("[quantum-warpscript] _hotkeyHelp")
-          this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
+          if (!this.$$("#warpscript-ide-keyboard-shortcuts-overlay").opened) {
+            this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
+          } else {
+            this.$$("#warpscript-ide-keyboard-shortcuts-overlay").close();
+          }
         }
       },
 
