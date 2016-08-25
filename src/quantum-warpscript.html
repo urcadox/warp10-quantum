@@ -427,20 +427,22 @@
       /* Hotkeys                                                                */
       /**************************************************************************/      
       _hotkeyExecute: function(e) {
-        console.debug("[quantum-warpscript] _hotkeyExecute", e.detail.keyboardEvent.target.nodeName)
-        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        console.debug("[quantum-warpscript] _hotkeyExecute", e.detail.keyboardEvent.path[0]);
+        var nodeName =  e.detail.keyboardEvent.path[0].nodeName;
         if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
           this.execute();
         }
       },
       _hotkeyPlot: function(e) {
-        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        console.debug("[quantum-warpscript] _hotkeyPlot", e.detail.keyboardEvent.path[0]);
+        var nodeName =  e.detail.keyboardEvent.path[0].nodeName;
         if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
           this.plot();
         }
       },
       _hotkeyHelp: function(e) {
-        var nodeName =  e.detail.keyboardEvent.target.nodeName;
+        console.debug("[quantum-warpscript] _hotkeyHelp", e.detail.keyboardEvent.path[0]);
+        var nodeName =  e.detail.keyboardEvent.path[0].nodeName;
         if ((nodeName !== 'TEXTAREA') && (nodeName !== 'INPUT')) {
           console.debug("[quantum-warpscript] _hotkeyHelp")
           this.$$("#warpscript-ide-keyboard-shortcuts-overlay").open();
