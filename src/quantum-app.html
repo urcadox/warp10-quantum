@@ -145,7 +145,7 @@
               fallback-selection="warpscript">
             <quantum-warpscript   
                 name="warpscript" 
-               selected="[[page]]"
+                selected="[[page]]"
                 application="warpscript"
                 content="[[payload]]"
                 backend="[[backend]]"
@@ -155,6 +155,7 @@
             <quantum-plot 
                 name="plot"
                 selected="[[page]]"
+                warpscript="[[payload]]"
                 data="{{dataToPlot}}"
                 on-edit="_handleGoToWarpScript"
                 backend="[[backend]]" ></quantum-plot>            

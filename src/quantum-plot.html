@@ -6,6 +6,10 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
@@ -334,12 +338,14 @@ Warp plot widget
       /* Event Listeners                                                        */
       /**************************************************************************/
       _handleResponse: function(event, response) {      
+        console.debug("[quantum-warpscript-plot] _handleResponse - response",response );    
         if (!response.stack ||
           !response.stack instanceof Array ) {
-          this._dataToPlot = null;
+          this.data = null;
           return;
         }      
-        this.data = gtsTools.gtsFromJSONList(response.stack);        
+        this.data = gtsTools.gtsFromJSONList(response.stack);
+        console.debug("[quantum-warpscript-plot] _handleResponse",this.data );        
       }, 
       _onPlottedChanged: function(evt) {        
         this.dataToPlot = [{ 
@@ -384,8 +390,11 @@ Warp plot widget
 
         this.stackedGtsListHalfLimit = 3;
 
-        this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
-        // console.debug("[quantum-warpscript-plot] attached() - stackedGtsList", this.stackedGtsList);
+        if (!this.data) {
+          this.$.warpscriptcaller.generateRequest();   
+        } else {
+          this._onDataChanged(this.data);
+        }
 
         // Overlay conf for selection TO-DO
         this.overlay = {};
@@ -542,6 +551,7 @@ Warp plot widget
         }
       },
       _hotkeyHelp: function(e) {
+        console.debug("[quantum-warpscript-plot] _hotkeyHelp")
         if (!this._regexMode) {
           // console.debug("[quantum-warpscript-plot] _hotkeyHelp")
           if (!this.$$("#warpscript-plot-keyboard-shortcuts-overlay").opened) {
