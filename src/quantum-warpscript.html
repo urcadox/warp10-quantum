@@ -122,7 +122,12 @@
       .clearfix:after {
         clear: both;
       }      
+      .title {
+        text-transform: capitalize;
+      }
     </style>
+
+    <h2 class="title">WarpScript</h2>
 
     <iron-a11y-keys target="[[_target]]" keys="e" on-keys-pressed="_hotkeyExecute"></iron-a11y-keys>
     <iron-a11y-keys target="[[_target]]" keys="p" on-keys-pressed="_hotkeyPlot"></iron-a11y-keys>

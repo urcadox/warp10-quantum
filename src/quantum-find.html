@@ -96,15 +96,18 @@ Quantum find widget
       .clearfix:after {
         clear: both;
       }      
+
+      .title {
+        text-transform: capitalize;
+      }
     </style>
 
-
+    <h2 class="title">{{name}}</h2>
+    
     <granite-spinner
         active="{{loading}}" 
         size="200"
         hover></granite-spinner>
-
-    <h4>Find</h4>
 
     <div class="top-10">
       <paper-input

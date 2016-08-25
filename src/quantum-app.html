@@ -150,12 +150,13 @@
                 content="[[payload]]"
                 backend="[[backend]]"
                 theme="chaos" 
-                on-plot="_handlePlot"
+                on-plot="_handleGoToPlot"
                 show-permalink></quantum-warpscript>                 
             <quantum-plot 
                 name="plot"
                 selected="[[page]]"
                 data="{{dataToPlot}}"
+                on-edit="_handleGoToWarpScript"
                 backend="[[backend]]" ></quantum-plot>            
             <quantum-find 
                 name="find"
@@ -251,10 +252,14 @@
       _handleBackendDecoded: function(evt, backend) {
         console.debug("[quantum-app] _handleBackendDecoded", backend);
       },  
-      _handlePlot: function(evt, data) {
-        console.debug("[quantum-app] _handlePlot", data);
+      _handleGoToPlot: function(evt, data) {
+        console.debug("[quantum-app] _handleGoToPlot", data);
         this.dataToPlot = data;
         this._goToPage('plot', true);
+      },
+      _handleGoToWarpScript: function(evt, warpscript) {
+        console.debug("[quantum-app] _handleGoToWarpScript", warpscript);
+        this._goToPage('warpscript', true);
       },
 
       _doChangePage: function(evt) {

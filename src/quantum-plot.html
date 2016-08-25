@@ -79,22 +79,50 @@ Warp plot widget
         padding: 5px 9px;
         text-align: center;
       }
+      .top-10 { margin-top:10px; }
+
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      .title {
+        text-transform: capitalize;
+      }
+      paper-button {
+        background-color: var(--app-primary-color);
+        color: var(--app-on-background-color)
+      }
     </style>
 
+    <div class="right">
+      <paper-button
+        id="btn_execute"
+        class="btn btn-primary btn-lg"
+        on-click="_hotkeyEdit">
+        Edit WarpScript
+      </paper-button>
+    </div>
+    <h2 class="title">{{name}}</h2>
+
+
+    <iron-a11y-keys target="[[_target]]" keys="e"         on-keys-pressed="_hotkeyEdit"></iron-a11y-keys>
     <iron-a11y-keys id="hotkeyUp" target="[[_target]]" keys="k up"     on-keys-pressed="_hotkeyUp"  ></iron-a11y-keys>
     <iron-a11y-keys id="hotkeyDown"  target="[[_target]]" keys="j down"   on-keys-pressed="_hotkeyDown"></iron-a11y-keys>
-    <iron-a11y-keys target="[[_target]]" keys="space"    on-keys-pressed="_hotkeySpace"></iron-a11y-keys>
-    <iron-a11y-keys target="[[_target]]" keys="a"        on-keys-pressed="_hotkeyAll"></iron-a11y-keys>
-    <iron-a11y-keys target="[[_target]]" keys="n"        on-keys-pressed="_hotkeyNone"></iron-a11y-keys>
-    <iron-a11y-keys target="[[_target]]" keys="r"        on-keys-pressed="_hotkeyReload"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="space"     on-keys-pressed="_hotkeySpace"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="a"         on-keys-pressed="_hotkeyAll"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="n"         on-keys-pressed="_hotkeyNone"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="r"         on-keys-pressed="_hotkeyReload"></iron-a11y-keys>
     <iron-a11y-keys target="[[_target]]" keys="/ help:keypress"  on-keys-pressed="_hotkeyRegex" ></iron-a11y-keys>
-    <iron-a11y-keys target="[[_target]]" keys="enter"  on-keys-pressed="_hotkeyRegexEnter"></iron-a11y-keys>
+    <iron-a11y-keys target="[[_target]]" keys="enter"     on-keys-pressed="_hotkeyRegexEnter"></iron-a11y-keys>
     <iron-a11y-keys target="[[_target]]" keys="h ?:keypress"     on-keys-pressed="_hotkeyHelp"></iron-a11y-keys>
 
     <warp10-simple-overlay id="warpscript-plot-keyboard-shortcuts-overlay">
       <div class="overlay-box">
         <h4>Keyboard Shortcuts:</h4>
         <p><span class="hotkey-key">?</span> Show / hide this help menu</p>
+        <p><span class="hotkey-key">e</span> Edit WarpScript</p>
         <p><span class="hotkey-key">r</span> Reload data</p>
         <p><span class="hotkey-key">k</span>, <span class="hotkey-key">up</span> Selection up</p>
         <p><span class="hotkey-key">j</span>, <span class="hotkey-key">down</span> Selection down</p>
@@ -417,6 +445,11 @@ Warp plot widget
       /**************************************************************************/
       /* Hotkeys                                                                */
       /**************************************************************************/  
+        
+      _hotkeyEdit: function(e) {
+        console.debug("[quantum-warpscript-plot] _hotkey edit", this.warpscript);
+        this.fire("edit", this.warpscript);
+      },
       _hotkeyUp: function(e) {
         console.debug("[quantum-warpscript-plot] _hotkey up");
         if (!this._regexMode) {
