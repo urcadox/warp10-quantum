@@ -152,8 +152,14 @@
 
 
     <ace-widget
-      id="editor" theme="ace/theme/eclipse" mode="ace/mode/warpscript"
-      softtabs="true" wrap="true" value="{{content}}"></ace-widget>
+        id="editor" 
+        theme="ace/theme/eclipse" 
+        mode="ace/mode/warpscript"
+        softtabs="true" 
+        wrap="true" 
+        value="{{content}}" 
+        placeholder="Type your WarpScript here..."
+        initial-focus></ace-widget>
 
 
     <granite-spinner
@@ -236,7 +242,7 @@
          */
         content: {
           type: String,
-          value: "Type your code here...",
+          value: "",
           observer: "_onContentChange"
         },
         /**
