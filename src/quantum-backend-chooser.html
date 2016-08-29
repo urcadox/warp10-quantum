@@ -15,7 +15,6 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-backend-validator.html">
@@ -101,7 +100,7 @@
     <h4>{{ localize('chooseYourBackend') }}</h4>
 
     <template is="dom-if" if="{{_hasConfiguredBackends}}">
-      <paper-radio-group id="backendRadioGroup" on-iron-select="_backendChoosen" >
+      <paper-radio-group id="backendRadioGroup" on-iron-select="_backendChoosen">
         <template is="dom-repeat" items="{{configuredBackends}}" as="item">
           <paper-radio-button
               id$="backend_{{item.id}}"
@@ -345,7 +344,12 @@
         _hasConfiguredBackends: {
           type: Boolean,
           computed: "_getHasConfiguredBackends(configuredBackends)"
-        },   
+        }, 
+        _chooseAltBackendSelected: {
+          type: Boolean,
+          value: false,
+          observer: "_altBackendStatusChanged" 
+        },  
         /* Overriden from AppLocalizeBehavior */
         language: {
           value: 'en'
@@ -383,7 +387,14 @@
         return (this.configuredBackends.length > 0);
       },
 
-      // Observers
+      /**************************************************************************/
+      /* Observers                                                              */
+      /**************************************************************************/
+      _altBackendStatusChanged: function() {
+        for (i in this.configuredBackends) {
+          this.set(['configuredBackends',i,'checked'],false);
+        }
+      },
       _backendChanged: function() {
        console.debug("[quantum-backend-chooser] _backendChanged - backend ", this.backend)
        console.debug("[quantum-backend-chooser] _backendChanged - configuredBackends ", this.configuredBackends)
@@ -393,7 +404,7 @@
         var preconfiguredBackend = false;
         
         for (i in this.configuredBackends) {
-         console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend.url});
+          console.debug("[quantum-backend-chooser] _backendChanged - currentBackend", {conf: this.configuredBackends[i].url, backend: this.backend.url});
           if (this.configuredBackends[i].url == this.backend.url) {
            console.debug("[quantum-backend-chooser] _backendChanged - default backend found: ", this.configuredBackends[i].id )
             this.set(['configuredBackends',i,'checked'],true);
@@ -490,9 +501,10 @@
       // Event listeners
       _backendChoosen: function(evt, model) {
         var backend = JSON.parse(model.item.getAttribute('data-backend'));
+        console.debug("[quantum-backend-chooser] _backendChoosen", backend );
         if (backend) {
           this.backend = backend;
-         console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
+          console.debug("[quantum-backend-chooser] _backendChoosen - backend", this.backend );
         }
         this.fire("backend-choosen", this.backend);
       },
