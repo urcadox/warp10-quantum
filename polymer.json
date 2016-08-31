@@ -7,5 +7,9 @@
     "src/quantum-find.html",
     "src/quantum-update.html",
     "src/quantum-delete.html"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
