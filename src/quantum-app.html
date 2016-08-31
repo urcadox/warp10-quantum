@@ -159,7 +159,17 @@
                 backend="[[backend]]"
                 theme="chaos" 
                 on-plot="_handleGoToPlot"
-                show-permalink></quantum-warpscript>                 
+                show-permalink></quantum-warpscript>  
+            <quantum-result
+                name="result" 
+                snapshot-id="{{routePayloadData.payload}}" 
+                selected="[[page]]"
+                on-shared-result="_handleSharedResult"></quantum-result>         
+            <quantum-code
+                name="code" 
+                snapshot-id="{{routePayloadData.payload}}" 
+                selected="[[page]]"
+                on-shared-code="_handleSharedCode"></quantum-code>            
             <quantum-plot 
                 name="plot"
                 selected="[[page]]"
@@ -270,7 +280,14 @@
         console.debug("[quantum-app] _handleGoToWarpScript", warpscript);
         this._goToPage('warpscript', true);
       },
-
+      _handleSharedCode: function(evt, code) {
+        this.payload = code;
+        this._goToPage('warpscript', true);
+      },
+      _handleSharedResult: function(evt, code) {
+        this.payload = code;
+        this._goToPage('warpscript', true);
+      },
       _doChangePage: function(evt) {
         console.debug("[quantum-app] _doChangePage - current page", this.page);
         var pageId = evt.target.getAttribute('name');

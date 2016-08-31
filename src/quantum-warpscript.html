@@ -381,7 +381,7 @@
         },
         _czdWarp10Url : {
           type: String,
-          value: 'https://home.cityzendata.net/api/v0/exec',
+          value: 'https://warp.cityzendata.net/api/v0/exec',
         }
 
       },
@@ -495,7 +495,7 @@
       },  
       _handleShareResultResponse: function(event, ironRequest) {
         console.debug("quantum-warpscript] _handleShareResultResponse", ironRequest.response);
-        this._lastSharedResult = ironRequest.response
+        this._lastSharedResult =  looseJSON.parse(ironRequest.response)[0];
       },         
       /**************************************************************************/
       /* Action listeners                                                       */
