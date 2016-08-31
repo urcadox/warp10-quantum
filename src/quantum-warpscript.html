@@ -14,6 +14,7 @@
 <link rel="import" href="../bower_components/warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
+<link rel="import" href="../bower_components/warp10-iron/warp10-looseJSON.html">
 
 <link rel="import" href="../bower_components/granite-alert/granite-alert.html">
 
@@ -150,7 +151,21 @@
       loading="{{loading}}">
     </warp10-warpscript-caller>
 
+    <iron-ajax
+      id="shareCodeRequest" url="{{_czdWarp10Url}}"
+      content-type="application/x-www-form-urlencoded; charset=UTF-8"
+      method='POST' body='{{_codeToShare}}'
+      handle-as="text"  on-response="_handleShareCodeResponse" on-error="_handleShareCodeError"
+      loading="{{loading}}" debounce-duration="{{debounceDuration}}" 
+      ></iron-ajax>
 
+    <iron-ajax
+      id="shareResultRequest" url="{{_czdWarp10Url}}"
+      content-type="application/x-www-form-urlencoded; charset=UTF-8"
+      method='POST' body='{{_resultToShare}}'
+      handle-as="text"  on-response="_handleShareResultResponse" on-error="_handleShareResultError"
+      loading="{{loading}}" debounce-duration="{{debounceDuration}}" 
+      ></iron-ajax>
     <ace-widget
         id="editor" 
         theme="ace/theme/eclipse" 
@@ -184,6 +199,7 @@
         </div>
       </template>
       <div class="right">
+
         <paper-button
           id="btn_execute"
           class="btn btn-primary btn-lg"
@@ -193,6 +209,40 @@
         </paper-button>
       </div>
     </div>
+
+
+    
+    <template is="dom-if" if="{{_hasAResponse}}">      
+      <div class="clearfix"> </div>
+      <div  class="top-10">
+        <paper-button
+            id="btn_share_result"
+            on-click="shareResult"
+            disabled$="{{_shareResultDisabled}}">
+            Share result
+        </paper-button>  
+        <template is="dom-if" if="{{_lastSharedResult}}">  
+          Link to share: <a href$="./#/result/{{_lastSharedResult}}">./#/result/{{_lastSharedResult}}</a>
+        </template>
+      </div>
+    </template>
+
+    <template is="dom-if" if="{{!_contentChangedAfterExecution}}">             
+      <div class="clearfix"> </div>
+      <div  class="top-10">
+        <paper-button
+          id="btn_share_code"
+          class="btn btn-primary btn-lg"
+          on-click="shareCode"
+          disabled$="{{_shareCodeDisabled}}">
+          Share code
+        </paper-button>
+        <template is="dom-if" if="{{_lastSharedCode}}">  
+          Link to share: <a href$="./#/code/{{_lastSharedCode}}">./#/code/{{_lastSharedCode}}</a>
+        </template>
+      </div>
+    </template>
+
     <template is="dom-if" if="{{_elapsedTimeShown}}">
       <div class="clearfix"> </div>
       <div  class="top-10">
@@ -200,7 +250,6 @@
       </div>
     </template>
     <div class="clearfix"> </div>
-
 
     <div  class="top-10">
       <quantum-response-container
@@ -310,12 +359,40 @@
           type: String,
           computed: "_getBaseUrl(backend)"
         },
+        _lastSharedCode: {
+          type: String,
+          value: ""
+        },
+        _shareCodeDisabled: {
+          type: Boolean,
+          computed: "_isShareCodeDisabled(loading,_lastSharedCode)"
+        },
+        _lastSharedResult: {
+          type: String,
+          value: ""
+        },
+        _shareResultDisabled: {
+          type: Boolean,
+          computed: "_isShareResultDisabled(loading,_lastSharedResult)"
+        },
+        _contentChangedAfterExecution: {
+          type: Boolean,
+          value: true
+        },
+        _czdWarp10Url : {
+          type: String,
+          value: 'https://home.cityzendata.net/api/v0/exec',
+        }
+
       },
+
+      
 
       /**************************************************************************/
       /* Lifecycle methods                                                      */
       /**************************************************************************/
       ready: function() {
+
       },
       attached: function() {
         editor = this.$.editor;
@@ -347,12 +424,19 @@
         return this.backend.url + this.backend.execEndpoint;
       },
 
-
+      _isShareCodeDisabled: function() {
+        return !!(this.loading || this._lastSharedCode);
+      },
+      _isShareResultDisabled: function() {
+        return !!(this.loading || this._lastSharedResult);
+      },
       /**************************************************************************/
       /* Observers                                                              */
       /**************************************************************************/
       _onContentChange: function(content) {
-        console.debug("[quantum-warpscript] _onContentChange", content);
+        // console.debug("[quantum-warpscript] _onContentChange", content);
+        this._contentChangedAfterExecution = true;
+        this._lastSharedCode = false;
       },
       _onSelectedChanged: function(selected) {
         
@@ -361,7 +445,7 @@
         } else {
           this._target = null;
         }
-        console.debug("[warp10-warpscript-plot] _onSelectedChanged", {selected: selected, name:this.name, target: this._target});
+        // console.debug("[warp10-warpscript-plot] _onSelectedChanged", {selected: selected, name:this.name, target: this._target});
       },
 
       /**************************************************************************/
@@ -378,7 +462,8 @@
         this.stack = response.stack;  
         this._hasAResponse = true;
         this._hasAnError = false;
-        
+        this._contentChangedAfterExecution = false;
+        this._lastSharedResult = "";
         this.$.response_container.responseChanged();
         
         // console.debug("[quantum-warpscript] _handleResponse", { stack: this.stack, elapsed: this.elapsed, _dataToPlot: this._dataToPlot });
@@ -404,6 +489,14 @@
         // console.debug("[quantum-warpscript] editorChangeAction", this.content);
       },
 
+      _handleShareCodeResponse: function(event, ironRequest) {
+        console.debug("quantum-warpscript] _handleShareCodeResponse", ironRequest.response);
+        this._lastSharedCode = looseJSON.parse(ironRequest.response)[0];
+      },  
+      _handleShareResultResponse: function(event, ironRequest) {
+        console.debug("quantum-warpscript] _handleShareResultResponse", ironRequest.response);
+        this._lastSharedResult = ironRequest.response
+      },         
       /**************************************************************************/
       /* Action listeners                                                       */
       /**************************************************************************/    
@@ -423,6 +516,14 @@
         if (this.stack.length) {
           this.fire("plot",this._dataToPlot);
         }
+      },
+      shareCode: function() {        
+        this._codeToShare = "<% '"+ encodeURI(this.content).replace(/'/g,'%27').replace(/"/g,'%28').replace('+','%2B') + "' %> @orbit/snapshot/store";
+        this.$.shareCodeRequest.generateRequest();    
+      },
+      shareResult: function() {
+        this._resultToShare = this.content + " SNAPSHOTALL 'snapshot' STORE <% !$snapshot %> @orbit/snapshot/store";
+        this.$.shareResultRequest.generateRequest();    
       },
 
 
