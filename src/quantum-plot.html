@@ -10,6 +10,7 @@
 
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-simple-overlay.html">
@@ -100,6 +101,42 @@ Warp plot widget
       }
     </style>
 
+    <style>
+      .item { 
+        margin-top: 8px; 
+        margin-bottom: 8px; 
+      } 
+
+      .item_name { 
+        color: var(--paper-grey-600); 
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        font-size: 12px; 
+        font-weight: 400; 
+        letter-spacing: 0.011em; 
+        line-height: 20px; 
+      } 
+      .item_value { 
+        @apply(--layout-horizontal); 
+        @apply(--layout-center); 
+        @apply(--layout-wrap); 
+      } 
+      .clearfix:before,
+      .clearfix:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+      .clearfix:after {
+        clear: both;
+      }      
+      .title {
+        text-transform: capitalize;
+      }
+    </style>
+
     <div class="right">
       <paper-button
         id="btn_execute"
@@ -145,6 +182,29 @@ Warp plot widget
         size="200"
         hover></granite-spinner>
 
+    <div class="item">
+      <div class="item_name">Interpolation</div>
+      <paper-radio-group 
+        id="interpolationRadioGroup" 
+        selected="{{interpolationMode}}">
+        <paper-radio-button
+            id="interpolation_linear"
+            name="linear">
+          Linear
+        </paper-radio-button>
+        <paper-radio-button
+            id="interpolation_step"
+            name="step-before">
+          Step
+        </paper-radio-button>
+        <paper-radio-button
+            id="interpolation_cardinal"
+            name="cardinal">
+          Cardinal
+        </paper-radio-button>
+      </paper-radio-group>
+    </div>
+
    <quantum-gts-tree 
       id="gts-tree" 
       data="{{data}}" 
@@ -164,6 +224,8 @@ Warp plot widget
       >
     </quantumviz-annotations>
     
+
+
     <warp10-display-chart
         id="warp10-display-chart"
         width="{{_displayWidth}}"
@@ -234,6 +296,14 @@ Warp plot widget
         selected: {
           type: String,
           observer: "_onSelectedChanged"
+        },
+        /**
+         * The interpolation model. Currently supported modes: linear, step, cardinal
+         */
+        interpolationMode: {
+          type: String,
+          observer: "_onInterpolationModeChanged",
+          value: "linear"
         },
         _target: {
           type: Object,
@@ -334,6 +404,11 @@ Warp plot widget
         console.debug("[warp10-warpscript-plot] _onSelectedChanged", {selected: selected, name:this.name, target: this._target});
       },
 
+      _onInterpolationModeChanged: function() {
+         console.debug("[quantum-warpscript-plot] _onInterpolationModeChanged", this.interpolationMode);
+         this.fire('plotted-changed', plottingTools);
+      },    
+
       /**************************************************************************/
       /* Event Listeners                                                        */
       /**************************************************************************/
@@ -351,14 +426,16 @@ Warp plot widget
         this.dataToPlot = [{ 
           gts: evt.detail.data,
           params: evt.detail.params,
-          globalParams: {}
+          globalParams: {
+            interpolate: this.interpolationMode
+          }
         }];
         console.debug("[quantum-warpscript-plot] plottedChanged", this.dataToPlot);
         
         this.$$('#warp10-display-chart').dataChanged();
         this.$$("#warp10-quantumviz-annotations").dataChanged();
         // console.debug("[quantum-warpscript-plot] plottedChanged", e.detail);
-      },
+      },  
 
       _regexModeOpened: function(evt) {
         this._regexModeJustOpened = true;
