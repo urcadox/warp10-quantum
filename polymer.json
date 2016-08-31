@@ -6,7 +6,9 @@
     "src/quantum-plot.html",
     "src/quantum-find.html",
     "src/quantum-update.html",
-    "src/quantum-delete.html"
+    "src/quantum-delete.html",
+    "src/quantum-code.html",
+    "src/quantum-result.html"
   ],
   "includeDependencies": [
     "manifest.json",
