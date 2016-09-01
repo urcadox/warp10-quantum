@@ -51,9 +51,12 @@
       }
 
       paper-material {
-        margin: 10px;
+        margin: 15px;
         background-color: var(--app-background-color);
       }
+      app-drawer {
+        --app-drawer-width: 192px;
+      },
       .drawer-list {
         margin: 0 20px;
       }
@@ -108,12 +111,14 @@
         on-backend-decoded="_handleBackendDecoded"></quantum-permalink-decoder>
 
 
-    <app-drawer-layout fullbleed>
+    <app-drawer-layout fullbleed force-narrow>
 
       <!-- Drawer content -->
       <app-drawer>
 
-        <app-toolbar>Menu</app-toolbar>
+        <app-toolbar>
+          <paper-icon-button icon="arrow-back" drawer-toggle></paper-icon-button>
+        </app-toolbar>
 
         <iron-selector 
             selected="[[page]]" 
