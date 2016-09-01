@@ -31,14 +31,7 @@
         active="result" 
         size="200"
         hover></granite-spinner>
-
-    <iron-ajax
-      id="getSharedResultRequest" url="{{_czdWarp10Url}}"
-      content-type="application/x-www-form-urlencoded; charset=UTF-8"
-      method='POST' body='{{warpscript}}'
-      handle-as="text"  on-response="_handleGetSharedResultResponse" on-error="_handleGetSharedResultError"
-      loading="{{loading}}" debounce-duration="{{debounceDuration}}" 
-      ></iron-ajax>        
+ 
 
   </template>
   <script>
@@ -88,20 +81,11 @@
       },
 
       /* ************************************************************************/
-      /* Event listeners                                                              
-      /* ************************************************************************/
-      _handleGetSharedResultResponse: function(evt, ironRequest) {
-        var result = looseJSON.parse(decodeURI(ironRequest.response))[0]
-        console.debug("[quantum-result] _handleGetSharedResultResponse",result );
-        this.fire('shared-result', result);
-      },
-
-      /* ************************************************************************/
       /* Instance methods                                                              
       /* ************************************************************************/
       getSharedResult: function() {        
-        this.warpscript = "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL";
-        this.$.getSharedResultRequest.generateRequest();    
+        this.warpscript = "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL EVAL";
+        this.fire('shared-result', this.warpscript);
       },
     })
   </script>  

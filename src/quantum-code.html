@@ -91,7 +91,7 @@
       /* Event listeners                                                              
       /* ************************************************************************/
       _handleGetSharedCodeResponse: function(evt, ironRequest) {
-        var code = looseJSON.parse(decodeURI(ironRequest.response))[0]
+        var code = looseJSON.parse(ironRequest.response)[0]
         console.debug("[quantum-code] _handleGetSharedCodeResponse",code );
         this.fire('shared-code', code);
       },

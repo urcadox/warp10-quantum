@@ -222,7 +222,7 @@
             Share result
         </paper-button>  
         <template is="dom-if" if="{{_lastSharedResult}}">  
-          Link to share: <a href$="./#/result/{{_lastSharedResult}}">./#/result/{{_lastSharedResult}}</a>
+          Link to share: <a href$="./#/result/{{_lastSharedResult}}" target="_blank">{{_lastSharedResultUrl}}</a>
         </template>
       </div>
     </template>
@@ -238,7 +238,7 @@
           Share code
         </paper-button>
         <template is="dom-if" if="{{_lastSharedCode}}">  
-          Link to share: <a href$="./#/code/{{_lastSharedCode}}">./#/code/{{_lastSharedCode}}</a>
+          Link to share: <a href$="./#/code/{{_lastSharedCode}}" target="_blank">{{_lastSharedCodeUrl}}</a>
         </template>
       </div>
     </template>
@@ -371,6 +371,14 @@
           type: String,
           value: ""
         },
+        _lastSharedCodeUrl: {
+          type: String,
+          computed: "_getLastSharedCodeUrl(_lastSharedCode)"
+        },
+        _lastSharedResultUrl: {
+          type: String,
+          computed: "_getLastSharedResultUrl(_lastSharedResult)"
+        },
         _shareResultDisabled: {
           type: Boolean,
           computed: "_isShareResultDisabled(loading,_lastSharedResult)"
@@ -429,6 +437,14 @@
       },
       _isShareResultDisabled: function() {
         return !!(this.loading || this._lastSharedResult);
+      },
+      _getLastSharedCodeUrl: function() {
+        console.debug("[quantum-warpscript] _getLastSharedCodeUrl", window.location.origin);
+        return window.location.origin+"/#/code/"+this._lastSharedCode;
+      },
+      _getLastSharedResultUrl: function() {
+        console.debug("[quantum-warpscript] _getLastSharedResultUrl", window.location.origin);
+        return window.location.origin+"/#/result/"+this._lastSharedResult;
       },
       /**************************************************************************/
       /* Observers                                                              */
@@ -522,7 +538,7 @@
         this.$.shareCodeRequest.generateRequest();    
       },
       shareResult: function() {
-        this._resultToShare = this.content + " SNAPSHOTALL 'snapshot' STORE <% !$snapshot %> @orbit/snapshot/store";
+        this._resultToShare = this.content + " SNAPSHOT 'snapshot' STORE <% !$snapshot %> @orbit/snapshot/store";
         this.$.shareResultRequest.generateRequest();    
       },
 
