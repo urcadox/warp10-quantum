@@ -10,6 +10,8 @@
 
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
 
 <link rel="import" href="../bower_components/warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href="../bower_components/warp10-iron/warp10-gts-tools.html">
@@ -117,6 +119,9 @@
         @apply(--layout-center); 
         @apply(--layout-wrap); 
       } 
+      .item_vert {
+        @apply(--layout-vertical);
+      }
       .clearfix:before,
       .clearfix:after {
         content: " "; /* 1 */
@@ -222,7 +227,20 @@
             Share result
         </paper-button>  
         <template is="dom-if" if="{{_lastSharedResult.snapshotId}}">  
-          Link to share: <a href$="./#/result/{{_lastSharedResult.snapshotId}}" target="_blank">{{_lastSharedResultUrl}}</a>
+          <div class="item_vert">
+            <div class="item">
+              Link to share: 
+              <a href$="./#/shared-result/{{_lastSharedResult.snapshotId}}" target="_blank">
+                {{_sharingUrlRoot}}#/shared-result/{{_lastSharedResult.snapshotId}}
+                </a>
+            </div>
+            <div class="item">
+              Link to delete: 
+              <a href$="./#/delete-shared-result/{{_lastSharedResult.snapshotId}}/{{_lastSharedResult.snapshotSecret}}" target="_blank">
+                {{_sharingUrlRoot}}#/delete-shared-result/{{_lastSharedResult.snapshotId}}/{{_lastSharedResult.snapshotSecret}}
+              </a>
+            </div>
+          </div>
         </template>
       </div>
     </template>
@@ -238,7 +256,20 @@
           Share code
         </paper-button>
         <template is="dom-if" if="{{_lastSharedCode.snapshotId}}">  
-          Link to share: <a href$="./#/code/{{_lastSharedCode.snapshotId}}" target="_blank">{{_lastSharedCodeUrl}}</a>
+          <div class="item_vert">
+            <div class="item">
+              Link to share: 
+              <a href$="./#/shared-code/{{_lastSharedCode.snapshotId}}" target="_blank">
+                {{_sharingUrlRoot}}#/shared-code/{{_lastSharedCode.snapshotId}}
+                </a>
+            </div>
+            <div class="item">
+              Link to delete: 
+              <a href$="./#/delete-shared-code/{{_lastSharedCode.snapshotId}}/{{_lastSharedCode.snapshotSecret}}" target="_blank">
+                {{_sharingUrlRoot}}#/delete-shared-code/{{_lastSharedCode.snapshotId}}/{{_lastSharedCode.snapshotSecret}}
+              </a>
+            </div>
+          </div>
         </template>
       </div>
     </template>
@@ -371,14 +402,13 @@
           type: String,
           value: ""
         },
-        _lastSharedCodeUrl: {
+        _sharingUrlRoot: {
           type: String,
-          computed: "_getLastSharedCodeUrl(_lastSharedCode)"
+          value: function() {
+            return window.location.origin+window.location.pathname;
+          } 
         },
-        _lastSharedResultUrl: {
-          type: String,
-          computed: "_getLastSharedResultUrl(_lastSharedResult)"
-        },
+        
         _shareResultDisabled: {
           type: Boolean,
           computed: "_isShareResultDisabled(loading,_lastSharedResult)"
@@ -437,14 +467,6 @@
       },
       _isShareResultDisabled: function() {
         return !!(this.loading || (this._lastSharedResult && this._lastSharedResult.snapshotId) );
-      },
-      _getLastSharedCodeUrl: function() {
-        console.debug("[quantum-warpscript] _getLastSharedCodeUrl", window.location.origin);
-        return window.location.origin+window.location.pathname+"#/code/"+this._lastSharedCode.snapshotId;
-      },
-      _getLastSharedResultUrl: function() {
-        console.debug("[quantum-warpscript] _getLastSharedResultUrl", window.location.origin);
-        return window.location.origin+window.location.pathname+"#/result/"+this._lastSharedResult.snapshotId;
       },
       /**************************************************************************/
       /* Observers                                                              */

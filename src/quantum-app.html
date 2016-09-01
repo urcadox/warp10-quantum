@@ -165,16 +165,28 @@
                 theme="chaos" 
                 on-plot="_handleGoToPlot"
                 show-permalink></quantum-warpscript>  
-            <quantum-result
-                name="result" 
+            <quantum-shared-result
+                name="shared-result" 
                 snapshot-id="{{routePayloadData.payload}}" 
                 selected="[[page]]"
-                on-shared-result="_handleSharedResult"></quantum-result>         
-            <quantum-code
-                name="code" 
+                on-shared-result="_handleSharedResult"></quantum-shared-result>         
+            <quantum-shared-code
+                name="shared-code" 
                 snapshot-id="{{routePayloadData.payload}}" 
                 selected="[[page]]"
-                on-shared-code="_handleSharedCode"></quantum-code>            
+                on-shared-code="_handleSharedCode"></quantum-shared-code>     
+            <quantum-delete-shared-code  
+                name="delete-shared-code" 
+                snapshot-id="{{routePayloadData.payload}}"
+                snapshot-secret="{{routeBackendData.backend}}" 
+                selected="[[page]]"
+                on-shared-code="_handleDeletedSharedCode"></quantum-delete-shared-code>  
+            <quantum-delete-shared-result  
+                name="delete-shared-result" 
+                snapshot-id="{{routePayloadData.payload}}"
+                snapshot-secret="{{routeBackendData.backend}}" 
+                selected="[[page]]"
+                on-shared-code="_handleDeletedSharedResult"></quantum-delete-shared-result>     
             <quantum-plot 
                 name="plot"
                 selected="[[page]]"

@@ -11,7 +11,7 @@
 
 <link rel="import" href="../bower_components/granite-spinner/granite-spinner.html">
 
-<dom-module is="quantum-result">
+<dom-module is="quantum-shared-code">
   <template>
     <style>
       :host {
@@ -25,25 +25,32 @@
       }      
     </style>
 
-    <h2 class="title">Recovering shared result...</h2>
+    <h2 class="title">Recovering shared code...</h2>
 
     <granite-spinner
-        active="result" 
+        active="code" 
         size="200"
         hover></granite-spinner>
- 
+
+    <iron-ajax
+      id="getSharedCodeRequest" url="{{_czdWarp10Url}}"
+      content-type="application/x-www-form-urlencoded; charset=UTF-8"
+      method='POST' body='{{warpscript}}'
+      handle-as="text"  on-response="_handleGetSharedCodeResponse" on-error="_handleGetSharedCodeError"
+      loading="{{loading}}" debounce-duration="{{debounceDuration}}" 
+      ></iron-ajax>        
 
   </template>
   <script>
     Polymer({
-      is: "quantum-result",
+      is: "quantum-shared-code",
       properties: {
         /**
          * The module name
          */
         name: {
           type: String,
-          value: "result"
+          value: "code"
         },
         /**
          * The name of the currently selected module
@@ -52,7 +59,7 @@
           type: String
         },
         /**
-         * The snapshot id used to recover the result
+         * The snapshot id used to recover the code
          */
         snapshotId: {
           type: String,
@@ -77,15 +84,24 @@
       /* ************************************************************************/ 
       _onSnapshotIdChanged: function() {
         if (!this.snapshotId || this.selected !== this.name) return;
-        this.getSharedResult();
+        this.getSharedCode();
+      },
+
+      /* ************************************************************************/
+      /* Event listeners                                                              
+      /* ************************************************************************/
+      _handleGetSharedCodeResponse: function(evt, ironRequest) {
+        var code = looseJSON.parse(ironRequest.response)[0]
+        console.debug("[quantum-shared-code] _handleGetSharedCodeResponse",code );
+        this.fire('shared-code', code);
       },
 
       /* ************************************************************************/
       /* Instance methods                                                              
       /* ************************************************************************/
-      getSharedResult: function() {        
-        this.warpscript = "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL EVAL";
-        this.fire('shared-result', this.warpscript);
+      getSharedCode: function() {        
+        this.warpscript = "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL";
+        this.$.getSharedCodeRequest.generateRequest();    
       },
     })
   </script>  
