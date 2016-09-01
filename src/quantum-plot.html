@@ -388,6 +388,7 @@ Warp plot widget
           console.debug("[warp10-warpscript-plot] _onDataChanged - do refresh");
           plottingTools.refresh(gtsTools.flattenGtsIdArray(this.data));
           this.stackedGtsList = gtsTools.flattenGtsIdArray(this.data, []);
+          this.fire('plotted-changed', plottingTools);
         }
       },
       _onCurrentRegexChanged: function() {
@@ -437,8 +438,9 @@ Warp plot widget
         }];
         console.debug("[quantum-warpscript-plot] plottedChanged", this.dataToPlot);
         
-        this.$$('#warp10-display-chart').dataChanged();
-        this.$$("#warp10-quantumviz-annotations").dataChanged();
+        
+        // this.$$('#warp10-display-chart').dataChanged();
+        // this.$$("#warp10-quantumviz-annotations").dataChanged();
         // console.debug("[quantum-warpscript-plot] plottedChanged", e.detail);
       },  
 
