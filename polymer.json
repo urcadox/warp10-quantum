@@ -7,8 +7,8 @@
     "src/quantum-find.html",
     "src/quantum-update.html",
     "src/quantum-delete.html",
-    "src/quantum-code.html",
-    "src/quantum-result.html"
+    "src/quantum-shared-code.html",
+    "src/quantum-shared-result.html"
   ],
   "includeDependencies": [
     "manifest.json",
