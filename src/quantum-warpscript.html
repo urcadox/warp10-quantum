@@ -440,11 +440,11 @@
       },
       _getLastSharedCodeUrl: function() {
         console.debug("[quantum-warpscript] _getLastSharedCodeUrl", window.location.origin);
-        return window.location.origin+"/#/code/"+this._lastSharedCode;
+        return window.location.origin+window.location.pathname+"#/code/"+this._lastSharedCode;
       },
       _getLastSharedResultUrl: function() {
         console.debug("[quantum-warpscript] _getLastSharedResultUrl", window.location.origin);
-        return window.location.origin+"/#/result/"+this._lastSharedResult;
+        return window.location.origin+window.location.pathname+"#/result/"+this._lastSharedResult;
       },
       /**************************************************************************/
       /* Observers                                                              */
