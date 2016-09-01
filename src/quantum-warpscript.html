@@ -221,8 +221,8 @@
             disabled$="{{_shareResultDisabled}}">
             Share result
         </paper-button>  
-        <template is="dom-if" if="{{_lastSharedResult}}">  
-          Link to share: <a href$="./#/result/{{_lastSharedResult}}" target="_blank">{{_lastSharedResultUrl}}</a>
+        <template is="dom-if" if="{{_lastSharedResult.snapshotId}}">  
+          Link to share: <a href$="./#/result/{{_lastSharedResult.snapshotId}}" target="_blank">{{_lastSharedResultUrl}}</a>
         </template>
       </div>
     </template>
@@ -237,8 +237,8 @@
           disabled$="{{_shareCodeDisabled}}">
           Share code
         </paper-button>
-        <template is="dom-if" if="{{_lastSharedCode}}">  
-          Link to share: <a href$="./#/code/{{_lastSharedCode}}" target="_blank">{{_lastSharedCodeUrl}}</a>
+        <template is="dom-if" if="{{_lastSharedCode.snapshotId}}">  
+          Link to share: <a href$="./#/code/{{_lastSharedCode.snapshotId}}" target="_blank">{{_lastSharedCodeUrl}}</a>
         </template>
       </div>
     </template>
@@ -433,18 +433,18 @@
       },
 
       _isShareCodeDisabled: function() {
-        return !!(this.loading || this._lastSharedCode);
+        return !!(this.loading || (this._lastSharedCode && this._lastSharedCode.snapshotId) );
       },
       _isShareResultDisabled: function() {
-        return !!(this.loading || this._lastSharedResult);
+        return !!(this.loading || (this._lastSharedResult && this._lastSharedResult.snapshotId) );
       },
       _getLastSharedCodeUrl: function() {
         console.debug("[quantum-warpscript] _getLastSharedCodeUrl", window.location.origin);
-        return window.location.origin+window.location.pathname+"#/code/"+this._lastSharedCode;
+        return window.location.origin+window.location.pathname+"#/code/"+this._lastSharedCode.snapshotId;
       },
       _getLastSharedResultUrl: function() {
         console.debug("[quantum-warpscript] _getLastSharedResultUrl", window.location.origin);
-        return window.location.origin+window.location.pathname+"#/result/"+this._lastSharedResult;
+        return window.location.origin+window.location.pathname+"#/result/"+this._lastSharedResult.snapshotId;
       },
       /**************************************************************************/
       /* Observers                                                              */
@@ -506,12 +506,16 @@
       },
 
       _handleShareCodeResponse: function(event, ironRequest) {
-        console.debug("quantum-warpscript] _handleShareCodeResponse", ironRequest.response);
-        this._lastSharedCode = looseJSON.parse(ironRequest.response)[0];
+        var snapshotId = looseJSON.parse(ironRequest.response)[1];
+        var snapshotSecret = looseJSON.parse(ironRequest.response)[0];
+        console.debug("quantum-warpscript] _handleShareCodeResponse", {snapshotId: snapshotId, snapshotSecret: snapshotSecret});
+        this._lastSharedCode = {snapshotId: snapshotId, snapshotSecret: snapshotSecret};
       },  
       _handleShareResultResponse: function(event, ironRequest) {
+        var snapshotId = looseJSON.parse(ironRequest.response)[1];
+        var snapshotSecret = looseJSON.parse(ironRequest.response)[0];
         console.debug("quantum-warpscript] _handleShareResultResponse", ironRequest.response);
-        this._lastSharedResult =  looseJSON.parse(ironRequest.response)[0];
+        this._lastSharedResult =  {snapshotId: snapshotId, snapshotSecret: snapshotSecret};
       },         
       /**************************************************************************/
       /* Action listeners                                                       */
