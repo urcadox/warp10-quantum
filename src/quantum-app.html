@@ -180,13 +180,15 @@
                 snapshot-id="{{routePayloadData.payload}}"
                 snapshot-secret="{{routeBackendData.backend}}" 
                 selected="[[page]]"
-                on-shared-code="_handleDeletedSharedCode"></quantum-delete-shared-code>  
+                on-cancel-delete="_handleCancelledDeletedSharedCode"
+                on-deleted="_handleDeletedSharedCode"></quantum-delete-shared-code>  
             <quantum-delete-shared-result  
                 name="delete-shared-result" 
                 snapshot-id="{{routePayloadData.payload}}"
                 snapshot-secret="{{routeBackendData.backend}}" 
                 selected="[[page]]"
-                on-shared-code="_handleDeletedSharedResult"></quantum-delete-shared-result>     
+                on-cancel-delete="_handleCancelledDeletedSharedResult"
+                on-deleted="_handleDeletedSharedResult"></quantum-delete-shared-result>     
             <quantum-plot 
                 name="plot"
                 selected="[[page]]"
@@ -305,6 +307,18 @@
         this.payload = code;
         this._goToPage('warpscript', true);
       },
+      _handleCancelledDeletedSharedCode: function(evt, snapshot) {
+        this._goToPageWithParams('shared-code', [snapshot.snapshotId, snapshot.snapshotSecret] );
+      },
+      _handleDeletedSharedCode: function(evt, snapshot) {
+        this._goToPageWithParams('warpscript', [] );
+      },
+      _handleCancelledDeletedSharedResult: function(evt, snapshot) {
+        this._goToPageWithParams('shared-result', [snapshot.snapshotId, snapshot.snapshotSecret] );
+      },
+      _handleDeletedSharedResult: function(evt, snapshot) {
+        this._goToPageWithParams('warpscript', [] );
+      },
       _doChangePage: function(evt) {
         console.debug("[quantum-app] _doChangePage - current page", this.page);
         var pageId = evt.target.getAttribute('name');
@@ -328,6 +342,12 @@
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
+      _goToPageWithParams: function(pageId, params) {
+        var location = "#/"+pageId+"/"+params.join('/');
+
+        window.history.pushState({}, null, location);
+        window.dispatchEvent(new CustomEvent('location-changed'));
+      },
 
       ready: function() {   
         this.configuredBackends=[{'id':'dist','label':'Distributed Warp','url':'https://warp.cityzendata.net/api/v0','execEndpoint':'/exec','findEndpoint':'/find','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'CityzenData'}]; 
