@@ -279,6 +279,10 @@
         this.fire('payload-change', payload);
       },
 
+
+      /* ************************************************************************/
+      /* Event listeners                                                              
+      /* ************************************************************************/
       _handlePayloadDecoded: function(evt, payload) {
         console.debug("[quantum-app] _handlePayloadDecoded", payload);
         if (this.page === "warpscript" || this.page === "plot") {
@@ -286,7 +290,6 @@
           console.debug("[quantum-app] _routePayloadChanged - _lastWarpscript", this._lastWarpscript);
         }
       },
-
       _handleBackendDecoded: function(evt, backend) {
         console.debug("[quantum-app] _handleBackendDecoded", backend);
       },  
@@ -303,9 +306,10 @@
         this.payload = code;
         this._goToPage('warpscript', true);
       },
-      _handleSharedResult: function(evt, code) {
-        this.payload = code;
-        this._goToPage('warpscript', true);
+      _handleSharedResult: function(evt, result) {
+        console.debug("[quantum-app] _handleSharedResult", result);
+        this.payload = result;
+        this._goToPageWithParams('warpscript', [result.permalink] );
       },
       _handleCancelledDeletedSharedCode: function(evt, snapshot) {
         this._goToPageWithParams('shared-code', [snapshot.snapshotId, snapshot.snapshotSecret] );
@@ -349,7 +353,7 @@
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
-      ready: function() {   
+      ready: function() {
         this.configuredBackends=[{'id':'dist','label':'Distributed Warp','url':'https://warp.cityzendata.net/api/v0','execEndpoint':'/exec','findEndpoint':'/find','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'CityzenData'}]; 
       },
 

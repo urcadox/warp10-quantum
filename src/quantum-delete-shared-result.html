@@ -112,6 +112,9 @@
   <script>
     Polymer({
       is: "quantum-delete-shared-result",
+      behaviors: [
+        QuantumModule
+      ],
       properties: {
         /**
          * The module name

@@ -75,20 +75,12 @@
          *    "findEndpoint": "/find",
          *    "updateEndpoint": "/update",
          *    "deleteEndpoint": "/delete",
-         *    "headerName": "Warp10"            
+         *    "headerName": "X-Warp10-Token"            
          *  }
          */
         defaultBackend: { 
-          type: Object
-        },
-      },
-
-
-      /**************************************************************************/
-      /* Lifecycle methods                                                      */
-      /**************************************************************************/
-      created: function() {
-        this.defaultBackend = {
+          type: Object,
+          value:  {
             "id": "default",
             "label": "Default backend",
             "url": "http://127.0.0.1:8080/api/v0",
@@ -96,8 +88,44 @@
             "findEndpoint": "/find",
             "updateEndpoint": "/update",
             "deleteEndpoint": "/delete",
-            "headerName": "Warp10"            
-          };
+            "headerName": "X-Warp10-Token"            
+          }
+        },
+        
+        /**
+         * The CityzenData backend, uesed for snapshot capabilities
+         *  {
+         *    "id": "czd",
+         *    "label": "Cityzen Data Warp",
+         *    "url": "https://warp.cityzendata.net/api/v0",
+         *    "execEndpoint": "/exec",
+         *    "findEndpoint": "/find",
+         *    "updateEndpoint": "/update",
+         *    "deleteEndpoint": "/delete",
+         *    "headerName": "X-CityzenData-Token"            
+         *  }
+         */
+        czdBackend: { 
+          type: Object,
+          value: {
+            "id": "czd",
+            "label": "Cityzen Data Warp",
+            "url": "https://warp.cityzendata.net/api/v0",
+            "execEndpoint": "/exec",
+            "findEndpoint": "/find",
+            "updateEndpoint": "/update",
+            "deleteEndpoint": "/delete",
+            "headerName": "X-CityzenData-Token"                   
+          }
+        },
+      },
+
+
+      /**************************************************************************/
+      /* Lifecycle methods                                                      */
+      /**************************************************************************/
+      ready: function() {  
+        console.debug("[quantum-module-behavior] ready");           
       },
 
       /**************************************************************************/

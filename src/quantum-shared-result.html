@@ -11,6 +11,8 @@
 
 <link rel="import" href="../bower_components/granite-spinner/granite-spinner.html">
 
+<link rel="import" href="./quantum-permalink.html">
+
 <dom-module is="quantum-shared-result">
   <template>
     <style>
@@ -23,6 +25,9 @@
         --app-on-background-color: white;
         min-height: 300px;
       }      
+      quantum-permalink-generator {
+        display: none;
+      }
     </style>
 
     <h2 class="title">Recovering shared result...</h2>
@@ -32,11 +37,18 @@
         size="200"
         hover></granite-spinner>
  
+    <quantum-permalink-generator
+      warpscript="{{warpscript}}" 
+      backend="{{czdBackend}}"
+      permalink="{{_permalink}}" ></quantum-permalink-generator>
 
   </template>
   <script>
     Polymer({
       is: "quantum-shared-result",
+      behaviors: [
+        QuantumModule
+      ],
       properties: {
         /**
          * The module name
@@ -57,11 +69,6 @@
         snapshotId: {
           type: String,
           observer: "_onSnapshotIdChanged"
-        },
-
-        _czdWarp10Url : {
-          type: String,
-          value: 'https://warp.cityzendata.net/api/v0/exec',
         }
       },
 
@@ -85,7 +92,7 @@
       /* ************************************************************************/
       getSharedResult: function() {        
         this.warpscript = "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL EVAL";
-        this.fire('shared-result', this.warpscript);
+        this.fire('shared-result', {warpscript: this.warpscript, permalink: this._permalink});
       },
     })
   </script>  

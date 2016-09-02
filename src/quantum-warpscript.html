@@ -157,7 +157,7 @@
     </warp10-warpscript-caller>
 
     <iron-ajax
-      id="shareCodeRequest" url="{{_czdWarp10Url}}"
+      id="shareCodeRequest" url="{{czdBackend.url}}{{czdBackend.execEndpoint}}"
       content-type="application/x-www-form-urlencoded; charset=UTF-8"
       method='POST' body='{{_codeToShare}}'
       handle-as="text"  on-response="_handleShareCodeResponse" on-error="_handleShareCodeError"
@@ -165,7 +165,7 @@
       ></iron-ajax>
 
     <iron-ajax
-      id="shareResultRequest" url="{{_czdWarp10Url}}"
+      id="shareResultRequest" url="{{czdBackend.url}}{{czdBackend.execEndpoint}}"
       content-type="application/x-www-form-urlencoded; charset=UTF-8"
       method='POST' body='{{_resultToShare}}'
       handle-as="text"  on-response="_handleShareResultResponse" on-error="_handleShareResultError"
@@ -417,11 +417,6 @@
           type: Boolean,
           value: true
         },
-        _czdWarp10Url : {
-          type: String,
-          value: 'https://warp.cityzendata.net/api/v0/exec',
-        }
-
       },
 
       

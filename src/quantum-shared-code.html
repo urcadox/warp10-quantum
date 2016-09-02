@@ -33,7 +33,7 @@
         hover></granite-spinner>
 
     <iron-ajax
-      id="getSharedCodeRequest" url="{{_czdWarp10Url}}"
+      id="getSharedCodeRequest" url="{{czdBackend.url}}{{czdBackend.execEndpoint}}"
       content-type="application/x-www-form-urlencoded; charset=UTF-8"
       method='POST' body='{{warpscript}}'
       handle-as="text"  on-response="_handleGetSharedCodeResponse" on-error="_handleGetSharedCodeError"
@@ -44,6 +44,9 @@
   <script>
     Polymer({
       is: "quantum-shared-code",
+      behaviors: [
+        QuantumModule
+      ],
       properties: {
         /**
          * The module name
@@ -65,11 +68,6 @@
           type: String,
           observer: "_onSnapshotIdChanged"
         },
-
-        _czdWarp10Url : {
-          type: String,
-          value: 'https://warp.cityzendata.net/api/v0/exec',
-        }
       },
 
       /* ************************************************************************/
