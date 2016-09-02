@@ -24,7 +24,6 @@
         --app-secondary-color: black;
         --app-background-color: white;
         --app-on-background-color: white;
-        min-height: 400px;
       }      
       .item { 
         margin-top: 8px; 
@@ -71,16 +70,32 @@
         background-color: var(--app-primary-contrast-color);
         color: var(--app-on-background-color);
       }
+      .item_centered {
+        @apply(--layout-horizontal); 
+        @apply(--layout-center); 
+        @apply(--layout-wrap); 
+        @apply(--layout-around-justified);
+      }
+      .spacer {
+        height: 30px;
+      }
     </style>
 
 
       <h2>Deleting shared snapshot</h2>
 
       <div class="item">
-        Snapshot Id: {{snapshotId}}
+        <div class="item_name">
+          Snapshot Id: 
+        </div>
+        <div class="item_value">
+          {{snapshotId}}
+          </div>
       </div>         
 
-      <div class="item">
+      <div class="spacer"></div>
+
+      <div class="item_centered">
         <paper-button class="cancel" on-click="_cancel">Cancel</paper-button>
         <paper-button class="delete" on-click="_delete" autofocus>Delete</paper-button>
       </div>
