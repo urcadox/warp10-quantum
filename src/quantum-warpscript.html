@@ -475,6 +475,9 @@
         // console.debug("[quantum-warpscript] _onContentChange", content);
         this._contentChangedAfterExecution = true;
         this._lastSharedCode = false;
+        if (this.showPermalink) {
+          this.debounce('updateLocation', this._updateLocation, 500);
+        }
       },
       _onSelectedChanged: function(selected) {
         
