@@ -328,7 +328,7 @@
       _handleSharedResult: function(evt, result) {
         console.debug("[quantum-app] _handleSharedResult", result);
         this.payload = result;
-        this._goToPageWithParams('warpscript', [result.permalink] );
+        this._goToPage('warpscript', true);
       },
       _handleCancelledDeletedSharedCode: function(evt, snapshot) {
         this._goToPageWithParams('shared-code', [snapshot.snapshotId, snapshot.snapshotSecret] );

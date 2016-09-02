@@ -430,6 +430,9 @@
       attached: function() {
         editor = this.$.editor;
         editor.addEventListener('editor-content', this.editorChangeAction.bind(this));
+        if (this.showPermalink) {
+          this.debounce('updateLocation', this._updateLocation, 500);
+        }
       },
 
       /**************************************************************************/
@@ -467,7 +470,7 @@
       /* Observers                                                              */
       /**************************************************************************/
       _onContentChange: function(content) {
-        // console.debug("[quantum-warpscript] _onContentChange", content);
+        console.debug("[quantum-warpscript] _onContentChange", content);
         this._contentChangedAfterExecution = true;
         this._lastSharedCode = false;
         if (this.showPermalink) {

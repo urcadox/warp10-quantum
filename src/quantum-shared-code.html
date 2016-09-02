@@ -89,7 +89,8 @@
       /* Event listeners                                                              
       /* ************************************************************************/
       _handleGetSharedCodeResponse: function(evt, ironRequest) {
-        var code = looseJSON.parse(ironRequest.response)[0]
+        var code = '// Snapshot Id: '+this.snapshotId
+            +'\n// '+ "'"+ this.snapshotId+"' @orbit/snapshot/load EVAL" +'\n\n'+looseJSON.parse(ironRequest.response)[0]               
         console.debug("[quantum-shared-code] _handleGetSharedCodeResponse",code );
         this.fire('shared-code', code);
       },
