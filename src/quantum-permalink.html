@@ -46,7 +46,7 @@
     _decodePayload: function(){
       // console.debug("[quantum-permalink-decoder] decodePayload - encodedPayload :", this.encodedPayload);
       try {
-        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedPayload))));
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedPayload).replace(/_/g, '/'))));
         console.debug("[quantum-permalink-decoder] decodePayload - decode :", {encodedPayload: this.encodedPayload, payload: decoded });
         return decoded;
       } catch  (e) {
@@ -63,7 +63,7 @@
       var decoded;
 
       try {
-        var decodedString = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend))));
+        var decodedString = decodeURIComponent(escape(atob(decodeURIComponent(this.encodedBackend).replace(/_/g, '/'))));
         try {
           decoded = JSON.parse(decodedString);        
         } catch (e) {
@@ -188,7 +188,7 @@
      * @return {string} the encoded warpscript
      */
     _encodeWarpscript: function() {
-      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))));
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(this.warpscript))).replace(/\//g, '_'));
     },
     /**
      * Encodes backend object, in UrlEncoded Base64.
@@ -211,7 +211,7 @@
         }
       });      
       console.debug("[quantum-permalink] _encodeBackend - backendToEncode", backendToEncode);
-      return encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(backendToEncode)))));
+      return encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(backendToEncode)))).replace(/\//g, '_'));
     }
   });
 </script>
