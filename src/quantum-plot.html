@@ -65,6 +65,9 @@ Warp plot widget
         justify-content: center;
       }
       .overlayGtsSelector, .overlayGtsRegex  {
+        display:flex;
+        flex-flow: column;
+        justify-content: center;
       }
       .overlayBox {
         display:flex;
@@ -258,12 +261,24 @@ Warp plot widget
       </div>
     </warp10-simple-overlay>
 
-    <warp10-simple-overlay id="gtsRegexOverlay">
+    <warp10-simple-overlay 
+        id="gtsRegexOverlay"
+        on-iron-overlay-opened="_onRegexOverlayOpened"
+        on-iron-overlay-closed="_onRegexOverlayClosed">
       <div class="overlayGtsRegexBox">
         <div class="overlayGtsRegex">
-          <div>Regex selector</div>
-          <input autofocus id="regexInput" value="{{_currentRegex::input}}">
-          <div class="btn btn-primary" on-click="selectRegex">Select</div>
+          <h2>Regex selector</h2>
+          <paper-input
+              id="regexInput" 
+              label="Regex"
+              type="text" 
+              value="{{_currentRegex}}"></paper-input>
+          <paper-button
+              id="btn_execute"
+              class="btn btn-primary btn-lg"
+              on-click="selectRegex">
+            Select
+          </paper-button>
         </div>
       </div>
     </warp10-simple-overlay>
@@ -358,9 +373,7 @@ Warp plot widget
         console.debug("[quantum-warpscript-plot] attached - target", this._target)
         this.init();
         this.dataToPlot = [];
-        console.debug("[quantum-warpscript-plot] attached - this", this)
-        this.$.gtsRegexOverlay.addEventListener('iron-overlay-closed', this._hideRegexOverlay.bind(this));
-        this.$.gtsRegexOverlay.addEventListener('iron-overlay-opened', this._regexModeOpened.bind(this));        
+        console.debug("[quantum-warpscript-plot] attached - this", this) 
         
         // console.debug("[quantum-warpscript-plot] attached - width", this.offsetWidth)
         this._displayWidth = this.offsetWidth;
@@ -394,13 +407,6 @@ Warp plot widget
         }
       },
       _onCurrentRegexChanged: function() {
-        if (!this._regexModeJustOpened) {
-          return;
-        }
-        this._regexModeJustOpened = false;
-        // console.debug("[warp10-warpscript-plot] _onCurrentRegexChanged");
-        this._currentRegex = this._currentRegex.substring(0, this._currentRegex.length - 1);
-        this.$$("#regexInput").select();
       },
       _onSelectedChanged: function(selected) {
         
@@ -446,15 +452,13 @@ Warp plot widget
         // console.debug("[quantum-warpscript-plot] plottedChanged", e.detail);
       },  
 
-      _regexModeOpened: function(evt) {
-        this._regexModeJustOpened = true;
-      },
       _showSelectionOverlay: function(evt) {
         this.selectedMode = true;
         this.$$('#gts-select-overlay').open();
         this.overlay.timerActivate();
       },
       _showRegexOverlay: function(evt) {
+        console.debug("[quantum-warpscript-plot] _showRegexOverlay");
         this._regexMode = true;
         this._regexJustShown = true;
         this.$.gtsRegexOverlay.open();
@@ -463,9 +467,15 @@ Warp plot widget
         this.selectedMode = false;
         this.$$('#gts-select-overlay').close()
       },
-      _hideRegexOverlay: function(evt) {
+
+      _onRegexOverlayOpened: function(evt) {
+        this._regexModeJustOpened = true;
+        this.$.regexInput.inputElement.focus();
+        this.$.regexInput.$.input.select();
+        console.debug("[quantum-warpscript-plot] _showRegexOverlay",  this.$.regexInput.focused );
+      },
+      _onRegexOverlayClosed: function(evt) {
         this._regexMode = false;
-        this.$.gtsRegexOverlay.close();
       },             
 
       /**************************************************************************/
@@ -532,7 +542,7 @@ Warp plot widget
         }
         this.changed++;
         this.fire('plotted-changed', plottingTools);
-        this._hideRegexOverlay();
+        this.$.gtsRegexOverlay.close();
       },
 
 
@@ -542,11 +552,13 @@ Warp plot widget
       /**************************************************************************/  
         
       _hotkeyEdit: function(e) {
-        console.debug("[quantum-warpscript-plot] _hotkey edit", this.warpscript);
-        this.fire("edit", this.warpscript);
+        // console.debug("[quantum-warpscript-plot] _hotkey edit", this.warpscript);
+        if (!this._regexMode) {
+          this.fire("edit", this.warpscript);
+        }
       },
       _hotkeyUp: function(e) {
-        console.debug("[quantum-warpscript-plot] _hotkey up");
+        // console.debug("[quantum-warpscript-plot] _hotkey up");
         if (!this._regexMode) {
           // console.debug([quantum-warpscript-plot] _hotkey up");
           this._showSelectionOverlay();
@@ -559,7 +571,7 @@ Warp plot widget
         }
       },
       _hotkeyDown: function(e) {
-        console.debug("[quantum-warpscript-plot] _hotkey down");
+        // console.debug("[quantum-warpscript-plot] _hotkey down");
         if (!this._regexMode) {
           // console.debug([quantum-warpscript-plot] _hotkey down");
           this._showSelectionOverlay();
@@ -574,11 +586,14 @@ Warp plot widget
         }
       },
       _hotkeyRegex: function(e) {
-        this._showRegexOverlay();
+        if (!this._regexMode) {
+          this._showRegexOverlay();
+        }
       },
       _hotkeyRegexEnter: function(e) {
-        if (!this._regexMode) {
-          // console.debug("[quantum-warpscript-plot] _hotkeyRegexEnter");
+        // console.debug("[quantum-warpscript-plot] _hotkeyRegexEnter - regexMode",this._regexMode);
+        if (this._regexMode) {
+          console.debug("[quantum-warpscript-plot] _hotkeyRegexEnter");
           this.selectRegex();
         }
       },
