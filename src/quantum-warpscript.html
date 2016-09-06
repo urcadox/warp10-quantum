@@ -561,7 +561,7 @@
         }
       },
       shareCode: function() {        
-        this._codeToShare = "<% '"+ encodeURI(this.content).replace(/'/g,'%27').replace(/"/g,'%28').replace('+','%2B') + "' %> @orbit/snapshot/store";
+        this._codeToShare = "<% '"+ encodeURI(this.content).replace(/'/g,'%27').replace(/"/g,'%28').replace(/\+/g,'%2B') + "' %> @orbit/snapshot/store";
         this.$.shareCodeRequest.generateRequest();    
       },
       shareResult: function() {
