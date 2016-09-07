@@ -23,9 +23,9 @@
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 
-<link rel="import" href="./quantum-backend-chooser.html">
-<link rel="import" href="./quantum-permalink.html">
-<link rel="import" href="./quantum-module-behavior.html">
+<link rel="import" href="../bower_components/warp10-quantum-elements/quantum-backend-chooser.html">
+<link rel="import" href="../bower_components/warp10-quantum-elements/quantum-permalink.html">
+<link rel="import" href="../bower_components/warp10-quantum-elements/quantum-module-behavior.html">
 
 
 <dom-module id="quantum-app">
@@ -290,7 +290,7 @@
         console.debug("[quantum-app] _pageChanged", page);
         // load page import on demand.
         this.importHref(
-          this.resolveUrl('quantum-' + page + '.html'), null, null, true);
+          this.resolveUrl('../bower_components/warp10-quantum-elements/quantum-' + page + '.html'), null, null, true);
       },
 
       _payloadChanged: function(payload) {
