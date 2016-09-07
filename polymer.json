@@ -2,15 +2,15 @@
   "entrypoint": "index.html",
   "shell": "src/quantum-app.html",
   "fragments": [
-    "src/quantum-warpscript.html",
-    "src/quantum-plot.html",
-    "src/quantum-find.html",
-    "src/quantum-update.html",
-    "src/quantum-delete.html",
-    "src/quantum-shared-code.html",
-    "src/quantum-shared-result.html",
-    "src/quantum-delete-shared-code.html",
-    "src/quantum-delete-shared-result.html"
+    "bower_components/warp10-quantum-elements/quantum-warpscript.html",
+    "bower_components/warp10-quantum-elements/quantum-plot.html",
+    "bower_components/warp10-quantum-elements/quantum-find.html",
+    "bower_components/warp10-quantum-elements/quantum-update.html",
+    "bower_components/warp10-quantum-elements/quantum-delete.html",
+    "bower_components/warp10-quantum-elements/quantum-shared-code.html",
+    "bower_components/warp10-quantum-elements/quantum-shared-result.html",
+    "bower_components/warp10-quantum-elements/quantum-delete-shared-code.html",
+    "bower_components/warp10-quantum-elements/quantum-delete-shared-result.html"
   ],
   "includeDependencies": [
     "manifest.json",
