@@ -45,8 +45,8 @@
     "paper-button": "polymerelements/paper-button#^1.0.13",
     "ace-widget": "LostInBrittany/ace-widget#~1.2.3",
     "granite-alert": "granite-alert#~1.0.0",
-    "warp10-quantum-elements": "lostinbrittany/warp10-quantum-elements#^1.0.3",
-    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.2.7",
+    "warp10-quantum-elements": "lostinbrittany/warp10-quantum-elements#^1.0.4",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#^1.2.8",
     "granite-spinner": "^2.0.0"
   },
   "devDependencies": {
