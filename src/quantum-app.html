@@ -374,6 +374,9 @@
 
       ready: function() {
 
+          if (!this.configuredBackends || this.configuredBackends.length == 0) {
+            this.configuredBackends=[{'id':'dist','label':'Distributed Warp','url':'https://warp.cityzendata.net/api/v0','execEndpoint':'/exec','findEndpoint':'/find','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'X-CityzenData-Token'}];
+          }
       },
 
     });
