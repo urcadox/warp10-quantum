@@ -354,6 +354,7 @@
       },
 
       _goToPage: function(pageId, keepPayload) {
+        console.debug("[quantum-app] _goToPage", pageId, keepPayload);
         var location = "#/"+pageId+"/"
 
         if (keepPayload) {
@@ -366,6 +367,7 @@
       },
 
       _goToPageWithParams: function(pageId, params) {
+        console.debug("[quantum-app] _goToPageWithParams", pageId, params);
         var location = "#/"+pageId+"/"+params.join('/');
 
         window.history.pushState({}, null, location);
