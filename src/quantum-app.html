@@ -167,6 +167,7 @@
                 application="warpscript"
                 content="[[payload]]"
                 backend="[[backend]]"
+                params="[[params]]"
                 theme="chaos"
                 on-plot="_handleGoToPlot"
                 show-permalink></quantum-warpscript>
@@ -249,6 +250,16 @@
           type: Boolean,
           computed: "_isChooseBackendHidden(page, _pagesWithBackendChoice)"
         },
+
+        /**
+         * Parameters to pass to each page
+         */
+        params: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+        },
       },
 
       observers: [
@@ -318,9 +329,9 @@
         this.dataToPlot = data;
         this._goToPage('plot', true);
       },
-      _handleGoToWarpScript: function(evt, warpscript) {
-        console.debug("[quantum-app] _handleGoToWarpScript", warpscript);
-        this._goToPage('warpscript', true);
+      _handleGoToWarpScript: function(evt, params) {
+        console.debug("[quantum-app] _handleGoToWarpScript", params);
+        this._goToPageWithParams('warpscript', params);
       },
       _handleSharedCode: function(evt, code) {
         this.payload = code;
@@ -332,16 +343,16 @@
         this._goToPage('warpscript', true);
       },
       _handleCancelledDeletedSharedCode: function(evt, snapshot) {
-        this._goToPageWithParams('shared-code', [snapshot.snapshotId, snapshot.snapshotSecret] );
+        this._goToPageWithRoute('shared-code', [snapshot.snapshotId, snapshot.snapshotSecret] );
       },
       _handleDeletedSharedCode: function(evt, snapshot) {
-        this._goToPageWithParams('warpscript', [] );
+        this._goToPageWithRoute('warpscript', [] );
       },
       _handleCancelledDeletedSharedResult: function(evt, snapshot) {
-        this._goToPageWithParams('shared-result', [snapshot.snapshotId, snapshot.snapshotSecret] );
+        this._goToPageWithRoute('shared-result', [snapshot.snapshotId, snapshot.snapshotSecret] );
       },
       _handleDeletedSharedResult: function(evt, snapshot) {
-        this._goToPageWithParams('warpscript', [] );
+        this._goToPageWithRoute('warpscript', [] );
       },
       _doChangePage: function(evt) {
         console.debug("[quantum-app] _doChangePage - current page", this.page);
@@ -367,14 +378,20 @@
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
-      _goToPageWithParams: function(pageId, params) {
-        console.debug("[quantum-app] _goToPageWithParams", pageId, params);
+      _goToPageWithRoute: function(pageId, params) {
+        console.debug("[quantum-app] _goToPageWithRoute", pageId, params);
         var location = "#/"+pageId+"/"+params.join('/');
 
         window.history.pushState({}, null, location);
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
+      _goToPageWithParams: function(pageId, params) {
+        var location = "#/"+pageId;
+        this.params = params;
+        window.history.pushState({}, null, location);
+        window.dispatchEvent(new CustomEvent('location-changed'));
+      },
       ready: function() {
 
           if (!this.configuredBackends || this.configuredBackends.length == 0) {
