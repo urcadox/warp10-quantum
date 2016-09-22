@@ -165,12 +165,19 @@
                 name="warpscript"
                 selected="[[page]]"
                 application="warpscript"
-                content="[[payload]]"
+                warpscript="[[payload]]"
                 backend="[[backend]]"
                 params="[[params]]"
                 theme="chaos"
                 on-plot="_handleGoToPlot"
                 show-permalink></quantum-warpscript>
+            <quantum-plot
+                name="plot"
+                selected="[[page]]"
+                warpscript="[[payload]]"
+                stack="[[stack]]"
+                on-edit="_handleGoToWarpScript"
+                backend="[[backend]]" ></quantum-plot>
             <quantum-shared-result
                 name="shared-result"
                 snapshot-id="{{routePayloadData.payload}}"
@@ -195,13 +202,6 @@
                 selected="[[page]]"
                 on-cancel-delete="_handleCancelledDeletedSharedResult"
                 on-deleted="_handleDeletedSharedResult"></quantum-delete-shared-result>
-            <quantum-plot
-                name="plot"
-                selected="[[page]]"
-                warpscript="[[payload]]"
-                data="{{dataToPlot}}"
-                on-edit="_handleGoToWarpScript"
-                backend="[[backend]]" ></quantum-plot>
             <quantum-find
                 name="find"
                 backend="[[backend]]"></quantum-find>
@@ -324,9 +324,11 @@
       _handleBackendDecoded: function(evt, backend) {
         console.debug("[quantum-app] _handleBackendDecoded", backend);
       },
-      _handleGoToPlot: function(evt, data) {
-        console.debug("[quantum-app] _handleGoToPlot", data);
-        this.dataToPlot = data;
+      _handleGoToPlot: function(evt, params) {
+
+        console.debug("[quantum-app] _handleGoToPlot", params);
+        this.warpscript = params.warpscript;
+        this.stack = params.stack;        
         this._goToPage('plot', true);
       },
       _handleGoToWarpScript: function(evt, params) {
