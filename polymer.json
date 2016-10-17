@@ -13,7 +13,8 @@
     "bower_components/warp10-quantum-elements/quantum-delete-shared-result.html"
   ],
   "includeDependencies": [
-    "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+    "./manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/font-robotos/fonts/*.ttf"
   ]
 }
