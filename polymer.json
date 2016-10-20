@@ -12,10 +12,11 @@
     "bower_components/warp10-quantum-elements/quantum-delete-shared-code.html",
     "bower_components/warp10-quantum-elements/quantum-delete-shared-result.html"
   ],
+  "sourceGlobs": [
+   "images/**/*",
+    "bower_components/font-roboto/fonts/**"
+  ],
   "includeDependencies": [
-    "./manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
-    "bower_components/font-roboto/fonts/roboto/*.ttf",
-    "bower_components/font-roboto/fonts/robotomono/*.ttf"
+    "./manifest.json"
   ]
 }
