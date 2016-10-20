@@ -1,7 +1,12 @@
 {
   "name": "Warp10 Quantum",
   "short_name": "Quantum",
-    "icons": [{
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#4285f4",
+  "theme_color": "#4285f4",
+  "icons": [
+    {
       "src": "images/quantum-icon-32.png",
       "type": "image/png",
       "sizes": "32x32"
@@ -21,9 +26,6 @@
       "src": "images/quantum-icon.svg",
       "sizes": "384x384",
       "type": "image/svg"
-    }],
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#3f51b5",
-  "theme_color": "#3f51b5"
+    }
+  ]
 }

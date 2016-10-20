@@ -17,6 +17,7 @@
     "bower_components/font-roboto/fonts/**"
   ],
   "includeDependencies": [
-    "./manifest.json"
+    "./manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
