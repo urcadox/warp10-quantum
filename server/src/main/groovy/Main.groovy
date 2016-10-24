@@ -9,9 +9,32 @@ import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource;
 
 class Main {
+
+    Properties props;
+    int port;
+    final static int DEFAULT_PORT = 8090;
+
     static void main(String... args) {
+
+        Main main = new Main();
+
+
+        if (args.length > 0) {
+          main.props = new Properties();
+          File propertiesFile = new File(args[0])
+          propertiesFile.withInputStream {
+            main.props.load(it)
+          }
+
+          if (null == (main.port = main.props.getProperty("quantum.port") as int)) {
+            main.port = DEFAULT_PORT;
+          }
+        } else{
+          main.port = DEFAULT_PORT;
+        }
+
         try {
-            new Main().run();
+          main.run();
         }
         catch (Throwable t) {
             t.printStackTrace();
@@ -28,7 +51,8 @@ class Main {
         HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(config);
 
         ServerConnector connector = new ServerConnector(server, http1, http2c);
-        connector.setPort(8090);
+
+        connector.setPort(this.port);
         server.addConnector(connector);
 
 
