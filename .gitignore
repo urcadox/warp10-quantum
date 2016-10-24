@@ -3,3 +3,7 @@ private-tools
 dist
 node_modules
 build
+server/build
+server/.gradle
+server/.idea
+server/src/main/resources
