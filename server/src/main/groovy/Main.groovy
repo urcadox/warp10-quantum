@@ -12,7 +12,9 @@ class Main {
 
     Properties props;
     int port;
+    String host;
     final static int DEFAULT_PORT = 8090;
+    final static String DEFAULT_HOST = "127.0.0.1";
 
     static void main(String... args) {
 
@@ -25,12 +27,15 @@ class Main {
           propertiesFile.withInputStream {
             main.props.load(it)
           }
-
           if (null == (main.port = main.props.getProperty("quantum.port") as int)) {
             main.port = DEFAULT_PORT;
           }
+          if (null == (main.host = main.props.getProperty("quantum.host") as String)) {
+            main.host = DEFAULT_HOST;
+          }
         } else{
           main.port = DEFAULT_PORT;
+          main.host = DEFAULT_HOST;
         }
 
         try {
@@ -43,15 +48,22 @@ class Main {
 
     void run() {
 
+
+        // The Jetty Server.
         Server server = new Server();
 
-
+        // Common HTTP configuration.
         HttpConfiguration config = new HttpConfiguration();
+
+        // HTTP/1.1 support.
         HttpConnectionFactory http1 = new HttpConnectionFactory(config);
+
+        // HTTP/2 cleartext support.
         HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(config);
 
         ServerConnector connector = new ServerConnector(server, http1, http2c);
 
+        connector.setHost(this.host);
         connector.setPort(this.port);
         server.addConnector(connector);
 

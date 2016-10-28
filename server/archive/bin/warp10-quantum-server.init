@@ -1,0 +1,61 @@
+#!/bin/sh
+
+#
+# Warp 10 Quantum server
+##
+
+JAVA_HOME=/opt/java8
+
+# If QUANTUM_HOME is not defined, set it to the parent directory
+if [ -z "${QUANTUM_HOME}" ]; then
+  QUANTUM_HOME=$(dirname $(readlink -f $0))/..
+fi
+
+
+QUANTUM_REVISION=2.1.38
+QUANTUM_JAR=${QUANTUM_HOME}/bin/QUANTUM-${QUANTUM_REVISION}.jar
+QUNTUM_CLASS=Main
+QUANTUM_CP=etc:${QUANTUM_JAR}
+QUANTUM_CONFIG=${QUANTUM_HOME}/etc/conf-standalone.conf
+JAVA_OPTS="-Djava.awt.headless=true"
+
+
+export MALLOC_ARENA_MAX=1
+
+start() {
+  if [ -z "$JAVA_HOME" ]; then
+    echo "JAVA_HOME not set";
+    exit 1
+  fi
+
+  #
+  # Start instance..
+  #
+  ${JAVA_HOME}/bin/java ${JAVA_OPTS} -cp ${QUANTUM_CP} ${QUANTUM_CLASS} ${QUANTUM_CONFIG} >> ${QUANTUM_HOME}/logs/nohup.out 2>&1 &
+}
+
+stop() {
+ ${JAVA_HOME}/bin/jps -lm|grep ${QUANTUM_CLASS}|cut -f 1 -d' '
+}
+
+status() {
+  ${JAVA_HOME}/bin/jps -lm|grep ${QUANTUM_CLASS}
+}
+
+# See how we were called.
+case "$1" in
+  start)
+  start
+  ;;
+  stop)
+  stop
+  ;;
+  status)
+  status
+  ;;
+  *)
+  echo $"Usage: $0 {start|stop|status}"
+  exit 2
+esac
+
+exit $?

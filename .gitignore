@@ -7,3 +7,4 @@ server/build
 server/.gradle
 server/.idea
 server/src/main/resources
+server/gradle.properties
