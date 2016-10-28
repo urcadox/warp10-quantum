@@ -20,7 +20,7 @@ apply plugin: 'idea'
 apply plugin: "maven-publish"
 
 
-version = '2.1.42'
+version = '2.1.43'
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
