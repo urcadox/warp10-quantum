@@ -20,7 +20,7 @@ apply plugin: 'idea'
 apply plugin: "maven-publish"
 
 
-version = '2.1.43'
+version = '2.1.45'
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
@@ -81,7 +81,7 @@ publishing {
       }
       groupId 'io.warp10'
       artifactId archivesBaseName
-      version "${version}"
+      version version
     }
   }
 }
@@ -101,9 +101,9 @@ bintray {
     licenses = ['Apache-2.0']
     vcsUrl = 'https://github.com/cityzendata/warp10-quantum.git'
     version {
-      name = "${version}"
+      name = version
       released  = new Date()
-      vcsTag = "${version}"
+      vcsTag = version
     }
   }
 }
