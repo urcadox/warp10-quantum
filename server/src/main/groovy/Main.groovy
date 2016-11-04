@@ -116,6 +116,8 @@ class Main {
 
         server.setHandler(context);
 
+        System.out.println("#### quantum.endpoint " + InetAddress.getByName(this.host) + ":" + this.port);
+
         server.start();
         server.dumpStdErr();
         server.join();
