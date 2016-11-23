@@ -16,12 +16,12 @@ plugins {
 }
 
 // Apply the java plugin to add support for Java
-apply plugin: 'groovy'
+apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "maven-publish"
 
 
-def quantumVersion = '2.1.48'
+def quantumVersion = '2.1.49'
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
@@ -29,9 +29,12 @@ archivesBaseName = "warp10-quantum-server"
 shadowJar {
   manifest {
     attributes(
-      'Main-Class': 'Main'
+      'Main-Class': 'io.warp10.quantum.Main'
     )
   }
+  relocate 'org', 'io.warp10.quantum.org'
+  relocate 'jetty', 'io.warp10.quantum.jetty'
+  relocate 'javax', 'io.warp10.quantum.javax'
   classifier = null
 }
 
@@ -44,11 +47,6 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-
-    // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
-
-
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
 
