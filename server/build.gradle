@@ -20,11 +20,12 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "maven-publish"
 
-
-def quantumVersion = '2.1.49'
+def quantumVersion = '2.1.52'
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 shadowJar {
   manifest {
