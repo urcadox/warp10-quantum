@@ -68,6 +68,10 @@
         text-decoration: none;
         color: var(--app-secondary-color);
       }
+      .drawer-list h3 {
+        padding: 0 16px;
+        line-height: 40px;
+      }
       .drawer-list a.iron-selected {
         color: black;
         font-weight: bold;
@@ -128,10 +132,15 @@
             attr-for-selected="name"
             class="drawer-list"
             role="navigation">
+          
+          <h3>Interactive:</h3>
           <a name="warpscript" on-click="_doChangePage" drawer-toggle>WarpScript</a>
-          <a name="find" on-click="_doChangePage" drawer-toggle>Find</a>
           <a name="update" on-click="_doChangePage" drawer-toggle>Update</a>
           <a name="delete" on-click="_doChangePage" drawer-toggle>Delete</a>
+
+          <h3>File generating:</h3>
+          <a name="find" on-click="_doChangePage" drawer-toggle>Find</a>
+          <a name="fetch" on-click="_doChangePage" drawer-toggle>Fetch</a>
         </iron-selector>
 
       </app-drawer>
@@ -205,6 +214,9 @@
             <quantum-find
                 name="find"
                 backend="[[backend]]"></quantum-find>
+            <quantum-fetch
+                name="fetch"
+                backend="[[backend]]"></quantum-fetch>
             <quantum-update
                 name="update"
                 backend="[[backend]]"></quantum-update>
@@ -244,7 +256,7 @@
         },
         _pagesWithBackendChoice: {
           type: Array,
-          value: [ "warpscript", "find", "update", "delete" ]
+          value: [ "warpscript", "find", "fetch", "update", "delete" ]
         },
         _chooseBackendHidden: {
           type: Boolean,
@@ -396,8 +408,9 @@
       },
       ready: function() {
         if (!this.configuredBackends || this.configuredBackends.length == 0) {
-          this.configuredBackends=[{'id':'local','label':'Local Warp 10','url':'http://127.0.0.1:8080/api/v0','execEndpoint':'/exec','findEndpoint':'/find','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'X-Warp10'}];
+          this.configuredBackends=[{'id':'local','label':'Local Warp 10','url':'http://127.0.0.1:8080/api/v0','execEndpoint':'/exec','findEndpoint':'/find','fetchEndpoint':'/fetch','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'X-Warp10'}];
         }
+        console.debug("[quantum-app] ready - configuredBackends", this.configuredBackends);
       },
 
     });
