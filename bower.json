@@ -46,6 +46,7 @@
     "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
     "ace-widget": "LostInBrittany/ace-widget#~1.2.3",
     "warp10-quantum-elements": "cityzendata/warp10-quantum-elements#^1.0.55",
+    "warp10-iron": "cityzendata/warp10-iron#^1.3.5",
     "granite-alert": "^1.0.0",
     "granite-spinner": "^2.0.0"
   },
