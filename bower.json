@@ -44,10 +44,10 @@
     "paper-radio-button": "PolymerElements/paper-radio-button#^1.2.1",
     "paper-button": "PolymerElements/paper-button#^1.0.13",
     "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
-    "ace-widget": "LostInBrittany/ace-widget#~1.2.3",
-    "warp10-quantum-elements": "cityzendata/warp10-quantum-elements#^1.1.0",
-    "granite-alert": "^1.0.0",
-    "granite-spinner": "^2.0.0"
+    "ace-widget": "LostInBrittany/ace-widget#^1.2.5",
+    "granite-alert": "LostInBrittany/granite-alert#^1.0.5",
+    "granite-spinner": "LostInBrittany/granite-spinner#^2.0.1",
+    "warp10-quantum-elements": "cityzendata/warp10-quantum-elements#^1.1.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -20,7 +20,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "maven-publish"
 
-def quantumVersion = '2.3.0'
+def quantumVersion = '2.3.1'
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
