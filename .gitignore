@@ -8,3 +8,7 @@ server/.gradle
 server/.idea
 server/src/main/resources
 server/gradle.properties
+*.iml
+*.ipr
+*.iws
+.idea/

@@ -20,16 +20,67 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "maven-publish"
 
-def quantumVersion = '2.3.1'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+def quantumVersion = getVersionName()
 group = 'io.warp10'
 archivesBaseName = "warp10-quantum-server"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+// ------------------------------------------------------------------
+//                    AUTO RELEASE MANAGEMENT
+// Gets the version name from the latest Git tag
+// if no commit occurs -> the name of the tag likes 0.0.1
+// if commit occurs -> 0.0.1-12-aabb1122 (number of commits + version number)
+// ------------------------------------------------------------------
+def getVersionName(String revision) {
+    if (null != revision) {
+      if (revision.endsWith('SNAPSHOT')) {
+        return revision;
+      }
+    }
+
+    def stdout = new ByteArrayOutputStream()
+      exec {
+        commandLine 'git', 'describe', '--tags', '--always'
+        standardOutput = stdout
+      }
+     return stdout.toString().trim();
+}
+
+//
+// Check local git repo is synced with the remote
+//
+def isGitRepoSynced() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'status', '-u', 'no', '--porcelain'
+        standardOutput = stdout
+    }
+
+    //
+    // Exclude gradle.properties
+    //
+    String val = stdout.toString().replaceAll(/.*\/gradle.properties\n/, '')
+
+    return (0 == val.trim().size())
+}
+
+gradle.taskGraph.whenReady { graph ->
+  println "building warp10-quantum version=$quantumVersion"
+  if (graph.hasTask(bintrayUpload)) {
+    if (!isGitRepoSynced()) {
+      throw new GradleException("Cannot upload archive: local repo contains uncommited files (git status -u no --porcelain)")
+    }
+  }
+}
 
 shadowJar {
   manifest {
     attributes(
+      'Implementation-Title': "warp10-quantum",
+      'Implementation-Vendor': "Warp 10",
+      'Implementation-Version': quantumVersion,
       'Main-Class': 'io.warp10.quantum.Main'
     )
   }
@@ -70,8 +121,6 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
 }
-
-
 
 publishing {
   publications {
