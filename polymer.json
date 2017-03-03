@@ -4,6 +4,7 @@
   "fragments": [
     "bower_components/warp10-quantum-elements/quantum-warpscript.html",
     "bower_components/warp10-quantum-elements/quantum-plot.html",
+    "bower_components/warp10-quantum-elements/quantum-fetch.html",
     "bower_components/warp10-quantum-elements/quantum-find.html",
     "bower_components/warp10-quantum-elements/quantum-update.html",
     "bower_components/warp10-quantum-elements/quantum-delete.html",
@@ -13,7 +14,7 @@
     "bower_components/warp10-quantum-elements/quantum-delete-shared-result.html"
   ],
   "sourceGlobs": [
-   "images/**/*",
+    "images/**/*",
     "bower_components/font-roboto/fonts/**"
   ],
   "includeDependencies": [
