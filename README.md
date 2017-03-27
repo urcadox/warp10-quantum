@@ -1,5 +1,7 @@
 # Warp 10 Quantum
 
+> Note: We have begun to do release notes for Warp 10 Quantum, please [read them](./RELEASE_NOTES.md) before upgrading 
+
 Warp 10's Quantum is a web application developed to easily deal with the [Warp 10](http://www.warp10.io)
 platform.
 
@@ -27,6 +29,8 @@ Warp 10's Quantum uses Apache 2.0 Licence, available [here](./LICENCE.txt).
 Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     npm install -g polymer-cli
+
+> Note: You need to have `polymer-cli` in a version >= 0.18 in order to build Warp10 Quantum   
 
 ##### Get dependencies with Bower
 
