@@ -1,0 +1,28 @@
+{
+  "name": "warp10-quantum",
+  "version": "1.0.0",
+  "description": "> Note: We have begun to do release notes for Warp 10 Quantum, please [read them](./RELEASE_NOTES.md) before upgrading",
+  "main": "nope",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "install": "bower install && polymer build",
+    "start": "polymer serve build/bundled --hostname 0.0.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cityzendata/warp10-quantum.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cityzendata/warp10-quantum/issues"
+  },
+  "homepage": "https://github.com/cityzendata/warp10-quantum#readme",
+  "dependencies": {
+    "bower": "^1.8.0",
+    "polymer": "^0.5.0",
+    "polymer-cli": "^0.17.0"
+  }
+}
