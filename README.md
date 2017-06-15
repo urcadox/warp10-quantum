@@ -18,7 +18,7 @@ The Warp 10 team loves contributions from the community! Issues and pull request
 
 ## License
 
-Warp 10's Quantum uses Apache 2.0 Licence, available [here](./LICENCE.txt).
+Warp 10's Quantum uses Apache 2.0 License, available [here](./LICENSE).
 
 ### Setup
 
