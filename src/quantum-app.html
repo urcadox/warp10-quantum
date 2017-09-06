@@ -57,7 +57,7 @@
       }
       app-drawer {
         --app-drawer-width: 192px;
-      },
+      }
       .drawer-list {
         margin: 0 20px;
       }
@@ -233,13 +233,14 @@
   </template>
 
   <script>
+      /* global QuantumModule */
 
     Polymer({
 
       is: 'quantum-app',
 
       behaviors: [
-        QuantumModule
+        QuantumModule,
       ],
 
       properties: {
@@ -247,20 +248,20 @@
         page: {
           type: String,
           reflectToAttribute: true,
-          observer: '_pageChanged'
+          observer: '_pageChanged',
         },
 
         route: {
           type: Object,
-          observer: '_routeChanged'
+          observer: '_routeChanged',
         },
         _pagesWithBackendChoice: {
           type: Array,
-          value: [ "warpscript", "find", "fetch", "update", "delete" ]
+          value: ['warpscript', 'find', 'fetch', 'update', 'delete'],
         },
         _chooseBackendHidden: {
           type: Boolean,
-          computed: "_isChooseBackendHidden(page, _pagesWithBackendChoice)"
+          computed: '_isChooseBackendHidden(page, _pagesWithBackendChoice)',
         },
 
         /**
@@ -277,7 +278,7 @@
       observers: [
         '_routePageChanged(routeData.page)',
         '_routePayloadChanged(routePayloadData.payload)',
-        '_routeBackendChanged(routeBackendData.backendInfo)'
+        '_routeBackendChanged(routeBackendData.backendInfo)',
       ],
 
 
@@ -292,33 +293,31 @@
       /* Observers
       /* **********************************************************************/
       _routeChanged: function(route) {
-        console.debug("[quantum-app] _routeChanged", route);
+        console.debug('[quantum-app] _routeChanged', route);
       },
 
       _routePageChanged: function(page) {
-        console.debug("[quantum-app] _routePageChanged", page);
+        console.debug('[quantum-app] _routePageChanged', page);
         this.page = page || 'warpscript';
       },
 
       _routePayloadChanged: function(payload) {
-        console.debug("[quantum-app] _routePayloadChanged", this.routePayloadData.payload);
-
-
+        console.debug('[quantum-app] _routePayloadChanged', this.routePayloadData.payload);
       },
 
       _routeBackendChanged: function(backend) {
-        console.debug("[quantum-app] _routeBackendChanged", this.routeBackendData.backend);
+        console.debug('[quantum-app] _routeBackendChanged', this.routeBackendData.backend);
       },
 
       _pageChanged: function(page) {
-        console.debug("[quantum-app] _pageChanged", page);
+        console.debug('[quantum-app] _pageChanged', page);
         // load page import on demand.
         this.importHref(
           this.resolveUrl('../bower_components/warp10-quantum-elements/quantum-' + page + '.html'), null, null, true);
       },
 
       _payloadChanged: function(payload) {
-        console.debug("[quantum-app] _payloadChanged", payload);
+        console.debug('[quantum-app] _payloadChanged', payload);
         this.fire('payload-change', payload);
       },
 
@@ -327,24 +326,23 @@
       /* Event listeners
       /* ************************************************************************/
       _handlePayloadDecoded: function(evt, payload) {
-        console.debug("[quantum-app] _handlePayloadDecoded", payload);
-        if (this.page === "warpscript" || this.page === "plot") {
+        console.debug('[quantum-app] _handlePayloadDecoded', payload);
+        if (this.page === 'warpscript' || this.page === 'plot') {
           this._lastWarpscript = this.routePayloadData.payload;
-          console.debug("[quantum-app] _routePayloadChanged - _lastWarpscript", this._lastWarpscript);
+          console.debug('[quantum-app] _routePayloadChanged - _lastWarpscript', this._lastWarpscript);
         }
       },
       _handleBackendDecoded: function(evt, backend) {
-        console.debug("[quantum-app] _handleBackendDecoded", backend);
+        console.debug('[quantum-app] _handleBackendDecoded', backend);
       },
       _handleGoToPlot: function(evt, params) {
-
-        console.debug("[quantum-app] _handleGoToPlot", params);
+        console.debug('[quantum-app] _handleGoToPlot', params);
         this.warpscript = params.warpscript;
         this.stack = params.stack;
         this._goToPage('plot', true);
       },
       _handleGoToWarpScript: function(evt, params) {
-        console.debug("[quantum-app] _handleGoToWarpScript", params);
+        console.debug('[quantum-app] _handleGoToWarpScript', params);
         this._goToPageWithParams('warpscript', params);
       },
       _handleSharedCode: function(evt, code) {
@@ -352,7 +350,7 @@
         this._goToPage('warpscript', true);
       },
       _handleSharedResult: function(evt, result) {
-        console.debug("[quantum-app] _handleSharedResult", result);
+        console.debug('[quantum-app] _handleSharedResult', result);
         this.payload = result;
         this._goToPage('warpscript', true);
       },
@@ -369,10 +367,10 @@
         this._goToPageWithRoute('warpscript', [] );
       },
       _doChangePage: function(evt) {
-        console.debug("[quantum-app] _doChangePage - current page", this.page);
+        console.debug('[quantum-app] _doChangePage - current page', this.page);
         var pageId = evt.target.getAttribute('name');
-        if (pageId === "warpscript" || pageId === "plot" ) {
-          console.debug("[quantum-app] _doChangePage - is warpscript or plot",this._lastWarpscript);
+        if (pageId === 'warpscript' || pageId === 'plot' ) {
+          console.debug('[quantum-app] _doChangePage - is warpscript or plot', this._lastWarpscript);
           this._goToPage(pageId, true);
         } else {
           this._goToPage(pageId);
@@ -380,37 +378,47 @@
       },
 
       _goToPage: function(pageId, keepPayload) {
-        console.debug("[quantum-app] _goToPage", pageId, keepPayload);
-        var location = "#/"+pageId+"/"
+        console.debug('[quantum-app] _goToPage', pageId, keepPayload);
+        var location = '#/'+pageId+'/';
 
         if (keepPayload) {
-          location += this._lastWarpscript
+          location += this.lastWarpscript;
         }
-        location += "/"+this.routeBackendData.backend
+        location += '/'+this.routeBackendData.backend;
 
         window.history.pushState({}, null, location);
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
       _goToPageWithRoute: function(pageId, params) {
-        console.debug("[quantum-app] _goToPageWithRoute", pageId, params);
-        var location = "#/"+pageId+"/"+params.join('/');
+        console.debug('[quantum-app] _goToPageWithRoute', pageId, params);
+        var location = '#/'+pageId+'/'+params.join('/');
 
         window.history.pushState({}, null, location);
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
 
       _goToPageWithParams: function(pageId, params) {
-        var location = "#/"+pageId;
+        var location = '#/'+pageId;
         this.params = params;
         window.history.pushState({}, null, location);
         window.dispatchEvent(new CustomEvent('location-changed'));
       },
       ready: function() {
         if (!this.configuredBackends || this.configuredBackends.length == 0) {
-          this.configuredBackends=[{'id':'local','label':'Local Warp 10','url':'http://127.0.0.1:8080/api/v0','execEndpoint':'/exec','findEndpoint':'/find','fetchEndpoint':'/fetch','updateEndpoint':'/update','deleteEndpoint':'/delete','headerName':'X-Warp10'}];
+          this.configuredBackends=[{
+            'id': 'local',
+            'label': 'Local Warp 10',
+            'url': 'http://127.0.0.1:8080/api/v0',
+            'execEndpoint': '/exec',
+            'findEndpoint': '/find',
+            'fetchEndpoint': '/fetch',
+            'updateEndpoint': '/update',
+            'deleteEndpoint': '/delete',
+            'headerName': 'X-Warp10',
+          }];
         }
-        console.debug("[quantum-app] ready - configuredBackends", this.configuredBackends);
+        console.debug('[quantum-app] ready - configuredBackends', this.configuredBackends);
       },
 
     });
